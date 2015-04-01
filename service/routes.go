@@ -5,7 +5,9 @@ import (
 	"log"
 
 	"github.com/go-martini/martini"
+	"github.com/martini-contrib/oauth2"
 	"github.com/martini-contrib/render"
+	goauth2 "golang.org/x/oauth2"
 )
 
 //Constants to construct routes with
@@ -22,13 +24,29 @@ var (
 	URLAuthBaseV1 = fmt.Sprintf("/%s/%s", APIVersion1, AuthGroup)
 )
 
-func fakeController(params martini.Params, log *log.Logger, r render.Render) {
-	r.JSON(200, map[string]interface{}{"hello": "world"})
+func fakeController(params martini.Params, log *log.Logger, r render.Render, tokens oauth2.Tokens) {
+	statusCode := 200
+	responseBody := map[string]interface{}{"hello": "world"}
+
+	if tokens.Expired() {
+		statusCode = 403
+		responseBody = map[string]interface{}{"hello": "not logged in, or the access token is expired"}
+	}
+	r.JSON(statusCode, responseBody)
 }
 
 //InitRoutes - initialize the mappings for controllers against valid routes
 func InitRoutes(m *martini.ClassicMartini) {
 	m.Use(martini.Static(StaticPath))
+
+	m.Use(oauth2.Google(
+		&goauth2.Config{
+			ClientID:     "1083030294947-6g3bhhrgl3s7ul736jet625ajvp94f5p.apps.googleusercontent.com",
+			ClientSecret: "kfgM5mT3BqPQ84VeXsYokAK_",
+			Scopes:       []string{"https://www.googleapis.com/auth/plus.me"},
+			RedirectURL:  "redirect_url",
+		},
+	))
 
 	m.Group("/", func(r martini.Router) {
 		r.Get("info", func() (int, string) {
@@ -37,11 +55,11 @@ func InitRoutes(m *martini.ClassicMartini) {
 	})
 
 	m.Group(URLAuthBaseV1, func(r martini.Router) {
-		r.Put(APIKey, fakeController)
-		r.Post(APIKey, fakeController)
-		r.Get(APIKey, fakeController)
-		r.Delete(APIKey, fakeController)
+		r.Put(APIKey, oauth2.LoginRequired, fakeController)    //this will re-generate a new key for the user or return an error if one does not yet exist
+		r.Post(APIKey, oauth2.LoginRequired, fakeController)   //this will generate a key for the user or return an error if one already exists
+		r.Get(APIKey, oauth2.LoginRequired, fakeController)    //will return the key for the username (pivotal.io email) it is given... this needs to be locked in that only the current user or admin will receive a result
+		r.Delete(APIKey, oauth2.LoginRequired, fakeController) //this will remove the key from the user
 
-		r.Get(APIKeys, fakeController)
+		r.Get(APIKeys, oauth2.LoginRequired, fakeController) //will return the list of current keys and its associated user
 	})
 }

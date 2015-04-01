@@ -6,3 +6,6 @@ applications:
   services:
     - pezauth-mongo
     - pezauth-redis
+  #env:
+    #TGL_FEATURE1: false
+    #TGL_FEATURE2: false
