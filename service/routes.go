@@ -7,6 +7,7 @@ import (
 	"github.com/go-martini/martini"
 	"github.com/martini-contrib/oauth2"
 	"github.com/martini-contrib/render"
+	"github.com/martini-contrib/sessions"
 	goauth2 "golang.org/x/oauth2"
 )
 
@@ -39,6 +40,7 @@ func fakeController(params martini.Params, log *log.Logger, r render.Render, tok
 func InitRoutes(m *martini.ClassicMartini) {
 	m.Use(martini.Static(StaticPath))
 
+	m.Use(sessions.Sessions("my_session", sessions.NewCookieStore([]byte("secret123"))))
 	m.Use(oauth2.Google(
 		&goauth2.Config{
 			ClientID:     "1083030294947-6g3bhhrgl3s7ul736jet625ajvp94f5p.apps.googleusercontent.com",
