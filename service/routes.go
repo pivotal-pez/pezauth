@@ -38,6 +38,7 @@ func fakeController(params martini.Params, log *log.Logger, r render.Render, tok
 
 //InitRoutes - initialize the mappings for controllers against valid routes
 func InitRoutes(m *martini.ClassicMartini) {
+	m.Use(render.Renderer())
 	m.Use(martini.Static(StaticPath))
 
 	m.Use(sessions.Sessions("my_session", sessions.NewCookieStore([]byte("secret123"))))
@@ -46,12 +47,12 @@ func InitRoutes(m *martini.ClassicMartini) {
 			ClientID:     "1083030294947-6g3bhhrgl3s7ul736jet625ajvp94f5p.apps.googleusercontent.com",
 			ClientSecret: "kfgM5mT3BqPQ84VeXsYokAK_",
 			Scopes:       []string{"https://www.googleapis.com/auth/plus.me"},
-			RedirectURL:  "redirect_url",
+			RedirectURL:  "http://localhost:3000/oauth2callback",
 		},
 	))
 
 	m.Group("/", func(r martini.Router) {
-		r.Get("info", func() (int, string) {
+		r.Get("info", oauth2.LoginRequired, func() (int, string) {
 			return 200, "auth service"
 		})
 	})
