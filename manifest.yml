@@ -3,3 +3,6 @@ applications:
 - name: pezauth
   buildpack: http://github.com/ryandotsmith/null-buildpack.git
   command: ./main
+  services:
+    - pezauth-mongo
+    - pezauth-redis
