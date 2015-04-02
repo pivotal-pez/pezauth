@@ -11,6 +11,11 @@
 			"Rev": "0cd55584b172cefd31c4cb84e2904585d898c7b2"
 		},
 		{
+			"ImportPath": "github.com/cloudfoundry-community/go-cfenv",
+			"Comment": "v1.11",
+			"Rev": "d09cf526a66903121cc1387caa5951b9dcb35642"
+		},
+		{
 			"ImportPath": "github.com/codegangsta/inject",
 			"Comment": "v1.0-rc1-10-g33e0aa1",
 			"Rev": "33e0aa1cb7c019ccc3fbe049a8262a6403d30504"
@@ -51,6 +56,10 @@
 		{
 			"ImportPath": "github.com/martini-contrib/sessions",
 			"Rev": "fa13114fbcf036dff8185d728651d85fcef772db"
+		},
+		{
+			"ImportPath": "github.com/mitchellh/mapstructure",
+			"Rev": "442e588f213303bec7936deba67901f8fc8f18b1"
 		},
 		{
 			"ImportPath": "github.com/onsi/ginkgo",
