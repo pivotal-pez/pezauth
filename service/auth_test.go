@@ -1,26 +1,28 @@
 package pezauth_test
 
 import (
+	"os"
+
 	"github.com/go-martini/martini"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	. "github.com/pivotalservices/pezdispenser/service"
+	. "github.com/pivotalservices/pezauth/service"
 )
 
 var _ = Describe("Authentication", func() {
 	Describe("InitAuth", func() {
 		var m *martini.ClassicMartini
 		BeforeEach(func() {
+			os.Setenv("LOCAL", "true")
+			os.Setenv("PORT", "3000")
 			m = martini.Classic()
 		})
 
 		Context("when InitAuth is passed a classic martini", func() {
-			BeforeEach(func() {
-				InitAuth(m)
-			})
-
-			It("Should setup the authentication middleware", func() {
-				Ω(true).Should(BeTrue())
+			It("Should setup the authentication middleware without panic", func() {
+				Ω(func() {
+					InitAuth(m)
+				}).ShouldNot(Panic())
 			})
 		})
 	})
