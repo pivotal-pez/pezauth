@@ -47,7 +47,6 @@ func getAppEnv() (appEnv *cfenv.App) {
 	case "true":
 		appEnv = &cfenv.App{
 			ApplicationURIs: []string{
-				fmt.Sprintf("http://localhost-lkashdgaskhdglaskdhgasd:%s", os.Getenv("PORT")),
 				fmt.Sprintf("http://localhost:%s", os.Getenv("PORT")),
 			},
 		}
