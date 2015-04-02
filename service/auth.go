@@ -35,7 +35,7 @@ func cleanVersionFromURI(uri string) string {
 		fmt.Println(newS)
 		uri = newS
 	}
-	return uri
+	return fmt.Sprintf("https://%s", uri)
 }
 
 func getAppEnv() (appEnv *cfenv.App) {
