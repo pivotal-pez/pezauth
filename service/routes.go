@@ -5,7 +5,6 @@ import (
 	"log"
 
 	"github.com/go-martini/martini"
-	"github.com/martini-contrib/oauth2"
 	"github.com/martini-contrib/render"
 )
 
@@ -23,14 +22,9 @@ var (
 	URLAuthBaseV1 = fmt.Sprintf("/%s/%s", APIVersion1, AuthGroup)
 )
 
-func fakeController(params martini.Params, log *log.Logger, r render.Render, tokens oauth2.Tokens) {
+func fakeController(params martini.Params, log *log.Logger, r render.Render) {
 	statusCode := 200
 	responseBody := map[string]interface{}{"hello": "world"}
-
-	if tokens.Expired() {
-		statusCode = 403
-		responseBody = map[string]interface{}{"hello": "not logged in, or the access token is expired"}
-	}
 	r.JSON(statusCode, responseBody)
 }
 
