@@ -76,6 +76,10 @@
 			"Rev": "754d38fccfc6e52083355014b6abc8d626445dfd"
 		},
 		{
+			"ImportPath": "github.com/xchapter7x/goutil/itertools",
+			"Rev": "d11405d449b25127a32fab25ce8b1fc0388da5b3"
+		},
+		{
 			"ImportPath": "golang.org/x/net/context",
 			"Rev": "7dbad50ab5b31073856416cdcfeb2796d682f844"
 		},
