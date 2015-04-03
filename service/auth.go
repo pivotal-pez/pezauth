@@ -13,7 +13,6 @@ import (
 	"github.com/martini-contrib/oauth2"
 	"github.com/martini-contrib/render"
 	"github.com/martini-contrib/sessions"
-	i "github.com/xchapter7x/goutil/itertools"
 	goauth2 "golang.org/x/oauth2"
 )
 
@@ -35,12 +34,16 @@ var (
 	oauthConfig *goauth2.Config
 )
 
-func isAllowedDomain(domain string) bool {
-	o := i.Find(allowedDomains, func(pair i.Pair) bool {
-		val := pair.Second.(string)
-		return val == domain
-	})
-	return o == *new(i.Pair)
+func isBlockedDomain(domain string) bool {
+	isBlocked := true
+
+	for _, d := range allowedDomains {
+
+		if d == domain {
+			isBlocked = false
+		}
+	}
+	return isBlocked
 }
 
 func cleanVersionFromURI(uri string) string {
@@ -76,7 +79,7 @@ func getAppURI() string {
 func DomainChecker(res http.ResponseWriter, tokens oauth2.Tokens) {
 	userInfo := GetUserInfo(tokens)
 
-	if tokens.Expired() || isAllowedDomain(userInfo["domain"].(string)) {
+	if domain, ok := userInfo["domain"]; !ok || tokens.Expired() || isBlockedDomain(domain.(string)) {
 		statusCode := AuthFailStatus
 		responseBody := `{"error": "not logged in as a valid user, or the access token is expired"}`
 		res.WriteHeader(statusCode)
