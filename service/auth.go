@@ -2,7 +2,6 @@ package pezauth
 
 import (
 	"fmt"
-	"os"
 	"regexp"
 	"strings"
 
@@ -17,7 +16,7 @@ import (
 const (
 	ClientID      = "1083030294947-6g3bhhrgl3s7ul736jet625ajvp94f5p.apps.googleusercontent.com"
 	ClientSecret  = "kfgM5mT3BqPQ84VeXsYokAK_"
-	sessionName   = "randomSessionName"
+	sessionName   = "pivotalpezauthservicesession"
 	sessionSecret = "shhh.donttellanyone"
 )
 
@@ -35,7 +34,11 @@ func cleanVersionFromURI(uri string) string {
 		fmt.Println(newS)
 		uri = newS
 	}
-	return fmt.Sprintf("https://%s", uri)
+
+	if !strings.HasPrefix(uri, "http") {
+		uri = fmt.Sprintf("https://%s", uri)
+	}
+	return uri
 }
 
 func getAppEnv() (appEnv *cfenv.App) {
@@ -43,18 +46,8 @@ func getAppEnv() (appEnv *cfenv.App) {
 		err error
 	)
 
-	switch os.Getenv("LOCAL") {
-	case "true":
-		appEnv = &cfenv.App{
-			ApplicationURIs: []string{
-				fmt.Sprintf("http://localhost:%s", os.Getenv("PORT")),
-			},
-		}
-
-	default:
-		if appEnv, err = cfenv.Current(); err != nil {
-			panic(err)
-		}
+	if appEnv, err = cfenv.Current(); err != nil {
+		panic(err)
 	}
 	return
 }

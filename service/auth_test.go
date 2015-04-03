@@ -13,7 +13,8 @@ var _ = Describe("Authentication", func() {
 	Describe("InitAuth", func() {
 		var m *martini.ClassicMartini
 		BeforeEach(func() {
-			os.Setenv("LOCAL", "true")
+			setVcapApp()
+			setVcapServ()
 			os.Setenv("PORT", "3000")
 			m = martini.Classic()
 		})

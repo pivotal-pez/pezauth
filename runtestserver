@@ -1,0 +1,1 @@
+VCAP_APPLICATION=`cat service/vcap_application.local` VCAP_SERVICES=`cat service/vcap_services.local` PORT=3000 godep go run main.go
