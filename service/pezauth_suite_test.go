@@ -1,12 +1,14 @@
 package pezauth_test
 
 import (
+	"net/http"
 	"os"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 
 	"testing"
+	"time"
 )
 
 func TestPezAuth(t *testing.T) {
@@ -20,4 +22,36 @@ func setVcapApp() {
 
 func setVcapServ() {
 	os.Setenv("VCAP_SERVICES", `{ }`)
+}
+
+type mockTokens struct{}
+
+func (s *mockTokens) Access() (r string) {
+	return
+}
+
+func (s *mockTokens) Refresh() (r string) {
+	return
+}
+func (s *mockTokens) Expired() (r bool) {
+	return
+}
+func (s *mockTokens) ExpiryTime() (r time.Time) {
+	return
+}
+
+type mockResponseWriter struct {
+	StatusCode int
+}
+
+func (s *mockResponseWriter) WriteHeader(i int) {
+	s.StatusCode = i
+}
+
+func (s *mockResponseWriter) Header() (r http.Header) {
+	return
+}
+
+func (s *mockResponseWriter) Write(x []byte) (a int, b error) {
+	return
 }

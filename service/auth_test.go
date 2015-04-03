@@ -4,6 +4,7 @@ import (
 	"os"
 
 	"github.com/go-martini/martini"
+	"github.com/martini-contrib/oauth2"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	. "github.com/pivotalservices/pezauth/service"
@@ -11,7 +12,11 @@ import (
 
 var _ = Describe("Authentication", func() {
 	Describe("InitAuth", func() {
-		var m *martini.ClassicMartini
+		var (
+			m              *martini.ClassicMartini
+			oldGetUserInfo func(tokens oauth2.Tokens) map[string]interface{}
+		)
+
 		BeforeEach(func() {
 			setVcapApp()
 			setVcapServ()
@@ -24,6 +29,52 @@ var _ = Describe("Authentication", func() {
 				Ω(func() {
 					InitAuth(m)
 				}).ShouldNot(Panic())
+			})
+		})
+
+		Context("calling DomainCheck with a valid domain", func() {
+			var inValidDomain = "pivotal.io"
+
+			BeforeEach(func() {
+				oldGetUserInfo = GetUserInfo
+				GetUserInfo = func(tokens oauth2.Tokens) map[string]interface{} {
+					return map[string]interface{}{
+						"domain": inValidDomain,
+					}
+				}
+			})
+
+			AfterEach(func() {
+				GetUserInfo = oldGetUserInfo
+			})
+
+			It("Should return true", func() {
+				mock := new(mockResponseWriter)
+				DomainChecker(mock, new(mockTokens))
+				Ω(mock.StatusCode).ShouldNot(Equal(AuthFailStatus))
+			})
+		})
+
+		Context("calling DomainCheck with a in-valid domain", func() {
+			var validDomain = "google.com"
+
+			BeforeEach(func() {
+				oldGetUserInfo = GetUserInfo
+				GetUserInfo = func(tokens oauth2.Tokens) map[string]interface{} {
+					return map[string]interface{}{
+						"domain": validDomain,
+					}
+				}
+			})
+
+			AfterEach(func() {
+				GetUserInfo = oldGetUserInfo
+			})
+
+			It("Should return true", func() {
+				mock := new(mockResponseWriter)
+				DomainChecker(mock, new(mockTokens))
+				Ω(mock.StatusCode).Should(Equal(AuthFailStatus))
 			})
 		})
 	})
