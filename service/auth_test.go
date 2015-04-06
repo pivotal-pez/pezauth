@@ -11,6 +11,7 @@ import (
 )
 
 var _ = Describe("Authentication", func() {
+
 	Describe("InitAuth", func() {
 		var (
 			m              *martini.ClassicMartini
@@ -24,6 +25,31 @@ var _ = Describe("Authentication", func() {
 			m = martini.Classic()
 		})
 
+		Context("calling InitAuth with no enviornment variables set", func() {
+			var validDomain = "pivotal.io"
+
+			BeforeEach(func() {
+				os.Unsetenv("VCAP_APPLICATION")
+				os.Unsetenv("VCAP_SERVICES")
+				oldGetUserInfo = GetUserInfo
+				GetUserInfo = func(tokens oauth2.Tokens) map[string]interface{} {
+					return map[string]interface{}{
+						"domain": validDomain,
+					}
+				}
+			})
+
+			AfterEach(func() {
+				GetUserInfo = oldGetUserInfo
+			})
+
+			It("Should panic", func() {
+				Ω(func() {
+					InitAuth(m)
+				}).Should(Panic())
+			})
+		})
+
 		Context("when InitAuth is passed a classic martini", func() {
 			It("Should setup the authentication middleware without panic", func() {
 				Ω(func() {
@@ -33,13 +59,13 @@ var _ = Describe("Authentication", func() {
 		})
 
 		Context("calling DomainCheck with a valid domain", func() {
-			var inValidDomain = "pivotal.io"
+			var validDomain = "pivotal.io"
 
 			BeforeEach(func() {
 				oldGetUserInfo = GetUserInfo
 				GetUserInfo = func(tokens oauth2.Tokens) map[string]interface{} {
 					return map[string]interface{}{
-						"domain": inValidDomain,
+						"domain": validDomain,
 					}
 				}
 			})
@@ -56,13 +82,13 @@ var _ = Describe("Authentication", func() {
 		})
 
 		Context("calling DomainCheck with a in-valid domain", func() {
-			var validDomain = "google.com"
+			var inValidDomain = "google.com"
 
 			BeforeEach(func() {
 				oldGetUserInfo = GetUserInfo
 				GetUserInfo = func(tokens oauth2.Tokens) map[string]interface{} {
 					return map[string]interface{}{
-						"domain": validDomain,
+						"domain": inValidDomain,
 					}
 				}
 			})
