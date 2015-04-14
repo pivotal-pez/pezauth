@@ -6,6 +6,11 @@
 	],
 	"Deps": [
 		{
+			"ImportPath": "code.google.com/p/go-uuid/uuid",
+			"Comment": "null-15",
+			"Rev": "35bc42037350f0078e3c974c6ea690f1926603ab"
+		},
+		{
 			"ImportPath": "github.com/boj/redistore",
 			"Comment": "v1-2-g0cd5558",
 			"Rev": "0cd55584b172cefd31c4cb84e2904585d898c7b2"
@@ -74,10 +79,6 @@
 		{
 			"ImportPath": "github.com/oxtoacart/bpool",
 			"Rev": "754d38fccfc6e52083355014b6abc8d626445dfd"
-		},
-		{
-			"ImportPath": "github.com/xchapter7x/goutil/itertools",
-			"Rev": "d11405d449b25127a32fab25ce8b1fc0388da5b3"
 		},
 		{
 			"ImportPath": "golang.org/x/net/context",

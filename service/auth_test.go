@@ -1,10 +1,10 @@
 package pezauth_test
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/go-martini/martini"
-	"github.com/martini-contrib/oauth2"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	. "github.com/pivotalservices/pezauth/service"
@@ -14,12 +14,11 @@ var _ = Describe("Authentication", func() {
 
 	Describe("InitAuth", func() {
 		var (
-			m              *martini.ClassicMartini
-			oldGetUserInfo func(tokens oauth2.Tokens) map[string]interface{}
+			m *martini.ClassicMartini
 		)
 
 		BeforeEach(func() {
-			setVcapApp()
+			setVcapApp("http://localhost:3000")
 			setVcapServ()
 			os.Setenv("PORT", "3000")
 			m = martini.Classic()
@@ -27,20 +26,11 @@ var _ = Describe("Authentication", func() {
 
 		Context("calling InitAuth with no enviornment variables set", func() {
 			var validDomain = "pivotal.io"
+			setGetUserInfo(validDomain)
 
 			BeforeEach(func() {
 				os.Unsetenv("VCAP_APPLICATION")
 				os.Unsetenv("VCAP_SERVICES")
-				oldGetUserInfo = GetUserInfo
-				GetUserInfo = func(tokens oauth2.Tokens) map[string]interface{} {
-					return map[string]interface{}{
-						"domain": validDomain,
-					}
-				}
-			})
-
-			AfterEach(func() {
-				GetUserInfo = oldGetUserInfo
 			})
 
 			It("Should panic", func() {
@@ -60,42 +50,44 @@ var _ = Describe("Authentication", func() {
 
 		Context("calling DomainCheck with a valid domain", func() {
 			var validDomain = "pivotal.io"
+			setGetUserInfo(validDomain)
 
-			BeforeEach(func() {
-				oldGetUserInfo = GetUserInfo
-				GetUserInfo = func(tokens oauth2.Tokens) map[string]interface{} {
-					return map[string]interface{}{
-						"domain": validDomain,
-					}
-				}
-			})
-
-			AfterEach(func() {
-				GetUserInfo = oldGetUserInfo
-			})
-
-			It("Should return true", func() {
+			It("Should have a valid statuscode and body", func() {
 				mock := new(mockResponseWriter)
 				DomainChecker(mock, new(mockTokens))
 				Ω(mock.StatusCode).ShouldNot(Equal(AuthFailStatus))
+				Ω(mock.Body).ShouldNot(Equal(AuthFailureResponse))
 			})
+
+			Context("un-formatted domain", func() {
+				BeforeEach(func() {
+					setVcapApp("pivotal.io")
+				})
+
+				It("should format the domain in the config object", func() {
+					control := fmt.Sprintf("https://%s/oauth2callback", validDomain)
+					InitAuth(m)
+					Ω(OauthConfig.RedirectURL).Should(Equal(control))
+				})
+			})
+
+			Context("version formatted domain", func() {
+				BeforeEach(func() {
+					setVcapApp("pivotal-1919241972nwdighsd921h192t23t.io")
+				})
+
+				It("should format the domain in the config object", func() {
+					control := fmt.Sprintf("https://%s/oauth2callback", validDomain)
+					InitAuth(m)
+					Ω(OauthConfig.RedirectURL).Should(Equal(control))
+				})
+			})
+
 		})
 
 		Context("calling DomainCheck with a in-valid domain", func() {
 			var inValidDomain = "google.com"
-
-			BeforeEach(func() {
-				oldGetUserInfo = GetUserInfo
-				GetUserInfo = func(tokens oauth2.Tokens) map[string]interface{} {
-					return map[string]interface{}{
-						"domain": inValidDomain,
-					}
-				}
-			})
-
-			AfterEach(func() {
-				GetUserInfo = oldGetUserInfo
-			})
+			setGetUserInfo(inValidDomain)
 
 			It("Should return true", func() {
 				mock := new(mockResponseWriter)

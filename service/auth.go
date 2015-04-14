@@ -27,11 +27,12 @@ const (
 
 //Vars for my oauth calls
 var (
-	Scopes         = []string{"https://www.googleapis.com/auth/plus.me", "https://www.googleapis.com/auth/userinfo.email"}
-	allowedDomains = []string{
+	Scopes              = []string{"https://www.googleapis.com/auth/plus.me", "https://www.googleapis.com/auth/userinfo.email"}
+	AuthFailureResponse = []byte(`{"error": "not logged in as a valid user, or the access token is expired"}`)
+	allowedDomains      = []string{
 		"pivotal.io",
 	}
-	oauthConfig *goauth2.Config
+	OauthConfig *goauth2.Config
 )
 
 func isBlockedDomain(domain string) bool {
@@ -80,10 +81,8 @@ func DomainChecker(res http.ResponseWriter, tokens oauth2.Tokens) {
 	userInfo := GetUserInfo(tokens)
 
 	if domain, ok := userInfo["domain"]; !ok || tokens.Expired() || isBlockedDomain(domain.(string)) {
-		statusCode := AuthFailStatus
-		responseBody := `{"error": "not logged in as a valid user, or the access token is expired"}`
-		res.WriteHeader(statusCode)
-		res.Write([]byte(responseBody))
+		res.WriteHeader(AuthFailStatus)
+		res.Write(AuthFailureResponse)
 	}
 }
 
@@ -99,7 +98,7 @@ var GetUserInfo = func(tokens oauth2.Tokens) (userObject map[string]interface{})
 		RefreshToken: tokens.Refresh(),
 		Expiry:       tokens.ExpiryTime(),
 	}
-	client := oauthConfig.Client(goauth2.NoContext, token)
+	client := OauthConfig.Client(goauth2.NoContext, token)
 	resp, _ := client.Get(url)
 	defer resp.Body.Close()
 	body, _ := ioutil.ReadAll(resp.Body)
@@ -108,7 +107,7 @@ var GetUserInfo = func(tokens oauth2.Tokens) (userObject map[string]interface{})
 }
 
 func setOauthConfig() {
-	oauthConfig = &goauth2.Config{
+	OauthConfig = &goauth2.Config{
 		ClientID:     ClientID,
 		ClientSecret: ClientSecret,
 		Scopes:       Scopes,
@@ -121,7 +120,7 @@ func InitAuth(m *martini.ClassicMartini) {
 	setOauthConfig()
 	m.Use(render.Renderer())
 	m.Use(sessions.Sessions(sessionName, sessions.NewCookieStore([]byte(sessionSecret))))
-	m.Use(oauth2.Google(oauthConfig))
+	m.Use(oauth2.Google(OauthConfig))
 	m.Use(oauth2.LoginRequired)
 	m.Use(domainCheck)
 }

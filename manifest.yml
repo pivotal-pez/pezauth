@@ -6,6 +6,11 @@ applications:
   services:
     - pezauth-mongo
     - pezauth-redis
+  env:
+    REDIS_SERVICE_NAME: pezauth-redis
+    REDIS_HOSTNAME_NAME: hostname
+    REDIS_PASSWORD_NAME: password
+    REDIS_PORT_NAME: port
   #env:
     #TGL_FEATURE1: false
     #TGL_FEATURE2: false
