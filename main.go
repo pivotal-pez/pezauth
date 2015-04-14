@@ -20,13 +20,19 @@ func main() {
 	name, _ := appEnv.Services.WithName(redisName)
 	connectionURI := fmt.Sprintf("%s:%s", name.Credentials[redisHost], name.Credentials[redisPort])
 
-	if c, err := redis.Dial("tcp", connectionURI); err != nil {
+	if c, err := redis.Dial("tcp", connectionURI); err == nil {
 
 		if _, err := c.Do("AUTH", name.Credentials[redisPass]); err == nil {
 			pez.InitAuth(m)
 			pez.InitRoutes(m, c)
 			m.Run()
+
+		} else {
+			fmt.Println(err)
 		}
 		c.Close()
+
+	} else {
+		fmt.Println(err)
 	}
 }
