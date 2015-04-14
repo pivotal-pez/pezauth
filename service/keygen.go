@@ -27,9 +27,13 @@ type KeyGen struct {
 }
 
 //Get - gets a key for a user
-func (s *KeyGen) Get(user string) (string, error) {
-	r, err := s.store.Do("GET", user)
-	return r.(string), err
+func (s *KeyGen) Get(user string) (res string, err error) {
+	var r interface{}
+
+	if r, err = s.store.Do("GET", user); r != nil {
+		res = r.(string)
+	}
+	return
 }
 
 //Create - creates a new key for a user
