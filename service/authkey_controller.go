@@ -9,6 +9,7 @@ import (
 	"github.com/martini-contrib/render"
 )
 
+//Authentication Handler function type definitions
 type (
 	AuthPutHandler    func(params martini.Params, log *log.Logger, r render.Render, tokens oauth2.Tokens)
 	AuthPostHandler   func(params martini.Params, log *log.Logger, r render.Render, tokens oauth2.Tokens)
@@ -16,6 +17,7 @@ type (
 	AuthDeleteHandler func(params martini.Params, log *log.Logger, r render.Render, tokens oauth2.Tokens)
 )
 
+//Controller - interface of a base controller
 type Controller interface {
 	Put() interface{}
 	Post() interface{}
@@ -23,6 +25,7 @@ type Controller interface {
 	Delete() interface{}
 }
 
+//NewAuthKeyV1 - get an instance of a V1 authkey controller
 func NewAuthKeyV1(kg KeyGenerator) Controller {
 	return &authKeyV1{
 		keyGen: kg,
@@ -33,6 +36,7 @@ type authKeyV1 struct {
 	keyGen KeyGenerator
 }
 
+//Put - get a put handler for authkeyv1
 func (s *authKeyV1) Put() interface{} {
 	var handler AuthPutHandler = func(params martini.Params, log *log.Logger, r render.Render, tokens oauth2.Tokens) {
 		username := params[UserParam]
@@ -45,6 +49,7 @@ func (s *authKeyV1) Put() interface{} {
 	return handler
 }
 
+//Post - get a post handler for authkeyv1
 func (s *authKeyV1) Post() interface{} {
 	var handler AuthPostHandler = func(params martini.Params, log *log.Logger, r render.Render, tokens oauth2.Tokens) {
 		username := params[UserParam]
@@ -57,6 +62,7 @@ func (s *authKeyV1) Post() interface{} {
 	return handler
 }
 
+//Get - get a get handler for authkeyv1
 func (s *authKeyV1) Get() interface{} {
 	var handler AuthGetHandler = func(params martini.Params, log *log.Logger, r render.Render, tokens oauth2.Tokens) {
 		username := params[UserParam]
@@ -67,6 +73,7 @@ func (s *authKeyV1) Get() interface{} {
 	return handler
 }
 
+//Delete - get a delete handler for authkeyv1
 func (s *authKeyV1) Delete() interface{} {
 	var handler AuthDeleteHandler = func(params martini.Params, log *log.Logger, r render.Render, tokens oauth2.Tokens) {
 		username := params[UserParam]

@@ -77,6 +77,7 @@ func getAppURI() string {
 	return cleanVersionFromURI(appEnv.ApplicationURIs[0])
 }
 
+//DomainChecker - check the authenticated users domain to see if it is in the whitelist
 func DomainChecker(res http.ResponseWriter, tokens oauth2.Tokens) {
 	userInfo := GetUserInfo(tokens)
 
@@ -90,6 +91,7 @@ var domainCheck = func() martini.Handler {
 	return DomainChecker
 }()
 
+//GetUserInfo - query googleapi for the authenticated users information
 var GetUserInfo = func(tokens oauth2.Tokens) (userObject map[string]interface{}) {
 	url := "https://www.googleapis.com/plus/v1/people/me"
 	token := &goauth2.Token{

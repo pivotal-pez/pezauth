@@ -2,6 +2,7 @@ package pezauth
 
 import "code.google.com/p/go-uuid/uuid"
 
+//GUID interface and struct
 type (
 	GUIDMaker interface {
 		Create() string
@@ -10,6 +11,7 @@ type (
 	}
 )
 
+//Create - creates a new random guid
 func (s *GUIDMake) Create() string {
 	r := uuid.NewRandom()
 	return string(r[:])

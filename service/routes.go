@@ -24,6 +24,7 @@ var (
 	URLAuthBaseV1 = fmt.Sprintf("/%s/%s", APIVersion1, AuthGroup)
 )
 
+//Response - generic response object
 type Response struct {
 	User     map[string]interface{}
 	ApiKey   string
