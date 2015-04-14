@@ -66,8 +66,9 @@ func (s *mockResponseWriter) Write(x []byte) (a int, b error) {
 
 type (
 	mockDoer struct {
-		guid string
-		fail bool
+		nilResponse bool
+		guid        string
+		fail        bool
 	}
 	mockGUIDMaker struct {
 		guid string
@@ -91,11 +92,15 @@ func (s *mockDoer) Do(commandName string, args ...interface{}) (reply interface{
 		err = errDoerCallFailure
 		reply = ""
 	}
+
+	if s.nilResponse {
+		reply = nil
+	}
 	return
 }
 
-func getKeygen(fail bool, guid string) KeyGenerator {
-	d := &mockDoer{fail: fail, guid: guid}
+func getKeygen(fail bool, guid string, nilResponse bool) KeyGenerator {
+	d := &mockDoer{fail: fail, guid: guid, nilResponse: nilResponse}
 	g := &mockGUIDMaker{guid: guid}
 	return NewKeyGen(d, g)
 }

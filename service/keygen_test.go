@@ -15,7 +15,7 @@ var _ = Describe("KeyGen", func() {
 	Context("Get function", func() {
 		Context("calling get with a valid user arg", func() {
 			BeforeEach(func() {
-				k := getKeygen(false, guid)
+				k := getKeygen(false, guid, false)
 				response, err = k.Get(username)
 			})
 
@@ -28,9 +28,18 @@ var _ = Describe("KeyGen", func() {
 			})
 		})
 
+		Context("Get returns nil string", func() {
+			It("Should not panic", func() {
+				k := getKeygen(true, guid, true)
+				Ω(func() {
+					k.Get(username)
+				}).ShouldNot(Panic())
+			})
+		})
+
 		Context("calling get with a In-valid user arg", func() {
 			BeforeEach(func() {
-				k := getKeygen(true, guid)
+				k := getKeygen(true, guid, false)
 				response, err = k.Get(username)
 			})
 
@@ -48,7 +57,7 @@ var _ = Describe("KeyGen", func() {
 	Context("Create function", func() {
 		Context("calling Create with a valid user arg", func() {
 			BeforeEach(func() {
-				k := getKeygen(false, guid)
+				k := getKeygen(false, guid, false)
 				err = k.Create(username)
 			})
 
@@ -59,7 +68,7 @@ var _ = Describe("KeyGen", func() {
 
 		Context("calling Create with a In-valid user arg", func() {
 			BeforeEach(func() {
-				k := getKeygen(true, guid)
+				k := getKeygen(true, guid, false)
 				err = k.Create(username)
 			})
 
@@ -73,7 +82,7 @@ var _ = Describe("KeyGen", func() {
 	Context("Delete function", func() {
 		Context("calling Delete with a valid user arg", func() {
 			BeforeEach(func() {
-				k := getKeygen(false, guid)
+				k := getKeygen(false, guid, false)
 				err = k.Delete(username)
 			})
 
@@ -84,7 +93,7 @@ var _ = Describe("KeyGen", func() {
 
 		Context("calling Delete with a In-valid user arg", func() {
 			BeforeEach(func() {
-				k := getKeygen(true, guid)
+				k := getKeygen(true, guid, false)
 				err = k.Create(username)
 			})
 

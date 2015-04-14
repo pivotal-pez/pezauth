@@ -18,7 +18,7 @@ var _ = Describe("AuthKeyController", func() {
 	Context("PUT", func() {
 		Context("called successfully", func() {
 			BeforeEach(func() {
-				kg := getKeygen(false, fakeGUID)
+				kg := getKeygen(false, fakeGUID, false)
 				controller = NewAuthKeyV1(kg)
 			})
 
@@ -42,7 +42,7 @@ var _ = Describe("AuthKeyController", func() {
 
 		Context("called with failure", func() {
 			BeforeEach(func() {
-				kg := getKeygen(true, fakeGUID)
+				kg := getKeygen(true, fakeGUID, false)
 				controller = NewAuthKeyV1(kg)
 			})
 
@@ -63,7 +63,7 @@ var _ = Describe("AuthKeyController", func() {
 	Context("POST", func() {
 		Context("called successfully", func() {
 			BeforeEach(func() {
-				kg := getKeygen(false, fakeGUID)
+				kg := getKeygen(false, fakeGUID, false)
 				controller = NewAuthKeyV1(kg)
 			})
 
@@ -87,7 +87,7 @@ var _ = Describe("AuthKeyController", func() {
 
 		Context("called with failure", func() {
 			BeforeEach(func() {
-				kg := getKeygen(true, fakeGUID)
+				kg := getKeygen(true, fakeGUID, false)
 				controller = NewAuthKeyV1(kg)
 			})
 
@@ -108,7 +108,7 @@ var _ = Describe("AuthKeyController", func() {
 	Context("GET", func() {
 		Context("called successfully", func() {
 			BeforeEach(func() {
-				kg := getKeygen(false, fakeGUID)
+				kg := getKeygen(false, fakeGUID, false)
 				controller = NewAuthKeyV1(kg)
 			})
 
@@ -132,7 +132,7 @@ var _ = Describe("AuthKeyController", func() {
 
 		Context("called with failure", func() {
 			BeforeEach(func() {
-				kg := getKeygen(true, fakeGUID)
+				kg := getKeygen(true, fakeGUID, false)
 				controller = NewAuthKeyV1(kg)
 			})
 
@@ -153,7 +153,7 @@ var _ = Describe("AuthKeyController", func() {
 	Context("DELETE", func() {
 		Context("called successfully", func() {
 			BeforeEach(func() {
-				kg := getKeygen(false, fakeGUID)
+				kg := getKeygen(false, fakeGUID, false)
 				controller = NewAuthKeyV1(kg)
 			})
 
@@ -178,7 +178,7 @@ var _ = Describe("AuthKeyController", func() {
 
 		Context("called with failure", func() {
 			BeforeEach(func() {
-				kg := getKeygen(true, fakeGUID)
+				kg := getKeygen(true, fakeGUID, false)
 				controller = NewAuthKeyV1(kg)
 			})
 
