@@ -103,5 +103,4 @@ var _ = Describe("KeyGen", func() {
 			})
 		})
 	})
-
 })

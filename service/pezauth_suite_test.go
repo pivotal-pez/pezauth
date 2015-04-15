@@ -84,13 +84,19 @@ func (s *mockGUIDMaker) Create() string {
 }
 
 func (s *mockDoer) Do(commandName string, args ...interface{}) (reply interface{}, err error) {
-	if commandName == "GET" {
-		reply = s.guid
+	if commandName == "SCAN" {
+		reply = []interface{}{
+			0,
+			[]string{s.guid},
+		}
 	}
 
 	if s.fail {
 		err = errDoerCallFailure
-		reply = ""
+		reply = []interface{}{
+			0,
+			[]string{},
+		}
 	}
 
 	if s.nilResponse {

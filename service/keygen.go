@@ -1,5 +1,7 @@
 package pezauth
 
+import "fmt"
+
 //KeyGenerator - interface to work with apikeys
 type KeyGenerator interface {
 	Get(user string) (string, error)
@@ -26,25 +28,50 @@ type KeyGen struct {
 	guidMaker GUIDMaker
 }
 
+func parseScanResponse(r interface{}) (res string) {
+	resArr := r.([]interface{})
+	responseArrayIdx := 1
+	first := 0
+
+	if len(resArr) > responseArrayIdx {
+
+		if arr := resArr[responseArrayIdx]; len(arr.([]string)) > first {
+			res = arr.([]string)[first]
+		}
+	}
+	return
+}
+
 //Get - gets a key for a user
 func (s *KeyGen) Get(user string) (res string, err error) {
 	var r interface{}
+	search := fmt.Sprintf("%s:*", user)
 
-	if r, err = s.store.Do("GET", user); r != nil {
-		res = r.(string)
+	if r, err = s.store.Do("SCAN", 0, "MATCH", search); r != nil {
+		res = parseScanResponse(r)
 	}
+	return
+}
+
+func createHash(user, guid string) (hash string) {
+	hash = fmt.Sprintf("%s:%s", user, guid)
 	return
 }
 
 //Create - creates a new key for a user
 func (s *KeyGen) Create(user string) (err error) {
 	guid := s.guidMaker.Create()
-	_, err = s.store.Do("SET", user, guid)
+	hash := createHash(user, guid)
+	_, err = s.store.Do("HMSET", hash)
 	return
 }
 
 //Delete - deletes a key for a user
 func (s *KeyGen) Delete(user string) (err error) {
-	_, err = s.store.Do("DEL", user)
+	var hash string
+
+	if hash, err = s.Get(user); err == nil {
+		_, err = s.store.Do("DEL", hash)
+	}
 	return
 }
