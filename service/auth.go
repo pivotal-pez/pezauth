@@ -127,7 +127,7 @@ func InitAuth(m *martini.ClassicMartini, rc redisCreds) {
 	setOauthConfig()
 	m.Use(render.Renderer())
 
-	if rediStore, err := sessions.NewRediStore(10, "tcp", rc.Uri(), rc.Pass()); err == nil {
+	if rediStore, err := sessions.NewRediStore(10, "tcp", rc.Uri(), rc.Pass(), []byte(sessionSecret)); err == nil {
 		m.Use(sessions.Sessions(sessionName, rediStore))
 	}
 	m.Use(oauth2.Google(OauthConfig))

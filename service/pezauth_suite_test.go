@@ -87,7 +87,7 @@ func (s *mockDoer) Do(commandName string, args ...interface{}) (reply interface{
 	if commandName == "SCAN" {
 		reply = []interface{}{
 			0,
-			[]string{s.guid},
+			[]interface{}{s.guid},
 		}
 	}
 
@@ -95,7 +95,7 @@ func (s *mockDoer) Do(commandName string, args ...interface{}) (reply interface{
 		err = errDoerCallFailure
 		reply = []interface{}{
 			0,
-			[]string{},
+			[]interface{}{},
 		}
 	}
 

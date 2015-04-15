@@ -35,8 +35,8 @@ func parseScanResponse(r interface{}) (res string) {
 
 	if len(resArr) > responseArrayIdx {
 
-		if arr := resArr[responseArrayIdx]; len(arr.([]string)) > first {
-			res = arr.([]string)[first]
+		if arr := resArr[responseArrayIdx]; len(arr.([]interface{})) > first {
+			res = arr.([]interface{})[first].(string)
 		}
 	}
 	return
