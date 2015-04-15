@@ -5,11 +5,11 @@ html,body {
 h1 {
   font-family: Arial,sans-serif
   font-size:80px;
-  color:#DDCCEE;
+  color:#110022;
 }
 
 .lead {
-	color:#DDCCEE;
+	color:#110022;
 }
 
 
@@ -18,7 +18,7 @@ h1 {
   margin: 0 auto;
   width: 100%;
   min-height:100%;
-  background-color:#110022;
+  background-color:rgb(64, 136, 126);
   color:#eee;
   overflow:hidden;
 }
