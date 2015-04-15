@@ -163,3 +163,16 @@ func setGetUserInfo(domain string) {
 		GetUserInfo = oldGetUserInfo
 	})
 }
+
+type mockRedisCreds struct {
+	pass string
+	uri  string
+}
+
+func (s *mockRedisCreds) Pass() string {
+	return s.pass
+}
+
+func (s *mockRedisCreds) Uri() string {
+	return s.uri
+}

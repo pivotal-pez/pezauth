@@ -10,6 +10,19 @@ import (
 	pez "github.com/pivotalservices/pezauth/service"
 )
 
+type redisCreds struct {
+	pass string
+	uri  string
+}
+
+func (s *redisCreds) Pass() string {
+	return s.pass
+}
+
+func (s *redisCreds) Uri() string {
+	return s.uri
+}
+
 func main() {
 	appEnv, _ := cfenv.Current()
 	redisName := os.Getenv("REDIS_SERVICE_NAME")
@@ -23,7 +36,10 @@ func main() {
 	if c, err := redis.Dial("tcp", connectionURI); err == nil {
 
 		if _, err := c.Do("AUTH", name.Credentials[redisPass]); err == nil {
-			pez.InitAuth(m)
+			pez.InitAuth(m, &redisCreds{
+				pass: name.Credentials[redisPass],
+				uri:  connectionURI,
+			})
 			pez.InitRoutes(m, c)
 			m.Run()
 

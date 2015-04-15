@@ -35,7 +35,7 @@ var _ = Describe("Authentication", func() {
 
 			It("Should panic", func() {
 				Ω(func() {
-					InitAuth(m)
+					InitAuth(m, &mockRedisCreds{})
 				}).Should(Panic())
 			})
 		})
@@ -43,7 +43,7 @@ var _ = Describe("Authentication", func() {
 		Context("when InitAuth is passed a classic martini", func() {
 			It("Should setup the authentication middleware without panic", func() {
 				Ω(func() {
-					InitAuth(m)
+					InitAuth(m, &mockRedisCreds{})
 				}).ShouldNot(Panic())
 			})
 		})
@@ -66,7 +66,7 @@ var _ = Describe("Authentication", func() {
 
 				It("should format the domain in the config object", func() {
 					control := fmt.Sprintf("https://%s/oauth2callback", validDomain)
-					InitAuth(m)
+					InitAuth(m, &mockRedisCreds{})
 					Ω(OauthConfig.RedirectURL).Should(Equal(control))
 				})
 			})
@@ -78,7 +78,7 @@ var _ = Describe("Authentication", func() {
 
 				It("should format the domain in the config object", func() {
 					control := fmt.Sprintf("https://%s/oauth2callback", validDomain)
-					InitAuth(m)
+					InitAuth(m, &mockRedisCreds{})
 					Ω(OauthConfig.RedirectURL).Should(Equal(control))
 				})
 			})

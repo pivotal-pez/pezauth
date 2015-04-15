@@ -117,11 +117,19 @@ func setOauthConfig() {
 	}
 }
 
+type redisCreds interface {
+	Pass() string
+	Uri() string
+}
+
 //InitAuth - initializes authentication middleware for controllers
-func InitAuth(m *martini.ClassicMartini) {
+func InitAuth(m *martini.ClassicMartini, rc redisCreds) {
 	setOauthConfig()
 	m.Use(render.Renderer())
-	m.Use(sessions.Sessions(sessionName, sessions.NewCookieStore([]byte(sessionSecret))))
+
+	if rediStore, err := sessions.NewRediStore(10, "tcp", rc.Uri(), rc.Pass()); err == nil {
+		m.Use(sessions.Sessions(sessionName, rediStore))
+	}
 	m.Use(oauth2.Google(OauthConfig))
 	m.Use(oauth2.LoginRequired)
 	m.Use(domainCheck)
