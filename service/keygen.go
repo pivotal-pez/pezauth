@@ -1,6 +1,17 @@
 package pezauth
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+	"strings"
+
+	"github.com/garyburd/redigo/redis"
+)
+
+var (
+	ErrUnparsableHash   = errors.New("Could not parse the hash or hash was nil")
+	ErrEmptyKeyResponse = errors.New("The key could not be found or was not valid")
+)
 
 //KeyGenerator - interface to work with apikeys
 type KeyGenerator interface {
@@ -28,16 +39,15 @@ type KeyGen struct {
 	guidMaker GUIDMaker
 }
 
-func parseScanResponse(r interface{}) (res string) {
-	resArr := r.([]interface{})
-	responseArrayIdx := 1
-	first := 0
+func parseKeysResponse(r interface{}) (key, username, hash string, err error) {
 
-	if len(resArr) > responseArrayIdx {
+	if resArr := r.([]interface{}); len(resArr) > 0 {
+		ba := resArr[0].([]byte)
+		hash = string(ba[:])
+		key, username, err = hashSplit(hash)
 
-		if arr := resArr[responseArrayIdx]; len(arr.([]interface{})) > first {
-			res = arr.([]interface{})[first].(string)
-		}
+	} else {
+		err = ErrEmptyKeyResponse
 	}
 	return
 }
@@ -47,8 +57,33 @@ func (s *KeyGen) Get(user string) (res string, err error) {
 	var r interface{}
 	search := fmt.Sprintf("%s:*", user)
 
-	if r, err = s.store.Do("SCAN", 0, "MATCH", search); r != nil {
-		res = parseScanResponse(r)
+	if r, err = s.store.Do("KEYS", search); r != nil && err == nil {
+		res, _, _, err = parseKeysResponse(r)
+	}
+	return
+}
+
+func (s *KeyGen) getHash(user string) (hash string, err error) {
+	var r interface{}
+	search := fmt.Sprintf("%s:*", user)
+
+	if r, err = s.store.Do("KEYS", search); r != nil && err == nil {
+		_, _, hash, err = parseKeysResponse(r)
+	}
+	return
+}
+
+func hashSplit(hash string) (key, username string, err error) {
+	usernameIndex := 0
+	keyIndex := 1
+	hashSplitArrayLen := 2
+
+	if splitHash := strings.Split(hash, ":"); len(splitHash) == hashSplitArrayLen {
+		key = splitHash[keyIndex]
+		username = splitHash[usernameIndex]
+
+	} else {
+		err = ErrUnparsableHash
 	}
 	return
 }
@@ -62,16 +97,19 @@ func createHash(user, guid string) (hash string) {
 func (s *KeyGen) Create(user string) (err error) {
 	guid := s.guidMaker.Create()
 	hash := createHash(user, guid)
-	_, err = s.store.Do("HMSET", hash)
+	row := map[string]string{"active": "true"}
+	_, err = s.store.Do("HMSET", redis.Args{hash}.AddFlat(row)...)
 	return
 }
 
 //Delete - deletes a key for a user
 func (s *KeyGen) Delete(user string) (err error) {
-	var hash string
+	var apikey string
 
-	if hash, err = s.Get(user); err == nil {
-		_, err = s.store.Do("DEL", hash)
+	if apikey, err = s.Get(user); err == nil {
+		fmt.Println("we should now be deleting:", apikey)
+		_, err = s.store.Do("DEL", createHash(user, apikey))
+		fmt.Println("the error?:", err)
 	}
 	return
 }

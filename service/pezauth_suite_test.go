@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/martini-contrib/oauth2"
 	"github.com/martini-contrib/render"
@@ -80,14 +81,14 @@ var (
 )
 
 func (s *mockGUIDMaker) Create() string {
-	return s.guid
+	return strings.Split(s.guid, ":")[1]
 }
 
 func (s *mockDoer) Do(commandName string, args ...interface{}) (reply interface{}, err error) {
-	if commandName == "SCAN" {
+	if commandName == "KEYS" {
 		reply = []interface{}{
-			0,
-			[]interface{}{s.guid},
+			[]byte(s.guid),
+			[]interface{}{},
 		}
 	}
 

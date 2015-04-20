@@ -13,6 +13,6 @@ type (
 
 //Create - creates a new random guid
 func (s *GUIDMake) Create() string {
-	r := uuid.NewRandom()
-	return string(r[:])
+	r := uuid.New()
+	return r
 }

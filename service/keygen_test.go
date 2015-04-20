@@ -1,21 +1,24 @@
 package pezauth_test
 
 import (
+	"fmt"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("KeyGen", func() {
 	var (
-		username = "myfakeusername"
-		guid     = "myfakeguid"
+		username = "testuser@pivotal.io"
+		guid     = "myfakekeyhash"
+		keyhash  = fmt.Sprintf("%s:%s", username, guid)
 		err      error
 		response string
 	)
 	Context("Get function", func() {
 		Context("calling get with a valid user arg", func() {
 			BeforeEach(func() {
-				k := getKeygen(false, guid, false)
+				k := getKeygen(false, keyhash, false)
 				response, err = k.Get(username)
 			})
 
@@ -30,7 +33,7 @@ var _ = Describe("KeyGen", func() {
 
 		Context("Get returns nil string", func() {
 			It("Should not panic", func() {
-				k := getKeygen(true, guid, true)
+				k := getKeygen(true, keyhash, true)
 				Ω(func() {
 					k.Get(username)
 				}).ShouldNot(Panic())
@@ -39,7 +42,7 @@ var _ = Describe("KeyGen", func() {
 
 		Context("calling get with a In-valid user arg", func() {
 			BeforeEach(func() {
-				k := getKeygen(true, guid, false)
+				k := getKeygen(true, keyhash, false)
 				response, err = k.Get(username)
 			})
 
@@ -57,7 +60,7 @@ var _ = Describe("KeyGen", func() {
 	Context("Create function", func() {
 		Context("calling Create with a valid user arg", func() {
 			BeforeEach(func() {
-				k := getKeygen(false, guid, false)
+				k := getKeygen(false, keyhash, false)
 				err = k.Create(username)
 			})
 
@@ -68,7 +71,7 @@ var _ = Describe("KeyGen", func() {
 
 		Context("calling Create with a In-valid user arg", func() {
 			BeforeEach(func() {
-				k := getKeygen(true, guid, false)
+				k := getKeygen(true, keyhash, false)
 				err = k.Create(username)
 			})
 
@@ -82,7 +85,7 @@ var _ = Describe("KeyGen", func() {
 	Context("Delete function", func() {
 		Context("calling Delete with a valid user arg", func() {
 			BeforeEach(func() {
-				k := getKeygen(false, guid, false)
+				k := getKeygen(false, keyhash, false)
 				err = k.Delete(username)
 			})
 
@@ -93,7 +96,7 @@ var _ = Describe("KeyGen", func() {
 
 		Context("calling Delete with a In-valid user arg", func() {
 			BeforeEach(func() {
-				k := getKeygen(true, guid, false)
+				k := getKeygen(true, keyhash, false)
 				err = k.Create(username)
 			})
 

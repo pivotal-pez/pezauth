@@ -53,7 +53,6 @@ func cleanVersionFromURI(uri string) string {
 
 	if len(match) > 0 {
 		newS := strings.Replace(uri, match[0], ".", -1)
-		fmt.Println(newS)
 		uri = newS
 	}
 

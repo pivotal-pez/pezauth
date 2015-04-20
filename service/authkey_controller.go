@@ -39,11 +39,26 @@ type authKeyV1 struct {
 //Put - get a put handler for authkeyv1
 func (s *authKeyV1) Put() interface{} {
 	var handler AuthPutHandler = func(params martini.Params, log *log.Logger, r render.Render, tokens oauth2.Tokens) {
+		var (
+			err    error
+			apikey string
+		)
+		log.Println("executing the put handler")
 		username := params[UserParam]
 		userInfo := GetUserInfo(tokens)
-		s.keyGen.Delete(username)
-		s.keyGen.Create(username)
-		apikey, err := s.keyGen.Get(username)
+		log.Println("getting userInfo: ", userInfo)
+
+		if err = s.keyGen.Delete(username); err != nil {
+			log.Println("keyGen.Delete error: ", err)
+		}
+
+		if err = s.keyGen.Create(username); err != nil {
+			log.Println("keyGen.Create error: ", err)
+		}
+
+		if apikey, err = s.keyGen.Get(username); err != nil {
+			log.Println("keyGen.Get error: ", err)
+		}
 		genericResponseFormatter(r, apikey, userInfo, err)
 	}
 	return handler
@@ -52,11 +67,26 @@ func (s *authKeyV1) Put() interface{} {
 //Post - get a post handler for authkeyv1
 func (s *authKeyV1) Post() interface{} {
 	var handler AuthPostHandler = func(params martini.Params, log *log.Logger, r render.Render, tokens oauth2.Tokens) {
+		var (
+			err    error
+			apikey string
+		)
+		log.Println("executing the put handler")
 		username := params[UserParam]
 		userInfo := GetUserInfo(tokens)
-		s.keyGen.Delete(username)
-		s.keyGen.Create(username)
-		apikey, err := s.keyGen.Get(username)
+		log.Println("getting userInfo: ", userInfo)
+
+		if err = s.keyGen.Delete(username); err != nil {
+			log.Println("keyGen.Delete error: ", err)
+		}
+
+		if err = s.keyGen.Create(username); err != nil {
+			log.Println("keyGen.Create error: ", err)
+		}
+
+		if apikey, err = s.keyGen.Get(username); err != nil {
+			log.Println("keyGen.Get error: ", err)
+		}
 		genericResponseFormatter(r, apikey, userInfo, err)
 	}
 	return handler
@@ -65,9 +95,18 @@ func (s *authKeyV1) Post() interface{} {
 //Get - get a get handler for authkeyv1
 func (s *authKeyV1) Get() interface{} {
 	var handler AuthGetHandler = func(params martini.Params, log *log.Logger, r render.Render, tokens oauth2.Tokens) {
+		var (
+			apikey string
+			err    error
+		)
 		username := params[UserParam]
 		userInfo := GetUserInfo(tokens)
-		apikey, err := s.keyGen.Get(username)
+		log.Println("getting userInfo: ", userInfo)
+
+		if apikey, err = s.keyGen.Get(username); err != nil {
+			log.Println("keyGen.Get error:", err)
+		}
+		log.Println("apikey: ", apikey)
 		genericResponseFormatter(r, apikey, userInfo, err)
 	}
 	return handler

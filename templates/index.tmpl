@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="pezAuth">
 	<head>
 		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 		<meta charset="utf-8">
-		<title>Landing Page template</title>
+		<title>Pez Auth</title>
 		<meta name="generator" content="Bootply" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 		<link href="css/bootstrap.min.css" rel="stylesheet">
@@ -15,6 +15,10 @@
 	</head>
 	<body>
 <div class="container-full">
+<div ng-controller="PezAuthController as pac">
+      <div>
+        <img ng-src="{*{myData.User.image.url}*}" width="50px" height="50px" />
+      </div>
 
       <div class="row">
        
@@ -29,15 +33,15 @@
             <div class="input-group" style="width:340px;text-align:center;margin:0 auto;">
             <input class="form-control input-sm" title="Your key will be used to make authenticated calls to PEZ services using a client of your choice." placeholder="You don't have a key yet" type="text">
               <span class="input-group-btn">
-              <button class="btn btn-sm btn-primary" type="button">(Re) New</button>
-              <button class="btn btn-sm btn-primary" type="button">Delete</button>
+              <div ng-click="pac.create()" class="btn btn-sm btn-primary" type="button">(Re) New</div>
+              <div ng-click="pac.remove()" class="btn btn-sm btn-primary" type="button">Delete</div>
               </span>
             </div>
           </form>
+          Data from server: {*{myData}*}
+          
         </div>
-        
       </div> <!-- /row -->
-    
   	<br><br><br><br><br><br>
     <div class="container">
 	<div class="row">
@@ -45,16 +49,17 @@
         <br><br>
           <p class="pull-right"><a href="http://pivotal.io">Pivotal PEZ</a> &nbsp; ©Copyright 2015<sup>TM</sup></p>
         <br><br>
-        {{.}}
         </div>
     </div>
+</div>    
 </div>
 </div> <!-- /container full -->
 
 
 
 
-	<!-- script references -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
+    <script src="js/pezauth.js"></script>
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
 		<script src="js/bootstrap.min.js"></script>
 	</body>
