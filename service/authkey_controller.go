@@ -115,9 +115,17 @@ func (s *authKeyV1) Get() interface{} {
 //Delete - get a delete handler for authkeyv1
 func (s *authKeyV1) Delete() interface{} {
 	var handler AuthDeleteHandler = func(params martini.Params, log *log.Logger, r render.Render, tokens oauth2.Tokens) {
+		var err error
 		username := params[UserParam]
+		log.Println("deleting apikey for: ", username)
 		userInfo := GetUserInfo(tokens)
-		err := s.keyGen.Delete(username)
+
+		if err = s.keyGen.Delete(username); err == nil {
+			log.Println("key deleted for: ", username)
+
+		} else {
+			log.Println("key delete failed: ", username, err.Error())
+		}
 		genericResponseFormatter(r, "", userInfo, err)
 	}
 	return handler

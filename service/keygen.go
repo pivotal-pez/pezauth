@@ -107,9 +107,7 @@ func (s *KeyGen) Delete(user string) (err error) {
 	var apikey string
 
 	if apikey, err = s.Get(user); err == nil {
-		fmt.Println("we should now be deleting:", apikey)
 		_, err = s.store.Do("DEL", createHash(user, apikey))
-		fmt.Println("the error?:", err)
 	}
 	return
 }

@@ -8,10 +8,11 @@ var pezAuth = angular.module('pezAuth', [], function($interpolateProvider) {
     var restUriBase = "/v1/auth/api-key";
     var username = "jcalabrese@pivotal.io";
     var restUri = [restUriBase, username].join("/")
+    $scope.myApiKey = "You don't have a key yet";
 
     $timeout(function () {  
       callUsingVerb($http.get);
-    }, 100);
+    }, 1);
 
    
     pauth.create = function() {
@@ -30,12 +31,14 @@ var pezAuth = angular.module('pezAuth', [], function($interpolateProvider) {
     function callUsingVerb(verbCaller) {
       var responsePromise = verbCaller(restUri);
       responsePromise.success(function(data, status, headers, config) {
-          console.log(angular.toJson(data, true));
+          //console.log(angular.toJson(data, true));
           $scope.myData = data;
+          $scope.myApiKey = data.ApiKey;
+          $scope.myName = data.User.displayName;
       });
       
       responsePromise.error(function(data, status, headers, config) {
-          alert("AJAX failed!");
+          console.log("AJAX failed!");
       });
     }
   });
