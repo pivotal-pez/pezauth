@@ -15,11 +15,12 @@ var _ = Describe("AuthKeyController", func() {
 	var (
 		controller Controller
 		fakeGUID   = "123asdkghasdiawlkehgaweh"
-		fakeHash   = fmt.Sprintf("testuser@pivotal.io:%s", fakeGUID)
+		fakeUser   = "testuser@pivotal.io"
+		fakeHash   = fmt.Sprintf("%s:%s", fakeUser, fakeGUID)
 		domain     = "pivotal.io"
 		testLogger = log.New(os.Stdout, "testLogger", 0)
 	)
-	setGetUserInfo(domain)
+	setGetUserInfo(domain, fakeUser)
 
 	Context("PUT", func() {
 		Context("called successfully", func() {
@@ -39,7 +40,7 @@ var _ = Describe("AuthKeyController", func() {
 					var ph AuthPutHandler
 					ph = controller.Put().(AuthPutHandler)
 					render := &mockRenderer{}
-					ph(martini.Params{UserParam: "test"}, testLogger, render, new(mockTokens))
+					ph(martini.Params{UserParam: fakeUser}, testLogger, render, new(mockTokens))
 					Ω(render.StatusCode).Should(Equal(200))
 					Ω(render.ResponseObject.(Response).ApiKey).Should(Equal(fakeGUID))
 				})
@@ -57,7 +58,7 @@ var _ = Describe("AuthKeyController", func() {
 					var ph AuthPutHandler
 					ph = controller.Put().(AuthPutHandler)
 					render := &mockRenderer{}
-					ph(martini.Params{UserParam: "test"}, testLogger, render, new(mockTokens))
+					ph(martini.Params{UserParam: fakeUser}, testLogger, render, new(mockTokens))
 					Ω(render.StatusCode).Should(Equal(403))
 					Ω(render.ResponseObject.(Response).ApiKey).Should(Equal(""))
 					Ω(render.ResponseObject.(Response).ErrorMsg).ShouldNot(Equal(""))
@@ -84,7 +85,7 @@ var _ = Describe("AuthKeyController", func() {
 					var ph AuthPostHandler
 					ph = controller.Post().(AuthPostHandler)
 					render := &mockRenderer{}
-					ph(martini.Params{UserParam: "test"}, testLogger, render, new(mockTokens))
+					ph(martini.Params{UserParam: fakeUser}, testLogger, render, new(mockTokens))
 					Ω(render.StatusCode).Should(Equal(200))
 					Ω(render.ResponseObject.(Response).ApiKey).Should(Equal(fakeGUID))
 				})
@@ -102,7 +103,7 @@ var _ = Describe("AuthKeyController", func() {
 					var ph AuthPostHandler
 					ph = controller.Post().(AuthPostHandler)
 					render := &mockRenderer{}
-					ph(martini.Params{UserParam: "test"}, testLogger, render, new(mockTokens))
+					ph(martini.Params{UserParam: fakeUser}, testLogger, render, new(mockTokens))
 					Ω(render.StatusCode).Should(Equal(403))
 					Ω(render.ResponseObject.(Response).ApiKey).Should(Equal(""))
 					Ω(render.ResponseObject.(Response).ErrorMsg).ShouldNot(Equal(""))
@@ -129,7 +130,7 @@ var _ = Describe("AuthKeyController", func() {
 					var ph AuthGetHandler
 					ph = controller.Get().(AuthGetHandler)
 					render := &mockRenderer{}
-					ph(martini.Params{UserParam: "test"}, testLogger, render, new(mockTokens))
+					ph(martini.Params{UserParam: fakeUser}, testLogger, render, new(mockTokens))
 					Ω(render.StatusCode).Should(Equal(200))
 					Ω(render.ResponseObject.(Response).ApiKey).Should(Equal(fakeGUID))
 				})
@@ -147,7 +148,7 @@ var _ = Describe("AuthKeyController", func() {
 					var ph AuthGetHandler
 					ph = controller.Get().(AuthGetHandler)
 					render := &mockRenderer{}
-					ph(martini.Params{UserParam: "test"}, testLogger, render, new(mockTokens))
+					ph(martini.Params{UserParam: fakeUser}, testLogger, render, new(mockTokens))
 					Ω(render.StatusCode).Should(Equal(403))
 					Ω(render.ResponseObject.(Response).ApiKey).Should(Equal(""))
 					Ω(render.ResponseObject.(Response).ErrorMsg).ShouldNot(Equal(""))
@@ -174,7 +175,7 @@ var _ = Describe("AuthKeyController", func() {
 					var ph AuthDeleteHandler
 					ph = controller.Delete().(AuthDeleteHandler)
 					render := &mockRenderer{}
-					ph(martini.Params{UserParam: "test"}, testLogger, render, new(mockTokens))
+					ph(martini.Params{UserParam: fakeUser}, testLogger, render, new(mockTokens))
 					Ω(render.StatusCode).Should(Equal(200))
 					Ω(render.ResponseObject.(Response).ApiKey).ShouldNot(Equal(fakeGUID))
 					Ω(render.ResponseObject.(Response).ApiKey).Should(Equal(""))
@@ -193,7 +194,7 @@ var _ = Describe("AuthKeyController", func() {
 					var ph AuthDeleteHandler
 					ph = controller.Delete().(AuthDeleteHandler)
 					render := &mockRenderer{}
-					ph(martini.Params{UserParam: "test"}, testLogger, render, new(mockTokens))
+					ph(martini.Params{UserParam: fakeUser}, testLogger, render, new(mockTokens))
 					Ω(render.StatusCode).Should(Equal(403))
 					Ω(render.ResponseObject.(Response).ApiKey).Should(Equal(""))
 					Ω(render.ResponseObject.(Response).ErrorMsg).ShouldNot(Equal(""))

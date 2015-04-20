@@ -2,11 +2,16 @@ package pezauth
 
 import (
 	"encoding/json"
+	"errors"
 	"log"
 
 	"github.com/go-martini/martini"
 	"github.com/martini-contrib/oauth2"
 	"github.com/martini-contrib/render"
+)
+
+var (
+	ErrInvalidCallerEmail = errors.New("Invalid user token for your requested action")
 )
 
 //Authentication Handler function type definitions
@@ -46,19 +51,30 @@ func (s *authKeyV1) Put() interface{} {
 		log.Println("executing the put handler")
 		username := params[UserParam]
 		userInfo := GetUserInfo(tokens)
-		log.Println("getting userInfo: ", userInfo)
 
-		if err = s.keyGen.Delete(username); err != nil {
-			log.Println("keyGen.Delete error: ", err)
-		}
+		NewUserMatch().
+			UserInfo(userInfo).
+			UserName(username).
+			OnSuccess(func() {
+			log.Println("getting userInfo: ", userInfo)
 
-		if err = s.keyGen.Create(username); err != nil {
-			log.Println("keyGen.Create error: ", err)
-		}
+			if err = s.keyGen.Delete(username); err != nil {
+				log.Println("keyGen.Delete error: ", err)
+			}
 
-		if apikey, err = s.keyGen.Get(username); err != nil {
-			log.Println("keyGen.Get error: ", err)
-		}
+			if err = s.keyGen.Create(username); err != nil {
+				log.Println("keyGen.Create error: ", err)
+			}
+
+			if apikey, err = s.keyGen.Get(username); err != nil {
+				log.Println("keyGen.Get error: ", err)
+			}
+		}).
+			OnFailure(func() {
+			err = ErrInvalidCallerEmail
+			log.Println("invalid user token error: ", err)
+		}).Run()
+
 		genericResponseFormatter(r, apikey, userInfo, err)
 	}
 	return handler
@@ -76,17 +92,27 @@ func (s *authKeyV1) Post() interface{} {
 		userInfo := GetUserInfo(tokens)
 		log.Println("getting userInfo: ", userInfo)
 
-		if err = s.keyGen.Delete(username); err != nil {
-			log.Println("keyGen.Delete error: ", err)
-		}
+		NewUserMatch().
+			UserInfo(userInfo).
+			UserName(username).
+			OnSuccess(func() {
+			if err = s.keyGen.Delete(username); err != nil {
+				log.Println("keyGen.Delete error: ", err)
+			}
 
-		if err = s.keyGen.Create(username); err != nil {
-			log.Println("keyGen.Create error: ", err)
-		}
+			if err = s.keyGen.Create(username); err != nil {
+				log.Println("keyGen.Create error: ", err)
+			}
 
-		if apikey, err = s.keyGen.Get(username); err != nil {
-			log.Println("keyGen.Get error: ", err)
-		}
+			if apikey, err = s.keyGen.Get(username); err != nil {
+				log.Println("keyGen.Get error: ", err)
+			}
+		}).
+			OnFailure(func() {
+			err = ErrInvalidCallerEmail
+			log.Println("invalid user token error: ", err)
+		}).Run()
+
 		genericResponseFormatter(r, apikey, userInfo, err)
 	}
 	return handler
@@ -103,10 +129,20 @@ func (s *authKeyV1) Get() interface{} {
 		userInfo := GetUserInfo(tokens)
 		log.Println("getting userInfo: ", userInfo)
 
-		if apikey, err = s.keyGen.Get(username); err != nil {
-			log.Println("keyGen.Get error:", err)
-		}
-		log.Println("apikey: ", apikey)
+		NewUserMatch().
+			UserInfo(userInfo).
+			UserName(username).
+			OnSuccess(func() {
+
+			if apikey, err = s.keyGen.Get(username); err != nil {
+				log.Println("keyGen.Get error:", err)
+			}
+		}).
+			OnFailure(func() {
+			err = ErrInvalidCallerEmail
+			log.Println("invalid user token error: ", err)
+		}).Run()
+
 		genericResponseFormatter(r, apikey, userInfo, err)
 	}
 	return handler
@@ -120,12 +156,23 @@ func (s *authKeyV1) Delete() interface{} {
 		log.Println("deleting apikey for: ", username)
 		userInfo := GetUserInfo(tokens)
 
-		if err = s.keyGen.Delete(username); err == nil {
-			log.Println("key deleted for: ", username)
+		NewUserMatch().
+			UserInfo(userInfo).
+			UserName(username).
+			OnSuccess(func() {
 
-		} else {
-			log.Println("key delete failed: ", username, err.Error())
-		}
+			if err = s.keyGen.Delete(username); err == nil {
+				log.Println("key deleted for: ", username)
+
+			} else {
+				log.Println("key delete failed: ", username, err.Error())
+			}
+		}).
+			OnFailure(func() {
+			err = ErrInvalidCallerEmail
+			log.Println("invalid user token error: ", err)
+		}).Run()
+
 		genericResponseFormatter(r, "", userInfo, err)
 	}
 	return handler

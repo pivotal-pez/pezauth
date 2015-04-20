@@ -148,7 +148,7 @@ func (r *mockRenderer) Header() (h http.Header) {
 	return
 }
 
-func setGetUserInfo(domain string) {
+func setGetUserInfo(domain string, username string) {
 	var oldGetUserInfo func(tokens oauth2.Tokens) map[string]interface{}
 
 	BeforeEach(func() {
@@ -156,6 +156,14 @@ func setGetUserInfo(domain string) {
 		GetUserInfo = func(tokens oauth2.Tokens) map[string]interface{} {
 			return map[string]interface{}{
 				"domain": domain,
+				"emails": []interface{}{
+					map[string]interface{}{
+						"value": "garbage",
+					},
+					map[string]interface{}{
+						"value": username,
+					},
+				},
 			}
 		}
 	})

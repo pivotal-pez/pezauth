@@ -25,8 +25,12 @@ var _ = Describe("Authentication", func() {
 		})
 
 		Context("calling InitAuth with no enviornment variables set", func() {
-			var validDomain = "pivotal.io"
-			setGetUserInfo(validDomain)
+			var (
+				validDomain = "pivotal.io"
+				validUser   = "testuser@pivotal.io"
+			)
+
+			setGetUserInfo(validDomain, validUser)
 
 			BeforeEach(func() {
 				os.Unsetenv("VCAP_APPLICATION")
@@ -49,8 +53,11 @@ var _ = Describe("Authentication", func() {
 		})
 
 		Context("calling DomainCheck with a valid domain", func() {
-			var validDomain = "pivotal.io"
-			setGetUserInfo(validDomain)
+			var (
+				validDomain = "pivotal.io"
+				validUser   = "testuser@pivotal.io"
+			)
+			setGetUserInfo(validDomain, validUser)
 
 			It("Should have a valid statuscode and body", func() {
 				mock := new(mockResponseWriter)
@@ -86,8 +93,11 @@ var _ = Describe("Authentication", func() {
 		})
 
 		Context("calling DomainCheck with a in-valid domain", func() {
-			var inValidDomain = "google.com"
-			setGetUserInfo(inValidDomain)
+			var (
+				inValidDomain = "google.com"
+				validUser     = "testuser@pivotal.io"
+			)
+			setGetUserInfo(inValidDomain, validUser)
 
 			It("Should return true", func() {
 				mock := new(mockResponseWriter)
