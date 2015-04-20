@@ -10,6 +10,7 @@ import (
 	"github.com/martini-contrib/render"
 )
 
+//Authentication Handler vars
 var (
 	ErrInvalidCallerEmail = errors.New("Invalid user token for your requested action")
 )
