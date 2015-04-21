@@ -3,13 +3,12 @@ package pezauth
 import (
 	"log"
 
-	"github.com/go-martini/martini"
 	"github.com/martini-contrib/render"
 )
 
 //ValidateGetHandler - a type of handler for validation get endpoints
 type (
-	ValidateGetHandler func(params martini.Params, log *log.Logger, r render.Render)
+	ValidateGetHandler func(log *log.Logger, r render.Render)
 )
 
 //NewValidateV1 - create a validation controller
@@ -22,8 +21,8 @@ type validateV1 struct {
 }
 
 func (s *validateV1) Get() interface{} {
-	var handler ValidateGetHandler = func(params martini.Params, log *log.Logger, r render.Render) {
-
+	var handler ValidateGetHandler = func(log *log.Logger, r render.Render) {
+		r.JSON(200, Response{})
 	}
 	return handler
 }
