@@ -37,6 +37,8 @@ func InitRoutes(m *martini.ClassicMartini, redisConn Doer) {
 	m.Use(martini.Static(StaticPath))
 	authKey := NewAuthKeyV1(NewKeyGen(redisConn, &GUIDMake{}))
 	m.Get("/info", authKey.Get())
+	m.Get("/me", NewMeController().Get())
+
 	m.Get("/", func(params martini.Params, log *log.Logger, r render.Render, tokens oauth2.Tokens) {
 		userInfo := GetUserInfo(tokens)
 		r.HTML(200, "index", userInfo)

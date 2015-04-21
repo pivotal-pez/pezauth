@@ -6,35 +6,48 @@ var pezAuth = angular.module('pezAuth', [], function($interpolateProvider) {
     var myData = {};
     var pauth = this;
     var restUriBase = "/v1/auth/api-key";
-    var username = "jcalabrese@pivotal.io";
-    var restUri = [restUriBase, username].join("/")
+    var meUri = "/me";
     $scope.myApiKey = "You don't have a key yet";
 
     $timeout(function () {  
-      callUsingVerb($http.get);
+      callMeUsingVerb($http.get, meUri);
     }, 1);
 
+    function getRestUri() {
+      return [restUriBase, $scope.myEmail].join("/")
+    }
    
     pauth.create = function() {
       if ( myData.ApiKey === "" || angular.isUndefined(myData.ApiKey) ) {
-        callUsingVerb($http.put)
+        callAPIUsingVerb($http.put, getRestUri())
 
       } else {
-        callUsingVerb($http.post)
+        callAPIUsingVerb($http.post, getRestUri())
       }
     };
  
     pauth.remove = function() {
-      callUsingVerb($http.delete)
+      callAPIUsingVerb($http.delete, getRestUri())
     };   
 
-    function callUsingVerb(verbCaller) {
-      var responsePromise = verbCaller(restUri);
+    function callMeUsingVerb(verbCaller, uri) {
+      var responsePromise = verbCaller(uri);
       responsePromise.success(function(data, status, headers, config) {
-          //console.log(angular.toJson(data, true));
+          $scope.myName = data.User.displayName;
+          $scope.myEmail = data.User.emails[0].value
+          callAPIUsingVerb($http.get, getRestUri());
+      });
+      
+      responsePromise.error(function(data, status, headers, config) {
+          console.log("AJAX failed!");
+      });
+    }
+
+    function callAPIUsingVerb(verbCaller, uri) {
+      var responsePromise = verbCaller(uri);
+      responsePromise.success(function(data, status, headers, config) {
           $scope.myData = data;
           $scope.myApiKey = data.ApiKey;
-          $scope.myName = data.User.displayName;
       });
       
       responsePromise.error(function(data, status, headers, config) {
