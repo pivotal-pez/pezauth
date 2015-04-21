@@ -15,11 +15,14 @@ var (
 	ErrInvalidCallerEmail = errors.New("Invalid user token for your requested action")
 )
 
-//Authentication Handler function type definitions
 type (
-	AuthPutHandler    func(params martini.Params, log *log.Logger, r render.Render, tokens oauth2.Tokens)
-	AuthPostHandler   func(params martini.Params, log *log.Logger, r render.Render, tokens oauth2.Tokens)
-	AuthGetHandler    func(params martini.Params, log *log.Logger, r render.Render, tokens oauth2.Tokens)
+	//AuthPutHandler - auth control handler for put calls
+	AuthPutHandler func(params martini.Params, log *log.Logger, r render.Render, tokens oauth2.Tokens)
+	//AuthPostHandler - auth control handler for post calls
+	AuthPostHandler func(params martini.Params, log *log.Logger, r render.Render, tokens oauth2.Tokens)
+	//AuthGetHandler - auth control handler for get calls
+	AuthGetHandler func(params martini.Params, log *log.Logger, r render.Render, tokens oauth2.Tokens)
+	//AuthDeleteHandler - auth control handler for delete calls
 	AuthDeleteHandler func(params martini.Params, log *log.Logger, r render.Render, tokens oauth2.Tokens)
 )
 
@@ -203,7 +206,7 @@ func genericResponseFormatter(r render.Render, apikey string, userInfo map[strin
 		} else {
 			statusCode = 200
 			res = Response{
-				ApiKey: apikey,
+				APIKey: apikey,
 				User:   userInfo,
 			}
 		}

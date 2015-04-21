@@ -9,7 +9,9 @@ import (
 )
 
 var (
-	ErrUnparsableHash   = errors.New("Could not parse the hash or hash was nil")
+	//ErrUnparsableHash - an error for a hash that is not formed properly
+	ErrUnparsableHash = errors.New("Could not parse the hash or hash was nil")
+	//ErrEmptyKeyResponse - an error for a invalid or empty key
 	ErrEmptyKeyResponse = errors.New("The key could not be found or was not valid")
 )
 

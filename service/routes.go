@@ -27,7 +27,7 @@ var (
 //Response - generic response object
 type Response struct {
 	User     map[string]interface{}
-	ApiKey   string
+	APIKey   string
 	ErrorMsg string
 }
 

@@ -7,10 +7,12 @@ import (
 	"github.com/martini-contrib/render"
 )
 
+//MeGetHandler - a get control handler for me requests
 type (
 	MeGetHandler func(log *log.Logger, r render.Render, tokens oauth2.Tokens)
 )
 
+//NewMeController - a controller for me requests
 func NewMeController() Controller {
 	return new(meController)
 }

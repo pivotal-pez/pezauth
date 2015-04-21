@@ -42,7 +42,7 @@ var _ = Describe("AuthKeyController", func() {
 					render := &mockRenderer{}
 					ph(martini.Params{UserParam: fakeUser}, testLogger, render, new(mockTokens))
 					Ω(render.StatusCode).Should(Equal(200))
-					Ω(render.ResponseObject.(Response).ApiKey).Should(Equal(fakeGUID))
+					Ω(render.ResponseObject.(Response).APIKey).Should(Equal(fakeGUID))
 				})
 			})
 		})
@@ -60,7 +60,7 @@ var _ = Describe("AuthKeyController", func() {
 					render := &mockRenderer{}
 					ph(martini.Params{UserParam: fakeUser}, testLogger, render, new(mockTokens))
 					Ω(render.StatusCode).Should(Equal(403))
-					Ω(render.ResponseObject.(Response).ApiKey).Should(Equal(""))
+					Ω(render.ResponseObject.(Response).APIKey).Should(Equal(""))
 					Ω(render.ResponseObject.(Response).ErrorMsg).ShouldNot(Equal(""))
 				})
 			})
@@ -87,7 +87,7 @@ var _ = Describe("AuthKeyController", func() {
 					render := &mockRenderer{}
 					ph(martini.Params{UserParam: fakeUser}, testLogger, render, new(mockTokens))
 					Ω(render.StatusCode).Should(Equal(200))
-					Ω(render.ResponseObject.(Response).ApiKey).Should(Equal(fakeGUID))
+					Ω(render.ResponseObject.(Response).APIKey).Should(Equal(fakeGUID))
 				})
 			})
 		})
@@ -105,7 +105,7 @@ var _ = Describe("AuthKeyController", func() {
 					render := &mockRenderer{}
 					ph(martini.Params{UserParam: fakeUser}, testLogger, render, new(mockTokens))
 					Ω(render.StatusCode).Should(Equal(403))
-					Ω(render.ResponseObject.(Response).ApiKey).Should(Equal(""))
+					Ω(render.ResponseObject.(Response).APIKey).Should(Equal(""))
 					Ω(render.ResponseObject.(Response).ErrorMsg).ShouldNot(Equal(""))
 				})
 			})
@@ -132,7 +132,7 @@ var _ = Describe("AuthKeyController", func() {
 					render := &mockRenderer{}
 					ph(martini.Params{UserParam: fakeUser}, testLogger, render, new(mockTokens))
 					Ω(render.StatusCode).Should(Equal(200))
-					Ω(render.ResponseObject.(Response).ApiKey).Should(Equal(fakeGUID))
+					Ω(render.ResponseObject.(Response).APIKey).Should(Equal(fakeGUID))
 				})
 			})
 		})
@@ -150,7 +150,7 @@ var _ = Describe("AuthKeyController", func() {
 					render := &mockRenderer{}
 					ph(martini.Params{UserParam: fakeUser}, testLogger, render, new(mockTokens))
 					Ω(render.StatusCode).Should(Equal(403))
-					Ω(render.ResponseObject.(Response).ApiKey).Should(Equal(""))
+					Ω(render.ResponseObject.(Response).APIKey).Should(Equal(""))
 					Ω(render.ResponseObject.(Response).ErrorMsg).ShouldNot(Equal(""))
 				})
 			})
@@ -177,8 +177,8 @@ var _ = Describe("AuthKeyController", func() {
 					render := &mockRenderer{}
 					ph(martini.Params{UserParam: fakeUser}, testLogger, render, new(mockTokens))
 					Ω(render.StatusCode).Should(Equal(200))
-					Ω(render.ResponseObject.(Response).ApiKey).ShouldNot(Equal(fakeGUID))
-					Ω(render.ResponseObject.(Response).ApiKey).Should(Equal(""))
+					Ω(render.ResponseObject.(Response).APIKey).ShouldNot(Equal(fakeGUID))
+					Ω(render.ResponseObject.(Response).APIKey).Should(Equal(""))
 				})
 			})
 		})
@@ -196,7 +196,7 @@ var _ = Describe("AuthKeyController", func() {
 					render := &mockRenderer{}
 					ph(martini.Params{UserParam: fakeUser}, testLogger, render, new(mockTokens))
 					Ω(render.StatusCode).Should(Equal(403))
-					Ω(render.ResponseObject.(Response).ApiKey).Should(Equal(""))
+					Ω(render.ResponseObject.(Response).APIKey).Should(Equal(""))
 					Ω(render.ResponseObject.(Response).ErrorMsg).ShouldNot(Equal(""))
 				})
 			})

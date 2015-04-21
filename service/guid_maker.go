@@ -4,9 +4,11 @@ import "code.google.com/p/go-uuid/uuid"
 
 //GUID interface and struct
 type (
+	//GUIDMaker - interface for a guid maker
 	GUIDMaker interface {
 		Create() string
 	}
+	//GUIDMake - struct for making guids
 	GUIDMake struct {
 	}
 )
