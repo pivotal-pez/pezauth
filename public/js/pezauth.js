@@ -47,7 +47,7 @@ var pezAuth = angular.module('pezAuth', [], function($interpolateProvider) {
       var responsePromise = verbCaller(uri);
       responsePromise.success(function(data, status, headers, config) {
           $scope.myData = data;
-          $scope.myApiKey = data.ApiKey;
+          $scope.myApiKey = data.APIKey;
       });
       
       responsePromise.error(function(data, status, headers, config) {
