@@ -86,7 +86,8 @@ func DomainChecker(res http.ResponseWriter, tokens oauth2.Tokens) {
 	}
 }
 
-var domainCheck = func() martini.Handler {
+//DomainCheck - a handler to check if we are in a valid domain
+var DomainCheck = func() martini.Handler {
 	return DomainChecker
 }()
 
@@ -122,14 +123,10 @@ type redisCreds interface {
 }
 
 //InitAuth - initializes authentication middleware for controllers
-func InitAuth(m *martini.ClassicMartini, rc redisCreds) {
-	setOauthConfig()
+func InitSession(m *martini.ClassicMartini, rc redisCreds) {
 	m.Use(render.Renderer())
 
 	if rediStore, err := sessions.NewRediStore(10, "tcp", rc.Uri(), rc.Pass(), []byte(sessionSecret)); err == nil {
 		m.Use(sessions.Sessions(sessionName, rediStore))
 	}
-	m.Use(oauth2.Google(OauthConfig))
-	m.Use(oauth2.LoginRequired)
-	m.Use(domainCheck)
 }

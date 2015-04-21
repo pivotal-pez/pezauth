@@ -36,7 +36,7 @@ func main() {
 	if c, err := redis.Dial("tcp", connectionURI); err == nil {
 
 		if _, err := c.Do("AUTH", name.Credentials[redisPass]); err == nil {
-			pez.InitAuth(m, &redisCreds{
+			pez.InitSession(m, &redisCreds{
 				pass: name.Credentials[redisPass],
 				uri:  connectionURI,
 			})

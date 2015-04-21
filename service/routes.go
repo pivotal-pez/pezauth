@@ -33,13 +33,14 @@ type Response struct {
 
 //InitRoutes - initialize the mappings for controllers against valid routes
 func InitRoutes(m *martini.ClassicMartini, redisConn Doer) {
+	setOauthConfig()
 	m.Use(render.Renderer())
 	m.Use(martini.Static(StaticPath))
 	authKey := NewAuthKeyV1(NewKeyGen(redisConn, &GUIDMake{}))
 	m.Get("/info", authKey.Get())
-	m.Get("/me", NewMeController().Get())
+	m.Get("/me", oauth2.Google(OauthConfig), oauth2.LoginRequired, DomainCheck, NewMeController().Get())
 
-	m.Get("/", func(params martini.Params, log *log.Logger, r render.Render, tokens oauth2.Tokens) {
+	m.Get("/", oauth2.Google(OauthConfig), oauth2.LoginRequired, DomainCheck, func(params martini.Params, log *log.Logger, r render.Render, tokens oauth2.Tokens) {
 		userInfo := GetUserInfo(tokens)
 		r.HTML(200, "index", userInfo)
 	})
@@ -51,5 +52,5 @@ func InitRoutes(m *martini.ClassicMartini, redisConn Doer) {
 		r.Delete(APIKey, authKey.Delete()) //this will remove the key from the user
 
 		r.Get(APIKeys, authKey.Get()) //will return the list of current keys and its associated user
-	})
+	}, oauth2.Google(OauthConfig), oauth2.LoginRequired, DomainCheck)
 }
