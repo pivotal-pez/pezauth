@@ -6,6 +6,10 @@ import (
 	"github.com/pivotalservices/pezauth/service"
 )
 
+var (
+	HeaderKeyName = pezauth.HeaderKeyName
+)
+
 //New - a new keychecker targetted at the given url
 func New(url string) KeyChecker {
 	return &keyCheckV1{
@@ -33,7 +37,7 @@ type (
 //Check - checks given key against the targetted validator endpoint
 func (s *keyCheckV1) Check(key string) (res *http.Response, err error) {
 	req, err := http.NewRequest("GET", s.target, nil)
-	req.Header.Add(pezauth.HeaderKeyName, key)
+	req.Header.Add(HeaderKeyName, key)
 	res, err = s.client.Do(req)
 	return
 }

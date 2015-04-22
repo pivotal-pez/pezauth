@@ -4,7 +4,6 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	. "github.com/pivotalservices/pezauth/keycheck"
-	"github.com/pivotalservices/pezauth/service"
 )
 
 var _ = Describe("keycheck.New", func() {
@@ -46,7 +45,7 @@ var _ = Describe("keycheck.New", func() {
 			It("should pass the key to check in the header", func() {
 				controlKey := "mykey"
 				kc.Check(controlKey)
-				Ω(mockClient.Request.Header.Get(pezauth.HeaderKeyName)).Should(Equal(controlKey))
+				Ω(mockClient.Request.Header.Get(HeaderKeyName)).Should(Equal(controlKey))
 			})
 		})
 	})
