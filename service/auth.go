@@ -122,7 +122,7 @@ type redisCreds interface {
 	Uri() string
 }
 
-//InitAuth - initializes authentication middleware for controllers
+//InitSession - initializes authentication middleware for controllers
 func InitSession(m *martini.ClassicMartini, rc redisCreds) {
 	m.Use(render.Renderer())
 

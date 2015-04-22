@@ -33,8 +33,8 @@ var pezAuth = angular.module('pezAuth', [], function($interpolateProvider) {
     function callMeUsingVerb(verbCaller, uri) {
       var responsePromise = verbCaller(uri);
       responsePromise.success(function(data, status, headers, config) {
-          $scope.myName = data.User.displayName;
-          $scope.myEmail = data.User.emails[0].value
+          $scope.myName = data.Payload.displayName;
+          $scope.myEmail = data.Payload.emails[0].value
           callAPIUsingVerb($http.get, getRestUri());
       });
       

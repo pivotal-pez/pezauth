@@ -10,6 +10,7 @@ import (
 var _ = Describe("KeyGen", func() {
 	var (
 		username = "testuser@pivotal.io"
+		details  = "{random:stuff}"
 		guid     = "myfakekeyhash"
 		keyhash  = fmt.Sprintf("%s:%s", username, guid)
 		err      error
@@ -61,7 +62,7 @@ var _ = Describe("KeyGen", func() {
 		Context("calling Create with a valid user arg", func() {
 			BeforeEach(func() {
 				k := getKeygen(false, keyhash, false)
-				err = k.Create(username)
+				err = k.Create(username, details)
 			})
 
 			It("Should return a nil error", func() {
@@ -72,7 +73,7 @@ var _ = Describe("KeyGen", func() {
 		Context("calling Create with a In-valid user arg", func() {
 			BeforeEach(func() {
 				k := getKeygen(true, keyhash, false)
-				err = k.Create(username)
+				err = k.Create(username, details)
 			})
 
 			It("Should return a nil error", func() {
@@ -97,7 +98,7 @@ var _ = Describe("KeyGen", func() {
 		Context("calling Delete with a In-valid user arg", func() {
 			BeforeEach(func() {
 				k := getKeygen(true, keyhash, false)
-				err = k.Create(username)
+				err = k.Create(username, details)
 			})
 
 			It("Should return a nil error", func() {

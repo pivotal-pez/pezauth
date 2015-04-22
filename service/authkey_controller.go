@@ -55,6 +55,7 @@ func (s *authKeyV1) Put() interface{} {
 		log.Println("executing the put handler")
 		username := params[UserParam]
 		userInfo := GetUserInfo(tokens)
+		details, _ := json.Marshal(userInfo)
 
 		NewUserMatch().
 			UserInfo(userInfo).
@@ -66,7 +67,7 @@ func (s *authKeyV1) Put() interface{} {
 				log.Println("keyGen.Delete error: ", err)
 			}
 
-			if err = s.keyGen.Create(username); err != nil {
+			if err = s.keyGen.Create(username, string(details[:])); err != nil {
 				log.Println("keyGen.Create error: ", err)
 			}
 
@@ -94,6 +95,7 @@ func (s *authKeyV1) Post() interface{} {
 		log.Println("executing the put handler")
 		username := params[UserParam]
 		userInfo := GetUserInfo(tokens)
+		details, _ := json.Marshal(userInfo)
 		log.Println("getting userInfo: ", userInfo)
 
 		NewUserMatch().
@@ -104,7 +106,7 @@ func (s *authKeyV1) Post() interface{} {
 				log.Println("keyGen.Delete error: ", err)
 			}
 
-			if err = s.keyGen.Create(username); err != nil {
+			if err = s.keyGen.Create(username, string(details[:])); err != nil {
 				log.Println("keyGen.Create error: ", err)
 			}
 
@@ -206,8 +208,8 @@ func genericResponseFormatter(r render.Render, apikey string, userInfo map[strin
 		} else {
 			statusCode = 200
 			res = Response{
-				APIKey: apikey,
-				User:   userInfo,
+				APIKey:  apikey,
+				Payload: userInfo,
 			}
 		}
 	}

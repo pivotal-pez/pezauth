@@ -85,10 +85,10 @@ func (s *mockGUIDMaker) Create() string {
 }
 
 func (s *mockDoer) Do(commandName string, args ...interface{}) (reply interface{}, err error) {
-	if commandName == "KEYS" {
+	if commandName == "KEYS" || commandName == "HMGET" {
 		reply = []interface{}{
 			[]byte(s.guid),
-			[]interface{}{},
+			[]byte(`"active":  true,"details": "put somethings here"`),
 		}
 	}
 

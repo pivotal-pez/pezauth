@@ -8,6 +8,11 @@ import (
 	"github.com/garyburd/redigo/redis"
 )
 
+const (
+	HMFieldActive  = "active"
+	HMFieldDetails = "details"
+)
+
 var (
 	//ErrUnparsableHash - an error for a hash that is not formed properly
 	ErrUnparsableHash = errors.New("Could not parse the hash or hash was nil")
@@ -18,7 +23,8 @@ var (
 //KeyGenerator - interface to work with apikeys
 type KeyGenerator interface {
 	Get(user string) (string, error)
-	Create(user string) error
+	GetByKey(key string) (hash string, val interface{}, err error)
+	Create(user, details string) error
 	Delete(user string) error
 }
 
@@ -54,6 +60,23 @@ func parseKeysResponse(r interface{}) (key, username, hash string, err error) {
 	return
 }
 
+func (s *KeyGen) getHashMap(hash string) (res interface{}, err error) {
+	var byteResponse interface{}
+	byteResponse, err = s.store.Do("HMGET", redis.Args{hash}.Add(HMFieldActive).Add(HMFieldDetails)...)
+	castedByteResponse := byteResponse.([]interface{})
+
+	if len(castedByteResponse) == 2 {
+		res = map[string]interface{}{
+			HMFieldActive:  string(castedByteResponse[0].([]byte)[:]),
+			HMFieldDetails: string(castedByteResponse[1].([]byte)[:]),
+		}
+
+	} else {
+		res = byteResponse
+	}
+	return
+}
+
 //Get - gets a key for a user
 func (s *KeyGen) Get(user string) (res string, err error) {
 	var r interface{}
@@ -61,6 +84,20 @@ func (s *KeyGen) Get(user string) (res string, err error) {
 
 	if r, err = s.store.Do("KEYS", search); r != nil && err == nil {
 		res, _, _, err = parseKeysResponse(r)
+	}
+	return
+}
+
+//GetByKey - gets a user for a given key
+func (s *KeyGen) GetByKey(key string) (hash string, val interface{}, err error) {
+	var r interface{}
+	search := fmt.Sprintf("*:%s", key)
+
+	if r, err = s.store.Do("KEYS", search); r != nil && err == nil {
+
+		if _, _, hash, err = parseKeysResponse(r); err == nil {
+			val, err = s.getHashMap(hash)
+		}
 	}
 	return
 }
@@ -96,10 +133,13 @@ func createHash(user, guid string) (hash string) {
 }
 
 //Create - creates a new key for a user
-func (s *KeyGen) Create(user string) (err error) {
+func (s *KeyGen) Create(user string, details string) (err error) {
 	guid := s.guidMaker.Create()
 	hash := createHash(user, guid)
-	row := map[string]string{"active": "true"}
+	row := map[string]string{
+		HMFieldActive:  "true",
+		HMFieldDetails: details,
+	}
 	_, err = s.store.Do("HMSET", redis.Args{hash}.AddFlat(row)...)
 	return
 }

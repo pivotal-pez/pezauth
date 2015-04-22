@@ -23,7 +23,7 @@ var _ = Describe("NewMeController", func() {
 
 		It("should return a user object to the renderer", func() {
 			tokens := &mockTokens{}
-			controlResponse := Response{User: GetUserInfo(tokens)}
+			controlResponse := Response{Payload: GetUserInfo(tokens)}
 			var meGet MeGetHandler = NewMeController().Get().(MeGetHandler)
 			meGet(testLogger, render, tokens)
 			Ω(render.StatusCode).Should(Equal(200))
