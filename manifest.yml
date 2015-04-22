@@ -4,13 +4,14 @@ applications:
   buildpack: http://github.com/ryandotsmith/null-buildpack.git
   command: ./main
   services:
-    - pezauth-mongo
     - pezauth-redis
+    - pezvalidator-service
   env:
     REDIS_SERVICE_NAME: pezauth-redis
     REDIS_HOSTNAME_NAME: hostname
     REDIS_PASSWORD_NAME: password
     REDIS_PORT_NAME: port
+    UPS_PEZVALIDATOR_NAME: pezvalidator-service
   #env:
     #TGL_FEATURE1: false
     #TGL_FEATURE2: false
