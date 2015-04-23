@@ -2,10 +2,6 @@ package pezauth
 
 import "code.google.com/p/go-uuid/uuid"
 
-const (
-	KeyLength = 36
-)
-
 //GUID interface and struct
 type (
 	//GUIDMaker - interface for a guid maker

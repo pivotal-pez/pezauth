@@ -9,7 +9,9 @@ import (
 )
 
 const (
-	HMFieldActive  = "active"
+	//HMFieldActive - name of metadata hash field containing active status
+	HMFieldActive = "active"
+	//HMFieldDetails - name of metadata hash field containing user and key details
 	HMFieldDetails = "details"
 )
 

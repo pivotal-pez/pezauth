@@ -13,7 +13,8 @@ const (
 	AuthFailStatus = 403
 	//AuthSuccessStatus - success status code
 	AuthSuccessStatus = 200
-	KeyLength         = pezauth.KeyLength
+	//KeyLength - valid length of a api-key
+	KeyLength = pezauth.GUIDLength
 )
 
 var (

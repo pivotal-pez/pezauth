@@ -8,10 +8,15 @@ import (
 )
 
 const (
-	GUIDLength             = 36
-	HeaderKeyName          = "X-API-KEY"
-	FailStatusCode         = 403
-	SuccessStatusCode      = 200
+	//GUIDLength - length of valid key
+	GUIDLength = 36
+	//HeaderKeyName - header keyname for api-key value
+	HeaderKeyName = "X-API-KEY"
+	//FailStatusCode - statuscode of failed request
+	FailStatusCode = 403
+	//SuccessStatusCode - statuscode of successful request
+	SuccessStatusCode = 200
+	//ErrInvalidKeyFormatMsg - error msg for invalid key
 	ErrInvalidKeyFormatMsg = "Invalid key format"
 )
 
