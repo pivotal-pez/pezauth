@@ -6,6 +6,7 @@ import (
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	. "github.com/pivotalservices/pezauth/keycheck"
 
 	"testing"
 )
@@ -28,6 +29,25 @@ func (s *mockClientDoer) Do(req *http.Request) (resp *http.Response, err error) 
 
 	} else {
 		resp = new(http.Response)
+		resp.StatusCode = AuthSuccessStatus
 	}
+	return
+}
+
+type mockResponseWriter struct {
+	StatusCode int
+	Body       []byte
+}
+
+func (s *mockResponseWriter) WriteHeader(i int) {
+	s.StatusCode = i
+}
+
+func (s *mockResponseWriter) Header() (r http.Header) {
+	return
+}
+
+func (s *mockResponseWriter) Write(x []byte) (a int, b error) {
+	s.Body = x
 	return
 }
