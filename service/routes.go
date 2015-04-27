@@ -47,10 +47,12 @@ func InitRoutes(m *martini.ClassicMartini, redisConn Doer) {
 	m.Get(ValidKeyCheck, NewValidateV1(keyGen).Get())
 
 	m.Get("/me", oauth2.LoginRequired, DomainCheck, NewMeController().Get())
+
 	m.Get("/", oauth2.LoginRequired, DomainCheck, func(params martini.Params, log *log.Logger, r render.Render, tokens oauth2.Tokens) {
 		userInfo := GetUserInfo(tokens)
 		r.HTML(200, "index", userInfo)
 	})
+
 	m.Group(URLAuthBaseV1, func(r martini.Router) {
 		r.Put(APIKey, authKey.Put())
 		r.Get(APIKey, authKey.Get())
@@ -58,5 +60,8 @@ func InitRoutes(m *martini.ClassicMartini, redisConn Doer) {
 	}, oauth2.LoginRequired, DomainCheck)
 
 	m.Group(URLOrgBaseV1, func(r martini.Router) {
+		pcfOrg := NewOrgController()
+		r.Put(APIKey, pcfOrg.Put())
+		r.Get(APIKey, pcfOrg.Get())
 	}, oauth2.LoginRequired, DomainCheck)
 }
