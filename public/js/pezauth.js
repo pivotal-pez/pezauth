@@ -16,6 +16,10 @@ var pezAuth = angular.module('pezAuth', [], function($interpolateProvider) {
     function getRestUri() {
       return [restUriBase, $scope.myEmail].join("/")
     }
+
+    pauth.createorg = function() {
+      console.log("not implemented yet");
+    };
    
     pauth.create = function() {
       if ( myData.ApiKey === "" || angular.isUndefined(myData.ApiKey) ) {

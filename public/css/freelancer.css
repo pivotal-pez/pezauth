@@ -14,6 +14,7 @@ p {
 
 p.small {
     font-size: 16px;
+    weight: 300;
 }
 
 a,
@@ -100,6 +101,12 @@ header {
     background: black;
     background-image: url("/img/TGB-light.png");
 }
+
+.getorg {
+    text-align: center;
+    color: #2c3e50;
+}
+
 
 header .container {
     padding-top: 100px;
@@ -278,10 +285,10 @@ section.success a.active {
 
 .btn-outline {
     margin-top: 15px;
-    border: solid 2px #fff;
+    border: solid 2px #2c3e50;
     font-size: 20px;
-    color: #fff;
-    background: 0 0;
+    color: #2c3e50;
+    background: #fff;
     transition: all .3s ease-in-out;
 }
 
@@ -289,7 +296,7 @@ section.success a.active {
 .btn-outline:focus,
 .btn-outline:active,
 .btn-outline.active {
-    border: solid 2px #fff;
+    border: solid 2px #18bc9c;
     color: #18bc9c;
     background: #fff;
 }
