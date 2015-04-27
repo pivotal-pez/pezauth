@@ -22,12 +22,7 @@ var pezAuth = angular.module('pezAuth', [], function($interpolateProvider) {
     };
    
     pauth.create = function() {
-      if ( myData.ApiKey === "" || angular.isUndefined(myData.ApiKey) ) {
-        callAPIUsingVerb($http.put, getRestUri())
-
-      } else {
-        callAPIUsingVerb($http.post, getRestUri())
-      }
+      callAPIUsingVerb($http.put, getRestUri())
     };
  
     pauth.remove = function() {

@@ -67,51 +67,6 @@ var _ = Describe("AuthKeyController", func() {
 		})
 	})
 
-	Context("POST", func() {
-		Context("called successfully", func() {
-			BeforeEach(func() {
-				kg := getKeygen(false, fakeHash, false)
-				controller = NewAuthKeyV1(kg)
-			})
-
-			It("Should NOT result in panic", func() {
-				Ω(func() {
-					controller.Post()
-				}).ShouldNot(Panic())
-			})
-
-			Context("Handler function", func() {
-				It("Should yeild a valid status code and response object", func() {
-					var ph AuthPostHandler
-					ph = controller.Post().(AuthPostHandler)
-					render := &mockRenderer{}
-					ph(martini.Params{UserParam: fakeUser}, testLogger, render, new(mockTokens))
-					Ω(render.StatusCode).Should(Equal(200))
-					Ω(render.ResponseObject.(Response).APIKey).Should(Equal(fakeGUID))
-				})
-			})
-		})
-
-		Context("called with failure", func() {
-			BeforeEach(func() {
-				kg := getKeygen(true, fakeHash, false)
-				controller = NewAuthKeyV1(kg)
-			})
-
-			Context("Handler function", func() {
-				It("Should yeild a error status code and error response object", func() {
-					var ph AuthPostHandler
-					ph = controller.Post().(AuthPostHandler)
-					render := &mockRenderer{}
-					ph(martini.Params{UserParam: fakeUser}, testLogger, render, new(mockTokens))
-					Ω(render.StatusCode).Should(Equal(403))
-					Ω(render.ResponseObject.(Response).APIKey).Should(Equal(""))
-					Ω(render.ResponseObject.(Response).ErrorMsg).ShouldNot(Equal(""))
-				})
-			})
-		})
-	})
-
 	Context("GET", func() {
 		Context("called successfully", func() {
 			BeforeEach(func() {

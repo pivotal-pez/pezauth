@@ -14,6 +14,7 @@ const (
 	UserParam     = "user"
 	APIVersion1   = "v1"
 	AuthGroup     = "auth"
+	OrgGroup      = "org"
 	APIKeys       = "/api-keys"
 	ValidKeyCheck = "/valid-key"
 	StaticPath    = "public"
@@ -23,6 +24,7 @@ const (
 var (
 	APIKey        = fmt.Sprintf("/api-key/:%s", UserParam)
 	URLAuthBaseV1 = fmt.Sprintf("/%s/%s", APIVersion1, AuthGroup)
+	URLOrgBaseV1  = fmt.Sprintf("/%s/%s", APIVersion1, OrgGroup)
 )
 
 //Response - generic response object
@@ -50,9 +52,11 @@ func InitRoutes(m *martini.ClassicMartini, redisConn Doer) {
 		r.HTML(200, "index", userInfo)
 	})
 	m.Group(URLAuthBaseV1, func(r martini.Router) {
-		r.Put(APIKey, authKey.Put())       //this will re-generate a new key for the user or create one if it doesnt exist
-		r.Post(APIKey, authKey.Post())     //this will generate a key for the user or do nothing
-		r.Get(APIKey, authKey.Get())       //will return the key for the username (pivotal.io email) it is given... this needs to be locked in that only the current user or admin will receive a result
-		r.Delete(APIKey, authKey.Delete()) //this will remove the key from the user
+		r.Put(APIKey, authKey.Put())
+		r.Get(APIKey, authKey.Get())
+		r.Delete(APIKey, authKey.Delete())
+	}, oauth2.LoginRequired, DomainCheck)
+
+	m.Group(URLOrgBaseV1, func(r martini.Router) {
 	}, oauth2.LoginRequired, DomainCheck)
 }
