@@ -15,8 +15,8 @@ applications:
     UPS_PEZVALIDATOR_NAME: pezvalidator-service
     MONGO_SERVICE_NAME: pezauth-mongo
     MONGO_URI_NAME: uri
-    MONGO_DB_NAME:pezauth
-    MONGO_COLLECTION_NAME:org_users
+    MONGO_DB_NAME: pezauth
+    MONGO_COLLECTION_NAME: org_users
   #env:
     #TGL_FEATURE1: false
     #TGL_FEATURE2: false
