@@ -12,6 +12,8 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	. "github.com/pivotalservices/pezauth/service"
+	"github.com/xchapter7x/goutil"
+	"gopkg.in/mgo.v2"
 
 	"html/template"
 	"testing"
@@ -184,4 +186,33 @@ func (s *mockRedisCreds) Pass() string {
 
 func (s *mockRedisCreds) Uri() string {
 	return s.uri
+}
+
+type mockMongo struct {
+}
+
+func (s *mockMongo) Find(query interface{}) (q *mgo.Query) {
+	return
+}
+
+func (s *mockMongo) Upsert(selector interface{}, update interface{}) (info *mgo.ChangeInfo, err error) {
+	return
+}
+
+type mockPersistence struct {
+	result interface{}
+	err    error
+}
+
+func (s *mockPersistence) FindOne(query interface{}, result interface{}) (err error) {
+	fmt.Println(s.result)
+	fmt.Println(result)
+	goutil.Unpack([]interface{}{s.result}, result)
+	fmt.Println(result)
+	err = s.err
+	return
+}
+
+func (s *mockPersistence) Upsert(selector interface{}, update interface{}) (info *mgo.ChangeInfo, err error) {
+	return
 }

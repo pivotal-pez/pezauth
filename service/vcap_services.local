@@ -2,7 +2,7 @@
   "mongolab": [
    {
     "credentials": {
-     "uri": "mongodb://CloudFoundry_gd93qeaj_turct53p_q0e43p0o:0I1JuhDrjdnWaVN8jCLbtei79ZbZXOP4@ds059661.mongolab.com:59661/CloudFoundry_gd93qeaj_turct53p"
+     "uri": "mongodb://CloudFoundry_gd93qeaj_turct53p_vhouoh7i:oVBDlfWObuEESH3CB3O4oDETaI6DR2NZ@ds059661.mongolab.com:59661/CloudFoundry_gd93qeaj_turct53p"
     },
     "label": "mongolab",
     "name": "pezauth-mongo",

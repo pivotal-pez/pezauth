@@ -8,6 +8,7 @@ import (
 	"github.com/garyburd/redigo/redis"
 	"github.com/go-martini/martini"
 	pez "github.com/pivotalservices/pezauth/service"
+	"gopkg.in/mgo.v2"
 )
 
 type redisCreds struct {
@@ -29,24 +30,40 @@ func main() {
 	redisHost := os.Getenv("REDIS_HOSTNAME_NAME")
 	redisPass := os.Getenv("REDIS_PASSWORD_NAME")
 	redisPort := os.Getenv("REDIS_PORT_NAME")
+	mongoServiceName := os.Getenv("MONGO_SERVICE_NAME")
+	mongoURIName := os.Getenv("MONGO_URI_NAME")
+	mongoDBName := os.Getenv("MONGO_DB_NAME")
+	mongoCollName := os.Getenv("MONGO_COLLECTION_NAME")
+
 	m := martini.Classic()
-	name, _ := appEnv.Services.WithName(redisName)
-	connectionURI := fmt.Sprintf("%s:%s", name.Credentials[redisHost], name.Credentials[redisPort])
+	redisService, _ := appEnv.Services.WithName(redisName)
+	mongoService, _ := appEnv.Services.WithName(mongoServiceName)
+	mongoConnectionURI := mongoService.Credentials[mongoURIName]
+	connectionURI := fmt.Sprintf("%s:%s", redisService.Credentials[redisHost], redisService.Credentials[redisPort])
 
-	if c, err := redis.Dial("tcp", connectionURI); err == nil {
+	if redisConn, err := redis.Dial("tcp", connectionURI); err == nil {
+		defer redisConn.Close()
 
-		if _, err := c.Do("AUTH", name.Credentials[redisPass]); err == nil {
+		if _, err := redisConn.Do("AUTH", redisService.Credentials[redisPass]); err == nil {
 			pez.InitSession(m, &redisCreds{
-				pass: name.Credentials[redisPass],
+				pass: redisService.Credentials[redisPass],
 				uri:  connectionURI,
 			})
-			pez.InitRoutes(m, c)
-			m.Run()
+
+			if session, err := mgo.Dial(mongoConnectionURI); err == nil {
+				defer session.Close()
+				session.SetMode(mgo.Monotonic, true)
+				mongoConn := session.DB(mongoDBName).C(mongoCollName)
+				pez.InitRoutes(m, redisConn, mongoConn)
+				m.Run()
+
+			} else {
+				fmt.Println(err)
+			}
 
 		} else {
 			fmt.Println(err)
 		}
-		c.Close()
 
 	} else {
 		fmt.Println(err)

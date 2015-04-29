@@ -146,7 +146,7 @@ func (s *authKeyV1) Delete() interface{} {
 	return handler
 }
 
-func genericResponseFormatter(r render.Render, apikey string, userInfo map[string]interface{}, extErr error) {
+func genericResponseFormatter(r render.Render, apikey string, payload map[string]interface{}, extErr error) {
 	var (
 		statusCode int
 		err        error
@@ -161,7 +161,7 @@ func genericResponseFormatter(r render.Render, apikey string, userInfo map[strin
 
 	} else {
 
-		if _, err = json.Marshal(userInfo); err != nil {
+		if _, err = json.Marshal(payload); err != nil {
 			statusCode = 403
 			res = Response{
 				ErrorMsg: err.Error(),
@@ -171,7 +171,7 @@ func genericResponseFormatter(r render.Render, apikey string, userInfo map[strin
 			statusCode = 200
 			res = Response{
 				APIKey:  apikey,
-				Payload: userInfo,
+				Payload: payload,
 			}
 		}
 	}

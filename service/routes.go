@@ -35,7 +35,7 @@ type Response struct {
 }
 
 //InitRoutes - initialize the mappings for controllers against valid routes
-func InitRoutes(m *martini.ClassicMartini, redisConn Doer) {
+func InitRoutes(m *martini.ClassicMartini, redisConn Doer, mongoConn mongoCollection) {
 	setOauthConfig()
 	keyGen := NewKeyGen(redisConn, &GUIDMake{})
 	m.Use(render.Renderer())
@@ -60,7 +60,7 @@ func InitRoutes(m *martini.ClassicMartini, redisConn Doer) {
 	}, oauth2.LoginRequired, DomainCheck)
 
 	m.Group(URLOrgBaseV1, func(r martini.Router) {
-		pcfOrg := NewOrgController()
+		pcfOrg := NewOrgController(newMongoCollectionWrapper(mongoConn))
 		r.Put(APIKey, pcfOrg.Put())
 		r.Get(APIKey, pcfOrg.Get())
 	}, oauth2.LoginRequired, DomainCheck)
