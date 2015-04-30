@@ -27,7 +27,26 @@ var _ = Describe("NewOrgController", func() {
 			render = new(mockRenderer)
 		})
 
-		It("should return a user object to the renderer", func() {
+		Context("with a user that has no match in the system", func() {
+			tokens := &mockTokens{}
+			result := PivotOrg{
+				Email:   fakeUser,
+				OrgName: fakeOrg,
+			}
+			controlResponse := Response{ErrorMsg: ErrNoMatchInStore.Error()}
+			var orgGet OrgGetHandler = NewOrgController(&mockPersistence{
+				err:    ErrNoMatchInStore,
+				result: result,
+			}).Get().(OrgGetHandler)
+
+			It("should return an error and a fail status", func() {
+				orgGet(martini.Params{UserParam: fakeUser}, testLogger, render, tokens)
+				Ω(render.StatusCode).Should(Equal(FailureStatus))
+				Ω(render.ResponseObject).Should(Equal(controlResponse))
+			})
+		})
+
+		Context("with a user that has an org", func() {
 			tokens := &mockTokens{}
 			result := PivotOrg{
 				Email:   fakeUser,
@@ -38,9 +57,12 @@ var _ = Describe("NewOrgController", func() {
 				err:    nil,
 				result: result,
 			}).Get().(OrgGetHandler)
-			orgGet(martini.Params{UserParam: fakeUser}, testLogger, render, tokens)
-			Ω(render.StatusCode).Should(Equal(200))
-			Ω(render.ResponseObject).Should(Equal(controlResponse))
+
+			It("should return a user object to the renderer", func() {
+				orgGet(martini.Params{UserParam: fakeUser}, testLogger, render, tokens)
+				Ω(render.StatusCode).Should(Equal(SuccessStatus))
+				Ω(render.ResponseObject).Should(Equal(controlResponse))
+			})
 		})
 	})
 })

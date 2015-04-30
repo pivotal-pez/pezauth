@@ -1,6 +1,7 @@
 package pezauth
 
 import (
+	"errors"
 	"log"
 
 	"github.com/fatih/structs"
@@ -13,6 +14,10 @@ import (
 
 const (
 	EmailFieldName = "email"
+)
+
+var (
+	ErrNoMatchInStore = errors.New("Could not find a matching user org or connection failure")
 )
 
 type (
@@ -55,7 +60,10 @@ func newMongoCollectionWrapper(c mongoCollection) persistence {
 
 //FindOne - combining the Find and One calls of a mongo collection object
 func (s *mongoCollectionWrapper) FindOne(query interface{}, result interface{}) (err error) {
-	err = s.col.Find(query).One(result)
+
+	if err = s.col.Find(query).One(result); err != nil {
+		err = ErrNoMatchInStore
+	}
 	return
 }
 
@@ -83,7 +91,7 @@ func (s *orgController) Get() interface{} {
 		log.Println("result value: ", result)
 		err := s.store.FindOne(bson.M{EmailFieldName: username}, result)
 		log.Println("response: ", result, err)
-		genericResponseFormatter(r, "", structs.Map(result), nil)
+		genericResponseFormatter(r, "", structs.Map(result), err)
 	}
 	return handler
 }

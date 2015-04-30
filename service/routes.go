@@ -50,7 +50,7 @@ func InitRoutes(m *martini.ClassicMartini, redisConn Doer, mongoConn mongoCollec
 
 	m.Get("/", oauth2.LoginRequired, DomainCheck, func(params martini.Params, log *log.Logger, r render.Render, tokens oauth2.Tokens) {
 		userInfo := GetUserInfo(tokens)
-		r.HTML(200, "index", userInfo)
+		r.HTML(SuccessStatus, "index", userInfo)
 	})
 
 	m.Group(URLAuthBaseV1, func(r martini.Router) {

@@ -18,11 +18,10 @@ import (
 
 //Constants to construct my oauth calls
 const (
-	ClientID       = "1083030294947-6g3bhhrgl3s7ul736jet625ajvp94f5p.apps.googleusercontent.com"
-	ClientSecret   = "kfgM5mT3BqPQ84VeXsYokAK_"
-	sessionName    = "pivotalpezauthservicesession"
-	sessionSecret  = "shhh.donttellanyone"
-	AuthFailStatus = 403
+	ClientID      = "1083030294947-6g3bhhrgl3s7ul736jet625ajvp94f5p.apps.googleusercontent.com"
+	ClientSecret  = "kfgM5mT3BqPQ84VeXsYokAK_"
+	sessionName   = "pivotalpezauthservicesession"
+	sessionSecret = "shhh.donttellanyone"
 )
 
 //Vars for my oauth calls
@@ -81,7 +80,7 @@ func DomainChecker(res http.ResponseWriter, tokens oauth2.Tokens) {
 	userInfo := GetUserInfo(tokens)
 
 	if domain, ok := userInfo["domain"]; !ok || tokens.Expired() || isBlockedDomain(domain.(string)) {
-		res.WriteHeader(AuthFailStatus)
+		res.WriteHeader(FailureStatus)
 		res.Write(AuthFailureResponse)
 	}
 }
