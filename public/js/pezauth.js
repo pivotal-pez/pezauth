@@ -2,12 +2,20 @@ var pezAuth = angular.module('pezAuth', [], function($interpolateProvider) {
       $interpolateProvider.startSymbol('{*{');
       $interpolateProvider.endSymbol('}*}');
   })
-  .controller('PezAuthController', function($scope, $http, $timeout) {
+  .controller('PezAuthController', function($scope, $http, $timeout, $window) {
     var myData = {};
     var pauth = this;
     var restUriBase = "/v1/auth/api-key";
     var restOrgUriBase = "/v1/org/user";
     var meUri = "/me";
+    var messaging = {
+      "hasOrgBtn": "View Org Now",
+      "createOrgBtn": "Create Your Org Now",
+      "noApiKey": "You don't have a key yet"
+    };
+    var urls = {
+      "okta": "http://login.run.pez.pivotal.io/saml/login/alias/login.run.pez.pivotal.io?disco=true"
+    };
     
 
     $timeout(function () {  
@@ -28,12 +36,10 @@ var pezAuth = angular.module('pezAuth', [], function($interpolateProvider) {
     };
 
     pauth.createorg = function() {
-      console.log(getOrgRestUri())
-      callOrgUsingVerb($http.put, getOrgRestUri())
-      console.log("not implemented yet");
-      $scope.go = function() {
-        $location.absUrl() = "http://login.run.pez.pivotal.io/";
-      }
+      //console.log(getOrgRestUri())
+      //callOrgUsingVerb($http.put, getOrgRestUri())
+      //console.log("not implemented yet");
+      $window.location.href = urls.okta;
     };
    
     pauth.create = function() {
@@ -52,21 +58,17 @@ var pezAuth = angular.module('pezAuth', [], function($interpolateProvider) {
           callAPIUsingVerb($http.get, getRestUri());
           pauth.getorg()
       });
-      
-      responsePromise.error(function(data, status, headers, config) {
-          console.log("AJAX failed!", status);
-      });
     }
 
     function callOrgUsingVerb(verbCaller, uri) {
       var responsePromise = verbCaller(uri);
       responsePromise.success(function(data, status, headers, config) {
         console.log(data);
-        $scope.orgButtonText = "View Org Now";
+        $scope.orgButtonText = messaging.hasOrgBtn;
       });
       
       responsePromise.error(function(data, status, headers, config) {
-          $scope.orgButtonText = "Create Your Org Now";
+          $scope.orgButtonText = messaging.createOrgBtn;
           
           if(status === 403 && verbCaller === $http.get) {
             console.log(data.ErrorMsg);
@@ -82,8 +84,7 @@ var pezAuth = angular.module('pezAuth', [], function($interpolateProvider) {
       });
       
       responsePromise.error(function(data, status, headers, config) {
-        $scope.myApiKey = "You don't have a key yet";
-        console.log("AJAX failed!");
+        $scope.myApiKey = messaging.noApiKey;
       });
     }
   });
