@@ -91,7 +91,7 @@
             <div class="row">
                 
                 <div class="col-lg-8 col-lg-offset-2 text-center">
-                    <a href="#" class="btn btn-lg btn-outline" ng-click="pac.createorg()">
+                    <a class="btn btn-lg btn-outline" ng-click="pac.createorg()">
                         <i class="fa fa-cloud"></i> Create Your Org Now
                     </a>
                 </div>
@@ -103,46 +103,75 @@
         </div>
     </header>
 
-     <!-- Portfolio Grid Section -->
-    <section id="services">
+    <section id="services" class="services bg-primary">
         <div class="container">
-            <div class="row">
-                <div class="col-lg-12 text-center">
-                    <h2>PEZ Services</h2>
-                    <hr class="star-primary">
+            <div class="row text-center">
+                <div class="col-lg-10 col-lg-offset-1">
+                    <h2>Our Services</h2>
+                    <hr class="small">
+                    <div class="row">
+                       <div class="col-md-3 col-sm-6">
+                            <div class="service-item">
+                                <span class="fa-stack fa-4x">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-flask fa-stack-1x text-primary"></i>
+                            </span>
+                                <h4>
+                                    <strong>Hands-on Labs</strong>
+                                </h4>
+                                <p>Free VMWare Labs</p>
+                                <a href="#" class="btn btn-light">Learn More</a>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3 col-sm-6">
+                            <div class="service-item">
+                                <span class="fa-stack fa-4x">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-cloud fa-stack-1x text-primary"></i>
+                            </span>
+                                <h4>
+                                    <strong>Heritage CF</strong>
+                                </h4>
+                                <p>Free PaaS For Everyone</p>
+                                <a href="#" class="btn btn-light">Learn More</a>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <div class="service-item">
+                                <span class="fa-stack fa-4x">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-cogs fa-stack-1x text-primary"></i>
+                            </span>
+                                <h4>
+                                    <strong>Sandbox</strong>
+                                </h4>
+                                <p>Free IaaS Lab</p>
+                                <a href="#" class="btn btn-light">Learn More</a>
+                            </div>
+                        </div>
+ 
+                        <div class="col-md-3 col-sm-6">
+                            <div class="service-item">
+                                <span class="fa-stack fa-4x">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-h-square fa-stack-1x text-primary"></i>
+                            </span>
+                                <h4>
+                                    <strong>Hybrid Sandbox</strong>
+                                </h4>
+                                <p>True Hardware Lab</p>
+                                <a href="#" class="btn btn-light">Learn More</a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.row (nested) -->
                 </div>
+                <!-- /.col-lg-10 -->
             </div>
-            <div class="row">
-                <div class="col-sm-3 portfolio-item">
-                    <a href="#portfolioModal1" class="portfolio-link" data-toggle="modal">
-                      <img src="img/hol.png" class="img-responsive" alt="">
-                      VMware:<br>
-                      Hands-on Labs (FREE)
-                    </a>
-                </div>
-                <div class="col-sm-3 portfolio-item">
-                    <a href="#portfolioModal2" class="portfolio-link" data-toggle="modal">
-                      <img src="img/pcf_service.png" class="img-responsive" alt="">
-                      HeritageCF:<br>
-                      Free PaaS For Everyone
-                    </a>
-                </div>
-                <div class="col-sm-3 portfolio-item">
-                    <a href="#portfolioModal3" class="portfolio-link" data-toggle="modal">
-                      <img src="img/sandbox.png" class="img-responsive" alt="">
-                      Sandbox:<br>
-                      Free IaaS Lab
-                    </a>
-                </div>
-                <div class="col-sm-3 portfolio-item">
-                    <a href="#portfolioModal4" class="portfolio-link" data-toggle="modal">
-                      <img src="img/hybrid_service.png" class="img-responsive" alt="">
-                      Hybrid Sandbox:<br>
-                      True Hardware Lab
-                    </a>
-                </div>
-            </div>
+            <!-- /.row -->
         </div>
+        <!-- /.container -->
     </section>
 
    <!-- About Section -->
