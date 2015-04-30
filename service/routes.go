@@ -23,6 +23,7 @@ const (
 //formatted strings based on constants, to be used in URLs
 var (
 	APIKey        = fmt.Sprintf("/api-key/:%s", UserParam)
+	OrgUser       = fmt.Sprintf("/user/:%s", UserParam)
 	URLAuthBaseV1 = fmt.Sprintf("/%s/%s", APIVersion1, AuthGroup)
 	URLOrgBaseV1  = fmt.Sprintf("/%s/%s", APIVersion1, OrgGroup)
 )
@@ -61,7 +62,7 @@ func InitRoutes(m *martini.ClassicMartini, redisConn Doer, mongoConn mongoCollec
 
 	m.Group(URLOrgBaseV1, func(r martini.Router) {
 		pcfOrg := NewOrgController(newMongoCollectionWrapper(mongoConn))
-		r.Put(APIKey, pcfOrg.Put())
-		r.Get(APIKey, pcfOrg.Get())
+		r.Put(OrgUser, pcfOrg.Put())
+		r.Get(OrgUser, pcfOrg.Get())
 	}, oauth2.LoginRequired, DomainCheck)
 }

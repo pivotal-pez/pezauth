@@ -6,8 +6,9 @@ var pezAuth = angular.module('pezAuth', [], function($interpolateProvider) {
     var myData = {};
     var pauth = this;
     var restUriBase = "/v1/auth/api-key";
+    var restOrgUriBase = "/v1/org/user";
     var meUri = "/me";
-    $scope.myApiKey = "You don't have a key yet";
+    
 
     $timeout(function () {  
       callMeUsingVerb($http.get, meUri);
@@ -17,8 +18,22 @@ var pezAuth = angular.module('pezAuth', [], function($interpolateProvider) {
       return [restUriBase, $scope.myEmail].join("/")
     }
 
+    function getOrgRestUri() {
+      return [restOrgUriBase, $scope.myEmail].join("/")
+    }
+
+    pauth.getorg = function() {
+      console.log(getOrgRestUri())
+      callOrgUsingVerb($http.get, getOrgRestUri())
+    };
+
     pauth.createorg = function() {
+      console.log(getOrgRestUri())
+      callOrgUsingVerb($http.put, getOrgRestUri())
       console.log("not implemented yet");
+      $scope.go = function() {
+        $location.absUrl() = "http://login.run.pez.pivotal.io/";
+      }
     };
    
     pauth.create = function() {
@@ -35,10 +50,27 @@ var pezAuth = angular.module('pezAuth', [], function($interpolateProvider) {
           $scope.myName = data.Payload.displayName;
           $scope.myEmail = data.Payload.emails[0].value
           callAPIUsingVerb($http.get, getRestUri());
+          pauth.getorg()
       });
       
       responsePromise.error(function(data, status, headers, config) {
-          console.log("AJAX failed!");
+          console.log("AJAX failed!", status);
+      });
+    }
+
+    function callOrgUsingVerb(verbCaller, uri) {
+      var responsePromise = verbCaller(uri);
+      responsePromise.success(function(data, status, headers, config) {
+        console.log(data);
+        $scope.orgButtonText = "View Org Now";
+      });
+      
+      responsePromise.error(function(data, status, headers, config) {
+          $scope.orgButtonText = "Create Your Org Now";
+          
+          if(status === 403 && verbCaller === $http.get) {
+            console.log(data.ErrorMsg);
+          }
       });
     }
 
@@ -50,7 +82,8 @@ var pezAuth = angular.module('pezAuth', [], function($interpolateProvider) {
       });
       
       responsePromise.error(function(data, status, headers, config) {
-          console.log("AJAX failed!");
+        $scope.myApiKey = "You don't have a key yet";
+        console.log("AJAX failed!");
       });
     }
   });
