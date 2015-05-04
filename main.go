@@ -52,9 +52,21 @@ func main() {
 	heritageCCTargetName := os.Getenv("HERITAGE_CC_TARGET_NAME")
 
 	m := martini.Classic()
-	redisService, _ := appEnv.Services.WithName(redisName)
-	mongoService, _ := appEnv.Services.WithName(mongoServiceName)
+	redisService, err := appEnv.Services.WithName(redisName)
+
+	if err != nil {
+		panic(err.Error())
+	}
+	mongoService, err := appEnv.Services.WithName(mongoServiceName)
+
+	if err != nil {
+		panic(err.Error())
+	}
 	heritageAdminService, err := appEnv.Services.WithName(heritageAdminServiceName)
+
+	if err != nil {
+		panic(err.Error())
+	}
 	heritageLoginTarget := heritageAdminService.Credentials[heritageLoginTargetName]
 	heritageLoginUser := heritageAdminService.Credentials[heritageLoginUserName]
 	heritageLoginPass := heritageAdminService.Credentials[heritageLoginPassName]
