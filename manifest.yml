@@ -7,12 +7,18 @@ applications:
     - pezauth-redis
     - pezauth-mongo
     - pezvalidator-service
+    - pez-heritage-admin-service
   env:
     REDIS_SERVICE_NAME: pezauth-redis
     REDIS_HOSTNAME_NAME: hostname
     REDIS_PASSWORD_NAME: password
     REDIS_PORT_NAME: port
     UPS_PEZVALIDATOR_NAME: pezvalidator-service
+    UPS_PEZ_HERITAGE_ADMIN_NAME: pez-heritage-admin-service
+    HERITAGE_LOGIN_TARGET_NAME: login-target
+    HERITAGE_LOGIN_USER_NAME: login-user
+    HERITAGE_LOGIN_PASS_NAME: login-pass
+    HERITAGE_CC_TARGET_NAME: cc-target
     MONGO_SERVICE_NAME: pezauth-mongo
     MONGO_URI_NAME: uri
     MONGO_COLLECTION_NAME: org_users

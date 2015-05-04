@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"net/http"
 	"os"
 	"strings"
 
@@ -9,6 +10,7 @@ import (
 	"github.com/garyburd/redigo/redis"
 	"github.com/go-martini/martini"
 	pez "github.com/pivotalservices/pezauth/service"
+	"github.com/xchapter7x/cloudcontroller-client"
 	"gopkg.in/mgo.v2"
 )
 
@@ -25,6 +27,15 @@ func (s *redisCreds) Uri() string {
 	return s.uri
 }
 
+type heritage struct {
+	*ccclient.Client
+	ccTarget string
+}
+
+func (s *heritage) CCTarget() string {
+	return s.ccTarget
+}
+
 func main() {
 	appEnv, _ := cfenv.Current()
 	redisName := os.Getenv("REDIS_SERVICE_NAME")
@@ -34,10 +45,20 @@ func main() {
 	mongoServiceName := os.Getenv("MONGO_SERVICE_NAME")
 	mongoURIName := os.Getenv("MONGO_URI_NAME")
 	mongoCollName := os.Getenv("MONGO_COLLECTION_NAME")
+	heritageAdminServiceName := os.Getenv("UPS_PEZ_HERITAGE_ADMIN_NAME")
+	heritageLoginTargetName := os.Getenv("HERITAGE_LOGIN_TARGET_NAME")
+	heritageLoginUserName := os.Getenv("HERITAGE_LOGIN_USER_NAME")
+	heritageLoginPassName := os.Getenv("HERITAGE_LOGIN_PASS_NAME")
+	heritageCCTargetName := os.Getenv("HERITAGE_CC_TARGET_NAME")
 
 	m := martini.Classic()
 	redisService, _ := appEnv.Services.WithName(redisName)
 	mongoService, _ := appEnv.Services.WithName(mongoServiceName)
+	heritageAdminService, err := appEnv.Services.WithName(heritageAdminServiceName)
+	heritageLoginTarget := heritageAdminService.Credentials[heritageLoginTargetName]
+	heritageLoginUser := heritageAdminService.Credentials[heritageLoginUserName]
+	heritageLoginPass := heritageAdminService.Credentials[heritageLoginPassName]
+	heritageCCTarget := heritageAdminService.Credentials[heritageCCTargetName]
 	mongoConnectionURI := mongoService.Credentials[mongoURIName]
 	parsedURI := strings.Split(mongoConnectionURI, "/")
 	mongoDBName := parsedURI[len(parsedURI)-1]
@@ -56,18 +77,28 @@ func main() {
 				defer session.Close()
 				session.SetMode(mgo.Monotonic, true)
 				mongoConn := session.DB(mongoDBName).C(mongoCollName)
-				pez.InitRoutes(m, redisConn, mongoConn)
-				m.Run()
+				heritageClient := &heritage{
+					Client:   ccclient.New(heritageLoginTarget, heritageLoginUser, heritageLoginPass, new(http.Client)),
+					ccTarget: heritageCCTarget,
+				}
+
+				if _, err := heritageClient.Login(); err == nil {
+					pez.InitRoutes(m, redisConn, mongoConn, heritageClient)
+					m.Run()
+
+				} else {
+					fmt.Println("heritage client login error: ", err)
+				}
 
 			} else {
-				fmt.Println(err)
+				fmt.Println("mongodb dial error: ", err)
 			}
 
 		} else {
-			fmt.Println(err)
+			fmt.Println("redis auth error: ", err)
 		}
 
 	} else {
-		fmt.Println(err)
+		fmt.Println("redis dial error: ", err)
 	}
 }

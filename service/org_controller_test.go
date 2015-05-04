@@ -37,7 +37,7 @@ var _ = Describe("NewOrgController", func() {
 			var orgGet OrgGetHandler = NewOrgController(&mockPersistence{
 				err:    ErrNoMatchInStore,
 				result: result,
-			}).Get().(OrgGetHandler)
+			}, new(mockHeritageClient)).Get().(OrgGetHandler)
 
 			It("should return an error and a fail status", func() {
 				orgGet(martini.Params{UserParam: fakeUser}, testLogger, render, tokens)
@@ -56,7 +56,7 @@ var _ = Describe("NewOrgController", func() {
 			var orgGet OrgGetHandler = NewOrgController(&mockPersistence{
 				err:    nil,
 				result: result,
-			}).Get().(OrgGetHandler)
+			}, new(mockHeritageClient)).Get().(OrgGetHandler)
 
 			It("should return a user object to the renderer", func() {
 				orgGet(martini.Params{UserParam: fakeUser}, testLogger, render, tokens)

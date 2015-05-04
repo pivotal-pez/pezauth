@@ -1,0 +1,2 @@
+cf cups pezvalidator-service -p '{"target-url": "https://pezauthdev.cfapps.io/valid-key"}'
+cf cups pez-heritage-admin-service -p "login-target, login-user, login-pass, cc-target"

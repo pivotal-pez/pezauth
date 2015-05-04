@@ -47,11 +47,11 @@ type (
 	}
 	orgController struct {
 		Controller
-		store persistence
+		store      persistence
+		authClient authRequestCreator
 	}
 )
 
-//newMongoCollectionWrapper - a wrapper for mongoCollection objects
 func newMongoCollectionWrapper(c mongoCollection) persistence {
 	return &mongoCollectionWrapper{
 		col: c,
@@ -73,9 +73,10 @@ func (s *mongoCollectionWrapper) Upsert(selector interface{}, update interface{}
 }
 
 //NewMeController - a controller for me requests
-func NewOrgController(c persistence) Controller {
+func NewOrgController(c persistence, authClient authRequestCreator) Controller {
 	return &orgController{
-		store: c,
+		store:      c,
+		authClient: authClient,
 	}
 }
 

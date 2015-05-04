@@ -2,6 +2,7 @@ package pezauth
 
 import (
 	"encoding/json"
+	"net/http"
 
 	"github.com/martini-contrib/render"
 )
@@ -17,6 +18,11 @@ type Controller interface {
 	Post() interface{}
 	Get() interface{}
 	Delete() interface{}
+}
+
+type authRequestCreator interface {
+	CreateAuthRequest(verb, requestURL, path string, args map[string]string) (*http.Request, error)
+	CCTarget() string
 }
 
 func genericResponseFormatter(r render.Render, apikey string, payload map[string]interface{}, extErr error) {

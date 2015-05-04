@@ -12,6 +12,7 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	. "github.com/pivotalservices/pezauth/service"
+	"github.com/xchapter7x/cloudcontroller-client"
 	"github.com/xchapter7x/goutil"
 	"gopkg.in/mgo.v2"
 
@@ -215,4 +216,12 @@ func (s *mockPersistence) FindOne(query interface{}, result interface{}) (err er
 
 func (s *mockPersistence) Upsert(selector interface{}, update interface{}) (info *mgo.ChangeInfo, err error) {
 	return
+}
+
+type mockHeritageClient struct {
+	*ccclient.Client
+}
+
+func (s *mockHeritageClient) CCTarget() string {
+	return ""
 }
