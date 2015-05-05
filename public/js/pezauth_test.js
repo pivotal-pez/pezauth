@@ -7,12 +7,12 @@ describe('PezAuthController', function() {
     $controller = _$controller_;
   }));
 
-  describe('$scope.myName', function() {
-    it('sets the strength to "strong" if the password length is >8 chars', function() {
+  describe('$scope.myName & myEmail', function() {
+    it('should be initialized as undefined', function() {
       var $scope = {};
       var controller = $controller('PezAuthController', { $scope: $scope });
-      $scope.myName = 'longerthaneightchars';
-      expect(true).toEqual(true);
+      expect($scope.myName).toEqual(undefined);
+      expect($scope.myEmail).toEqual(undefined);
     });
   });
 });

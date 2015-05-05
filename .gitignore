@@ -2,4 +2,5 @@ _builds
 _projects
 _steps
 service/coverage.out
+node_modules
 .DS_Store

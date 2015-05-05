@@ -214,7 +214,7 @@ func (s *mockPersistence) FindOne(query interface{}, result interface{}) (err er
 	return
 }
 
-func (s *mockPersistence) Upsert(selector interface{}, update interface{}) (info *mgo.ChangeInfo, err error) {
+func (s *mockPersistence) Upsert(selector interface{}, update interface{}) (err error) {
 	return
 }
 

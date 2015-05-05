@@ -19,6 +19,7 @@ const (
 var (
 	ErrNoMatchInStore  = errors.New("Could not find a matching user org or connection failure")
 	ErrCanNotCreateOrg = errors.New("Could not create a new org")
+	ErrCanNotAddOrgRec = errors.New("Could not add a new org record")
 )
 
 type (
@@ -35,7 +36,7 @@ type (
 	}
 	persistence interface {
 		FindOne(query interface{}, result interface{}) (err error)
-		Upsert(selector interface{}, update interface{}) (info *mgo.ChangeInfo, err error)
+		Upsert(selector interface{}, update interface{}) (err error)
 	}
 	//PivotOrg - struct for pivot org record
 	PivotOrg struct {
@@ -69,7 +70,11 @@ func (s *mongoCollectionWrapper) FindOne(query interface{}, result interface{}) 
 }
 
 //Upsert - allow us to call upsert on mongo collection object
-func (s *mongoCollectionWrapper) Upsert(selector interface{}, update interface{}) (info *mgo.ChangeInfo, err error) {
+func (s *mongoCollectionWrapper) Upsert(selector interface{}, update interface{}) (err error) {
+
+	if _, err = s.col.Upsert(selector, update); err != nil {
+		err = ErrCanNotAddOrgRec
+	}
 	return
 }
 
@@ -95,7 +100,8 @@ func (s *orgController) Put() interface{} {
 	var handler OrgPutHandler = func(params martini.Params, log *log.Logger, r render.Render, tokens oauth2.Tokens) {
 
 		if _, err := s.getOrg(params, log, r, tokens); err == ErrNoMatchInStore {
-			genericResponseFormatter(r, "", nil, nil)
+			err = s.store.Upsert(1, 1)
+			genericResponseFormatter(r, "", nil, err)
 
 		} else {
 			genericResponseFormatter(r, "", nil, ErrCanNotCreateOrg)
