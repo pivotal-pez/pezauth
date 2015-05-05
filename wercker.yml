@@ -15,6 +15,19 @@ build:
           go get -u github.com/tools/godep
           export PATH=$WERCKER_SOURCE_DIR/bin:$PATH
 
+    # Client JS Tests
+    #- script:
+        #name: js tests
+        #code: |
+          #curl -sL https://deb.nodesource.com/setup | sudo bash -
+          #sudo apt-get install -y nodejs npm wget
+          #npm install karma --save-dev
+          #npm install karma-jasmine karma-chrome-launcher --save-dev
+          #npm install karma-phantomjs-launcher --save-dev
+          #npm install -g karma-cli
+          #curl -sL https://gist.githubusercontent.com/julionc/7476620/raw/b27b7e3b51b92be055ee46aefc0acfa459c0bb27/install_phantomjs.sh | bash -
+          #(cd public/js/ && sudo karma start karma.conf.js --single-run --log-level=debug)
+
     # Test the project
     - script:
         name: go test

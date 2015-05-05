@@ -17,7 +17,8 @@ const (
 )
 
 var (
-	ErrNoMatchInStore = errors.New("Could not find a matching user org or connection failure")
+	ErrNoMatchInStore  = errors.New("Could not find a matching user org or connection failure")
+	ErrCanNotCreateOrg = errors.New("Could not create a new org")
 )
 
 type (
@@ -83,15 +84,7 @@ func NewOrgController(c persistence, authClient authRequestCreator) Controller {
 //Get - get a get handler for org management
 func (s *orgController) Get() interface{} {
 	var handler OrgGetHandler = func(params martini.Params, log *log.Logger, r render.Render, tokens oauth2.Tokens) {
-		var (
-			result = new(PivotOrg)
-		)
-		userInfo := GetUserInfo(tokens)
-		username := params[UserParam]
-		log.Println("getting userInfo: ", userInfo)
-		log.Println("result value: ", result)
-		err := s.store.FindOne(bson.M{EmailFieldName: username}, result)
-		log.Println("response: ", result, err)
+		result, err := s.getOrg(params, log, r, tokens)
 		genericResponseFormatter(r, "", structs.Map(result), err)
 	}
 	return handler
@@ -100,7 +93,24 @@ func (s *orgController) Get() interface{} {
 //Put - get a get handler for org management
 func (s *orgController) Put() interface{} {
 	var handler OrgPutHandler = func(params martini.Params, log *log.Logger, r render.Render, tokens oauth2.Tokens) {
-		genericResponseFormatter(r, "", nil, nil)
+
+		if _, err := s.getOrg(params, log, r, tokens); err == ErrNoMatchInStore {
+			genericResponseFormatter(r, "", nil, nil)
+
+		} else {
+			genericResponseFormatter(r, "", nil, ErrCanNotCreateOrg)
+		}
 	}
 	return handler
+}
+
+func (s *orgController) getOrg(params martini.Params, log *log.Logger, r render.Render, tokens oauth2.Tokens) (result *PivotOrg, err error) {
+	result = new(PivotOrg)
+	userInfo := GetUserInfo(tokens)
+	username := params[UserParam]
+	log.Println("getting userInfo: ", userInfo)
+	log.Println("result value: ", result)
+	err = s.store.FindOne(bson.M{EmailFieldName: username}, result)
+	log.Println("response: ", result, err)
+	return
 }

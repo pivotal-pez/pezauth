@@ -23,45 +23,63 @@ var pezAuth = angular.module('pezAuth', [], function($interpolateProvider) {
     }, 1);
 
     function getRestUri() {
-      return [restUriBase, $scope.myEmail].join("/")
+      return [restUriBase, $scope.myEmail].join("/");
     }
 
     function getOrgRestUri() {
-      return [restOrgUriBase, $scope.myEmail].join("/")
+      return [restOrgUriBase, $scope.myEmail].join("/");
     }
 
     pauth.getorg = function() {
-      console.log(getOrgRestUri())
-      callOrgUsingVerb($http.get, getOrgRestUri())
+      console.log(getOrgRestUri());
+      getOrgStatus(getOrgRestUri());
     };
 
     pauth.createorg = function() {
-      //console.log(getOrgRestUri())
-      //callOrgUsingVerb($http.put, getOrgRestUri())
-      //console.log("not implemented yet");
-      $window.location.href = urls.okta;
+
+      if ($scope.orgButtonText === messaging.createOrgBtn) {
+        createOrg(getOrgRestUri());
+        
+      } else if ($scope.orgButtonText === messaging.hasOrgBtn) {
+        $window.location.href = urls.okta;
+      }
     };
    
     pauth.create = function() {
-      callAPIUsingVerb($http.put, getRestUri())
+      callAPIUsingVerb($http.put, getRestUri());
     };
  
     pauth.remove = function() {
-      callAPIUsingVerb($http.delete, getRestUri())
+      callAPIUsingVerb($http.delete, getRestUri());
     };   
 
     function callMeUsingVerb(verbCaller, uri) {
       var responsePromise = verbCaller(uri);
       responsePromise.success(function(data, status, headers, config) {
           $scope.myName = data.Payload.displayName;
-          $scope.myEmail = data.Payload.emails[0].value
+          $scope.myEmail = data.Payload.emails[0].value;
           callAPIUsingVerb($http.get, getRestUri());
-          pauth.getorg()
+          pauth.getorg();
       });
     }
 
-    function callOrgUsingVerb(verbCaller, uri) {
-      var responsePromise = verbCaller(uri);
+    function createOrg(uri) {
+      var responsePromise = $http.put(uri);
+      responsePromise.success(function(data, status, headers, config) {
+        console.log(data);
+        $scope.orgButtonText = messaging.hasOrgBtn;
+      });
+      
+      responsePromise.error(function(data, status, headers, config) {
+          
+          if(status === 403) {
+            console.log(data.ErrorMsg);
+          }
+      });
+    }
+
+    function getOrgStatus(uri) {
+      var responsePromise = $http.get(uri);
       responsePromise.success(function(data, status, headers, config) {
         console.log(data);
         $scope.orgButtonText = messaging.hasOrgBtn;
@@ -70,7 +88,7 @@ var pezAuth = angular.module('pezAuth', [], function($interpolateProvider) {
       responsePromise.error(function(data, status, headers, config) {
           $scope.orgButtonText = messaging.createOrgBtn;
           
-          if(status === 403 && verbCaller === $http.get) {
+          if(status === 403) {
             console.log(data.ErrorMsg);
           }
       });
