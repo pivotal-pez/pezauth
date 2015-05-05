@@ -17,9 +17,10 @@ const (
 )
 
 var (
-	ErrNoMatchInStore  = errors.New("Could not find a matching user org or connection failure")
-	ErrCanNotCreateOrg = errors.New("Could not create a new org")
-	ErrCanNotAddOrgRec = errors.New("Could not add a new org record")
+	ErrNoMatchInStore      = errors.New("Could not find a matching user org or connection failure")
+	ErrCanNotCreateOrg     = errors.New("Could not create a new org")
+	ErrCanNotAddOrgRec     = errors.New("Could not add a new org record")
+	ErrCantCallAcrossUsers = errors.New("user calling another users endpoint")
 )
 
 type (
@@ -114,9 +115,20 @@ func (s *orgController) getOrg(params martini.Params, log *log.Logger, r render.
 	result = new(PivotOrg)
 	userInfo := GetUserInfo(tokens)
 	username := params[UserParam]
-	log.Println("getting userInfo: ", userInfo)
-	log.Println("result value: ", result)
-	err = s.store.FindOne(bson.M{EmailFieldName: username}, result)
-	log.Println("response: ", result, err)
+
+	NewUserMatch().
+		UserInfo(userInfo).
+		UserName(username).
+		OnSuccess(func() {
+		log.Println("getting userInfo: ", userInfo)
+		log.Println("result value: ", result)
+		err = s.store.FindOne(bson.M{EmailFieldName: username}, result)
+		log.Println("response: ", result, err)
+	}).
+		OnFailure(func() {
+		log.Println(ErrCantCallAcrossUsers.Error())
+		err = ErrCantCallAcrossUsers
+	}).Run()
+
 	return
 }
