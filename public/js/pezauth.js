@@ -86,9 +86,9 @@ var pezAuth = angular.module('pezAuth', [], function($interpolateProvider) {
       });
       
       responsePromise.error(function(data, status, headers, config) {
-          $scope.orgButtonText = messaging.createOrgBtn;
-          
+         
           if(status === 403) {
+            $scope.orgButtonText = messaging.createOrgBtn;
             console.log(data.ErrorMsg);
           }
       });
