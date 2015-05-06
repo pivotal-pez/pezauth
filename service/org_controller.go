@@ -2,7 +2,9 @@ package pezauth
 
 import (
 	"errors"
+	"fmt"
 	"log"
+	"strings"
 
 	"github.com/fatih/structs"
 	"github.com/go-martini/martini"
@@ -96,13 +98,24 @@ func (s *orgController) Get() interface{} {
 	return handler
 }
 
+func getOrgNameFromEmail(email string) (orgName string) {
+	username := strings.Split(email, "@")[0]
+	orgName = fmt.Sprintf("pivot-%s", username)
+	return
+}
+
 //Put - get a get handler for org management
 func (s *orgController) Put() interface{} {
 	var handler OrgPutHandler = func(params martini.Params, log *log.Logger, r render.Render, tokens oauth2.Tokens) {
 
 		if _, err := s.getOrg(params, log, r, tokens); err == ErrNoMatchInStore {
-			err = s.store.Upsert(1, 1)
-			genericResponseFormatter(r, "", nil, err)
+			username := params[UserParam]
+			record := &PivotOrg{
+				Email:   username,
+				OrgName: getOrgNameFromEmail(username),
+			}
+			err = s.store.Upsert(bson.M{EmailFieldName: username}, record)
+			genericResponseFormatter(r, "", structs.Map(record), err)
 
 		} else {
 			genericResponseFormatter(r, "", nil, ErrCanNotCreateOrg)
