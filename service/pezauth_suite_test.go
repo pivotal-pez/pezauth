@@ -3,6 +3,7 @@ package pezauth_test
 import (
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
 	"os"
 	"strings"
@@ -246,3 +247,9 @@ func (s *mockClientDoer) Do(rq *http.Request) (rs *http.Response, e error) {
 	e = s.err
 	return
 }
+
+type nopCloser struct {
+	io.Reader
+}
+
+func (nopCloser) Close() error { return nil }

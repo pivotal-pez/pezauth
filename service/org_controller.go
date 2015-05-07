@@ -44,18 +44,6 @@ type (
 		store      persistence
 		authClient authRequestCreator
 	}
-	//APIResponse - cc http response object
-	APIResponse struct {
-		Metadata APIMetadata            `json:"metadata"`
-		Entity   map[string]interface{} `json:"entity"`
-	}
-	//APIMetadata = cc http response metadata
-	APIMetadata struct {
-		Guid      string `json:"guid"`
-		URL       string `json:"url"`
-		CreatedAt string `json:"created_at"`
-		UpdatedAt string `json:"updated_at"`
-	}
 )
 
 //NewMeController - a controller for me requests

@@ -1,14 +1,21 @@
 package pezauth
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"strings"
 
 	"github.com/martini-contrib/oauth2"
 	"gopkg.in/mgo.v2/bson"
+)
+
+const (
+	OrgCreateSuccessStatusCode = 201
+	OrgCreateEndpoint          = "/v2/organizations"
 )
 
 var (
@@ -22,6 +29,18 @@ type (
 		tokens     oauth2.Tokens
 		store      persistence
 		authClient authRequestCreator
+	}
+	//APIResponse - cc http response object
+	APIResponse struct {
+		Metadata APIMetadata            `json:"metadata"`
+		Entity   map[string]interface{} `json:"entity"`
+	}
+	//APIMetadata = cc http response metadata
+	APIMetadata struct {
+		Guid      string `json:"guid"`
+		URL       string `json:"url"`
+		CreatedAt string `json:"created_at"`
+		UpdatedAt string `json:"updated_at"`
 	}
 )
 
@@ -59,10 +78,11 @@ func (s *orgManager) Create() (record *PivotOrg, err error) {
 		}
 	)
 
-	if req, err = s.authClient.CreateAuthRequest("POST", s.authClient.CCTarget(), "/v2/organizations", data); err == nil {
+	if req, err = s.authClient.CreateAuthRequest("POST", s.authClient.CCTarget(), OrgCreateEndpoint, data); err == nil {
 
-		if res, err = s.authClient.HttpClient().Do(req); res.StatusCode == 201 && err == nil {
-			record, err = s.upsert()
+		if res, err = s.authClient.HttpClient().Do(req); res.StatusCode == OrgCreateSuccessStatusCode && err == nil {
+			defer res.Body.Close()
+			record, err = s.upsert(res)
 
 		} else {
 			record = new(PivotOrg)
@@ -72,11 +92,21 @@ func (s *orgManager) Create() (record *PivotOrg, err error) {
 	return
 }
 
-func (s *orgManager) upsert() (record *PivotOrg, err error) {
+func (s *orgManager) parseGUID(res *http.Response) (guid string) {
+	apiResponse := new(APIResponse)
+	body, _ := ioutil.ReadAll(res.Body)
+	json.Unmarshal(body, apiResponse)
+	guid = apiResponse.Metadata.Guid
+	return
+}
+
+func (s *orgManager) upsert(res *http.Response) (record *PivotOrg, err error) {
 	orgname := getOrgNameFromEmail(s.username)
+	guid := s.parseGUID(res)
 	record = &PivotOrg{
 		Email:   s.username,
 		OrgName: orgname,
+		OrgGuid: guid,
 	}
 	s.store.Upsert(bson.M{EmailFieldName: s.username}, record)
 	return

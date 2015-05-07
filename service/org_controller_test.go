@@ -1,6 +1,7 @@
 package pezauth_test
 
 import (
+	"bytes"
 	"fmt"
 	"log"
 	"net/http"
@@ -17,11 +18,36 @@ var _ = Describe("NewOrgController", func() {
 
 	Describe("Put Control handler", func() {
 		var (
-			fakeName   = "testuser"
-			fakeUser   = fmt.Sprintf("%s@pivotal.io", fakeName)
-			fakeOrg    = fmt.Sprintf("pivot-%s", fakeName)
-			render     *mockRenderer
-			testLogger = log.New(os.Stdout, "testLogger", 0)
+			fakeName             = "testuser"
+			fakeUser             = fmt.Sprintf("%s@pivotal.io", fakeName)
+			fakeOrg              = fmt.Sprintf("pivot-%s", fakeName)
+			render               *mockRenderer
+			testLogger           = log.New(os.Stdout, "testLogger", 0)
+			controlGUID          = "7cc7b460-a626-4189-8c93-726373e7a492"
+			successOrgCreateBody = `{
+  "metadata": {
+    "guid": "7cc7b460-a626-4189-8c93-726373e7a492",
+    "url": "/v2/organizations/7cc7b460-a626-4189-8c93-726373e7a492",
+    "created_at": "2015-04-15T00:55:51Z",
+    "updated_at": null
+  },
+  "entity": {
+    "name": "my-org-name",
+    "billing_enabled": false,
+    "quota_definition_guid": "a7196e89-e2a9-472e-8930-56bdedbf0308",
+    "status": "active",
+    "quota_definition_url": "/v2/quota_definitions/a7196e89-e2a9-472e-8930-56bdedbf0308",
+    "spaces_url": "/v2/organizations/7cc7b460-a626-4189-8c93-726373e7a492/spaces",
+    "domains_url": "/v2/organizations/7cc7b460-a626-4189-8c93-726373e7a492/domains",
+    "private_domains_url": "/v2/organizations/7cc7b460-a626-4189-8c93-726373e7a492/private_domains",
+    "users_url": "/v2/organizations/7cc7b460-a626-4189-8c93-726373e7a492/users",
+    "managers_url": "/v2/organizations/7cc7b460-a626-4189-8c93-726373e7a492/managers",
+    "billing_managers_url": "/v2/organizations/7cc7b460-a626-4189-8c93-726373e7a492/billing_managers",
+    "auditors_url": "/v2/organizations/7cc7b460-a626-4189-8c93-726373e7a492/auditors",
+    "app_events_url": "/v2/organizations/7cc7b460-a626-4189-8c93-726373e7a492/app_events",
+    "space_quota_definitions_url": "/v2/organizations/7cc7b460-a626-4189-8c93-726373e7a492/space_quota_definitions"
+  }
+}`
 		)
 		setGetUserInfo("pivotal.io", fakeUser)
 
@@ -30,19 +56,26 @@ var _ = Describe("NewOrgController", func() {
 		})
 
 		Context("when email is not in the system", func() {
-			OrgCreateSuccessStatusCode := 201
+			var orgPut OrgPutHandler
 			tokens := &mockTokens{}
 			result := PivotOrg{
 				Email:   fakeUser,
 				OrgName: fakeOrg,
+				OrgGuid: controlGUID,
 			}
 			controlResponse := Response{Payload: structs.Map(result)}
-			var orgPut OrgPutHandler = NewOrgController(&mockPersistence{
-				err:    ErrNoMatchInStore,
-				result: nil,
-			}, &mockHeritageClient{
-				res: &http.Response{StatusCode: OrgCreateSuccessStatusCode},
-			}).Put().(OrgPutHandler)
+
+			BeforeEach(func() {
+				orgPut = NewOrgController(&mockPersistence{
+					err:    ErrNoMatchInStore,
+					result: nil,
+				}, &mockHeritageClient{
+					res: &http.Response{
+						StatusCode: OrgCreateSuccessStatusCode,
+						Body:       nopCloser{bytes.NewBufferString(successOrgCreateBody)},
+					},
+				}).Put().(OrgPutHandler)
+			})
 
 			It("should create a new org record", func() {
 				orgPut(martini.Params{UserParam: fakeUser}, testLogger, render, tokens)
