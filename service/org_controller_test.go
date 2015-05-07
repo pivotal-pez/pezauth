@@ -3,6 +3,7 @@ package pezauth_test
 import (
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 
 	"github.com/fatih/structs"
@@ -29,6 +30,7 @@ var _ = Describe("NewOrgController", func() {
 		})
 
 		Context("when email is not in the system", func() {
+			OrgCreateSuccessStatusCode := 201
 			tokens := &mockTokens{}
 			result := PivotOrg{
 				Email:   fakeUser,
@@ -38,14 +40,42 @@ var _ = Describe("NewOrgController", func() {
 			var orgPut OrgPutHandler = NewOrgController(&mockPersistence{
 				err:    ErrNoMatchInStore,
 				result: nil,
-			}, new(mockHeritageClient)).Put().(OrgPutHandler)
+			}, &mockHeritageClient{
+				res: &http.Response{StatusCode: OrgCreateSuccessStatusCode},
+			}).Put().(OrgPutHandler)
 
 			It("should create a new org record", func() {
 				orgPut(martini.Params{UserParam: fakeUser}, testLogger, render, tokens)
 				Ω(render.StatusCode).Should(Equal(SuccessStatus))
+			})
+
+			It("should create a new org record", func() {
+				orgPut(martini.Params{UserParam: fakeUser}, testLogger, render, tokens)
 				Ω(render.ResponseObject).Should(Equal(controlResponse))
 			})
 		})
+
+		Context("when org create fails", func() {
+			tokens := &mockTokens{}
+			result := PivotOrg{
+				Email:   fakeUser,
+				OrgName: fakeOrg,
+			}
+			controlResponse := Response{Payload: structs.Map(result)}
+			var orgPut OrgPutHandler = NewOrgController(&mockPersistence{
+				err:    ErrNoMatchInStore,
+				result: nil,
+			}, &mockHeritageClient{
+				res: &http.Response{StatusCode: 403},
+			}).Put().(OrgPutHandler)
+
+			It("should return an error response", func() {
+				orgPut(martini.Params{UserParam: fakeUser}, testLogger, render, tokens)
+				Ω(render.StatusCode).Should(Equal(FailureStatus))
+				Ω(render.ResponseObject).ShouldNot(Equal(controlResponse))
+			})
+		})
+
 	})
 
 	Describe("Get Control handler", func() {

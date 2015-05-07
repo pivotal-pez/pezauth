@@ -206,10 +206,7 @@ type mockPersistence struct {
 }
 
 func (s *mockPersistence) FindOne(query interface{}, result interface{}) (err error) {
-	fmt.Println(s.result)
-	fmt.Println(result)
 	goutil.Unpack([]interface{}{s.result}, result)
-	fmt.Println(result)
 	err = s.err
 	return
 }
@@ -220,6 +217,7 @@ func (s *mockPersistence) Upsert(selector interface{}, update interface{}) (err 
 
 type mockHeritageClient struct {
 	*ccclient.Client
+	res *http.Response
 }
 
 func (s *mockHeritageClient) CreateAuthRequest(verb, requestURL, path string, args map[string]string) (*http.Request, error) {
@@ -231,7 +229,9 @@ func (s *mockHeritageClient) CCTarget() string {
 }
 
 func (s *mockHeritageClient) HttpClient() ccclient.ClientDoer {
-	return new(mockClientDoer)
+	return &mockClientDoer{
+		res: s.res,
+	}
 }
 
 type mockClientDoer struct {
@@ -242,5 +242,7 @@ type mockClientDoer struct {
 
 func (s *mockClientDoer) Do(rq *http.Request) (rs *http.Response, e error) {
 	s.req = rq
+	rs = s.res
+	e = s.err
 	return
 }

@@ -2,17 +2,12 @@ package pezauth
 
 import (
 	"errors"
-	"fmt"
 	"log"
-	"net/http"
-	"strings"
 
 	"github.com/fatih/structs"
 	"github.com/go-martini/martini"
 	"github.com/martini-contrib/oauth2"
 	"github.com/martini-contrib/render"
-	"gopkg.in/mgo.v2"
-	"gopkg.in/mgo.v2/bson"
 )
 
 const (
@@ -34,10 +29,6 @@ type (
 )
 
 type (
-	mongoCollection interface {
-		Find(query interface{}) *mgo.Query
-		Upsert(selector interface{}, update interface{}) (info *mgo.ChangeInfo, err error)
-	}
 	persistence interface {
 		FindOne(query interface{}, result interface{}) (err error)
 		Upsert(selector interface{}, update interface{}) (err error)
@@ -46,41 +37,26 @@ type (
 	PivotOrg struct {
 		Email   string
 		OrgName string
-	}
-	mongoCollectionWrapper struct {
-		persistence
-		col mongoCollection
+		OrgGuid string
 	}
 	orgController struct {
 		Controller
 		store      persistence
 		authClient authRequestCreator
 	}
+	//APIResponse - cc http response object
+	APIResponse struct {
+		Metadata APIMetadata            `json:"metadata"`
+		Entity   map[string]interface{} `json:"entity"`
+	}
+	//APIMetadata = cc http response metadata
+	APIMetadata struct {
+		Guid      string `json:"guid"`
+		URL       string `json:"url"`
+		CreatedAt string `json:"created_at"`
+		UpdatedAt string `json:"updated_at"`
+	}
 )
-
-func newMongoCollectionWrapper(c mongoCollection) persistence {
-	return &mongoCollectionWrapper{
-		col: c,
-	}
-}
-
-//FindOne - combining the Find and One calls of a mongo collection object
-func (s *mongoCollectionWrapper) FindOne(query interface{}, result interface{}) (err error) {
-
-	if err = s.col.Find(query).One(result); err != nil {
-		err = ErrNoMatchInStore
-	}
-	return
-}
-
-//Upsert - allow us to call upsert on mongo collection object
-func (s *mongoCollectionWrapper) Upsert(selector interface{}, update interface{}) (err error) {
-
-	if _, err = s.col.Upsert(selector, update); err != nil {
-		err = ErrCanNotAddOrgRec
-	}
-	return
-}
 
 //NewMeController - a controller for me requests
 func NewOrgController(c persistence, authClient authRequestCreator) Controller {
@@ -93,70 +69,33 @@ func NewOrgController(c persistence, authClient authRequestCreator) Controller {
 //Get - get a get handler for org management
 func (s *orgController) Get() interface{} {
 	var handler OrgGetHandler = func(params martini.Params, log *log.Logger, r render.Render, tokens oauth2.Tokens) {
-		result, err := s.getOrg(params, log, r, tokens)
+		username := params[UserParam]
+		org := newOrg(username, log, tokens, s.store, s.authClient)
+		result, err := org.Show()
 		genericResponseFormatter(r, "", structs.Map(result), err)
 	}
 	return handler
 }
 
-func getOrgNameFromEmail(email string) (orgName string) {
-	username := strings.Split(email, "@")[0]
-	orgName = fmt.Sprintf("pivot-%s", username)
-	return
-}
-
 //Put - get a get handler for org management
 func (s *orgController) Put() interface{} {
 	var handler OrgPutHandler = func(params martini.Params, log *log.Logger, r render.Render, tokens oauth2.Tokens) {
+		var (
+			err             error
+			payload         *PivotOrg
+			responsePayload map[string]interface{}
+		)
+		username := params[UserParam]
+		org := newOrg(username, log, tokens, s.store, s.authClient)
 
-		if _, err := s.getOrg(params, log, r, tokens); err == ErrNoMatchInStore {
-			username := params[UserParam]
-			orgname := getOrgNameFromEmail(username)
-			record := &PivotOrg{
-				Email:   username,
-				OrgName: orgname,
-			}
-
-			if err = s.store.Upsert(bson.M{EmailFieldName: username}, record); err == nil {
-				_, err = s.createOrg(orgname)
-			}
-			genericResponseFormatter(r, "", structs.Map(record), err)
+		if _, err = org.Show(); err == ErrNoMatchInStore {
+			payload, err = org.Create()
+			responsePayload = structs.Map(payload)
 
 		} else {
-			genericResponseFormatter(r, "", nil, ErrCanNotCreateOrg)
+			err = ErrCanNotCreateOrg
 		}
+		genericResponseFormatter(r, "", responsePayload, err)
 	}
 	return handler
-}
-
-func (s *orgController) createOrg(orgname string) (res *http.Response, err error) {
-	var (
-		req  *http.Request
-		data = map[string]string{
-			"name": orgname,
-		}
-	)
-
-	if req, err = s.authClient.CreateAuthRequest("POST", s.authClient.CCTarget(), "/v2/organizations", data); err == nil {
-		res, err = s.authClient.HttpClient().Do(req)
-	}
-	return
-}
-
-func (s *orgController) getOrg(params martini.Params, log *log.Logger, r render.Render, tokens oauth2.Tokens) (result *PivotOrg, err error) {
-	result = new(PivotOrg)
-	userInfo := GetUserInfo(tokens)
-	username := params[UserParam]
-
-	NewUserMatch().UserInfo(userInfo).UserName(username).OnSuccess(func() {
-		log.Println("getting userInfo: ", userInfo)
-		log.Println("result value: ", result)
-		err = s.store.FindOne(bson.M{EmailFieldName: username}, result)
-		log.Println("response: ", result, err)
-	}).OnFailure(func() {
-		log.Println(ErrCantCallAcrossUsers.Error())
-		err = ErrCantCallAcrossUsers
-	}).Run()
-
-	return
 }
