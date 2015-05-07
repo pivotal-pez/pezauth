@@ -14,11 +14,14 @@ import (
 )
 
 const (
+	//OrgCreateSuccessStatusCode - success status code from a call to the org create cc endpoint
 	OrgCreateSuccessStatusCode = 201
-	OrgCreateEndpoint          = "/v2/organizations"
+	//OrgCreateEndpoint - the endpoint to hit for org creation in the cc api
+	OrgCreateEndpoint = "/v2/organizations"
 )
 
 var (
+	//ErrOrgCreateAPICallFailure - error for failed call to create org endpoint
 	ErrOrgCreateAPICallFailure = errors.New("failed to create org on api call")
 )
 
@@ -37,7 +40,7 @@ type (
 	}
 	//APIMetadata = cc http response metadata
 	APIMetadata struct {
-		Guid      string `json:"guid"`
+		GUID      string `json:"guid"`
 		URL       string `json:"url"`
 		CreatedAt string `json:"created_at"`
 		UpdatedAt string `json:"updated_at"`
@@ -96,7 +99,7 @@ func (s *orgManager) parseGUID(res *http.Response) (guid string) {
 	apiResponse := new(APIResponse)
 	body, _ := ioutil.ReadAll(res.Body)
 	json.Unmarshal(body, apiResponse)
-	guid = apiResponse.Metadata.Guid
+	guid = apiResponse.Metadata.GUID
 	return
 }
 
@@ -106,7 +109,7 @@ func (s *orgManager) upsert(res *http.Response) (record *PivotOrg, err error) {
 	record = &PivotOrg{
 		Email:   s.username,
 		OrgName: orgname,
-		OrgGuid: guid,
+		OrgGUID: guid,
 	}
 	s.store.Upsert(bson.M{EmailFieldName: s.username}, record)
 	return

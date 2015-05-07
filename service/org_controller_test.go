@@ -61,7 +61,7 @@ var _ = Describe("NewOrgController", func() {
 			result := PivotOrg{
 				Email:   fakeUser,
 				OrgName: fakeOrg,
-				OrgGuid: controlGUID,
+				OrgGUID: controlGUID,
 			}
 			controlResponse := Response{Payload: structs.Map(result)}
 

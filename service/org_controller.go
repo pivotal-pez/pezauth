@@ -11,13 +11,18 @@ import (
 )
 
 const (
+	//EmailFieldName - fieldname for email
 	EmailFieldName = "email"
 )
 
 var (
-	ErrNoMatchInStore      = errors.New("Could not find a matching user org or connection failure")
-	ErrCanNotCreateOrg     = errors.New("Could not create a new org")
-	ErrCanNotAddOrgRec     = errors.New("Could not add a new org record")
+	//ErrNoMatchInStore - error when there is no matching org in the datastore
+	ErrNoMatchInStore = errors.New("Could not find a matching user org or connection failure")
+	//ErrCanNotCreateOrg - error when we can not create an org
+	ErrCanNotCreateOrg = errors.New("Could not create a new org")
+	//ErrCanNotAddOrgRec - error when we can not add a new org record to the datastore
+	ErrCanNotAddOrgRec = errors.New("Could not add a new org record")
+	//ErrCantCallAcrossUsers - error when a user is trying to update a user record other than their own
 	ErrCantCallAcrossUsers = errors.New("user calling another users endpoint")
 )
 
@@ -37,7 +42,7 @@ type (
 	PivotOrg struct {
 		Email   string
 		OrgName string
-		OrgGuid string
+		OrgGUID string
 	}
 	orgController struct {
 		Controller
@@ -46,7 +51,7 @@ type (
 	}
 )
 
-//NewMeController - a controller for me requests
+//NewOrgController - a controller for me requests
 func NewOrgController(c persistence, authClient authRequestCreator) Controller {
 	return &orgController{
 		store:      c,

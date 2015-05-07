@@ -9,7 +9,9 @@ import (
 )
 
 const (
+	//FailureStatus - failure response status from our unauthenticated rest endpoints
 	FailureStatus = 403
+	//SuccessStatus - success response status from our authenticated rest endpoints
 	SuccessStatus = 200
 )
 
