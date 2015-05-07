@@ -24,7 +24,7 @@ const (
 )
 
 //New - creates a new cloud controller client
-func New(loginurl, user, pass string, client clientDoer) *Client {
+func New(loginurl, user, pass string, client ClientDoer) *Client {
 	return &Client{
 		loginurl: loginurl,
 		user:     user,
@@ -34,7 +34,7 @@ func New(loginurl, user, pass string, client clientDoer) *Client {
 }
 
 type (
-	clientDoer interface {
+	ClientDoer interface {
 		Do(*http.Request) (*http.Response, error)
 	}
 	//Client - cloud controller client object
@@ -50,7 +50,7 @@ type (
 		user         string
 		pass         string
 		loginurl     string
-		client       clientDoer
+		client       ClientDoer
 	}
 )
 
@@ -74,6 +74,11 @@ func (s *Client) Login() (*Client, error) {
 func (s *Client) CreateRequest(verb, requestURL, path string, args map[string]string) (*http.Request, error) {
 	urlStr, dataBuf := s.createRequestData(requestURL, RouteLogin, args)
 	return http.NewRequest(verb, urlStr, dataBuf)
+}
+
+//HttpClient - returns the internal client object
+func (s *Client) HttpClient() ClientDoer {
+	return s.client
 }
 
 //CreateAuthRequest - Creates a request w/ auth token added to the header to allow authenticated calls to the cloud controller

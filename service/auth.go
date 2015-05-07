@@ -92,6 +92,22 @@ var DomainCheck = func() martini.Handler {
 
 //GetUserInfo - query googleapi for the authenticated users information
 var GetUserInfo = func(tokens oauth2.Tokens) (userObject map[string]interface{}) {
+
+	if userObject = getUserInfoCached(tokens); len(userObject) == 0 {
+		userObject = getUserInfo(tokens)
+	}
+	return
+}
+
+func addUserObjectToCache(tokens oauth2.Tokens, userObject map[string]interface{}) (err error) {
+	return
+}
+
+func getUserInfoCached(tokens oauth2.Tokens) (userObject map[string]interface{}) {
+	return
+}
+
+func getUserInfo(tokens oauth2.Tokens) (userObject map[string]interface{}) {
 	url := "https://www.googleapis.com/plus/v1/people/me"
 	token := &goauth2.Token{
 		AccessToken:  tokens.Access(),

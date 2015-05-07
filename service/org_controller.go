@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"net/http"
 	"strings"
 
 	"github.com/fatih/structs"
@@ -110,11 +111,15 @@ func (s *orgController) Put() interface{} {
 
 		if _, err := s.getOrg(params, log, r, tokens); err == ErrNoMatchInStore {
 			username := params[UserParam]
+			orgname := getOrgNameFromEmail(username)
 			record := &PivotOrg{
 				Email:   username,
-				OrgName: getOrgNameFromEmail(username),
+				OrgName: orgname,
 			}
-			err = s.store.Upsert(bson.M{EmailFieldName: username}, record)
+
+			if err = s.store.Upsert(bson.M{EmailFieldName: username}, record); err == nil {
+				_, err = s.createOrg(orgname)
+			}
 			genericResponseFormatter(r, "", structs.Map(record), err)
 
 		} else {
@@ -124,21 +129,31 @@ func (s *orgController) Put() interface{} {
 	return handler
 }
 
+func (s *orgController) createOrg(orgname string) (res *http.Response, err error) {
+	var (
+		req  *http.Request
+		data = map[string]string{
+			"name": orgname,
+		}
+	)
+
+	if req, err = s.authClient.CreateAuthRequest("POST", s.authClient.CCTarget(), "/v2/organizations", data); err == nil {
+		res, err = s.authClient.HttpClient().Do(req)
+	}
+	return
+}
+
 func (s *orgController) getOrg(params martini.Params, log *log.Logger, r render.Render, tokens oauth2.Tokens) (result *PivotOrg, err error) {
 	result = new(PivotOrg)
 	userInfo := GetUserInfo(tokens)
 	username := params[UserParam]
 
-	NewUserMatch().
-		UserInfo(userInfo).
-		UserName(username).
-		OnSuccess(func() {
+	NewUserMatch().UserInfo(userInfo).UserName(username).OnSuccess(func() {
 		log.Println("getting userInfo: ", userInfo)
 		log.Println("result value: ", result)
 		err = s.store.FindOne(bson.M{EmailFieldName: username}, result)
 		log.Println("response: ", result, err)
-	}).
-		OnFailure(func() {
+	}).OnFailure(func() {
 		log.Println(ErrCantCallAcrossUsers.Error())
 		err = ErrCantCallAcrossUsers
 	}).Run()

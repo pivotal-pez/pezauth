@@ -222,6 +222,25 @@ type mockHeritageClient struct {
 	*ccclient.Client
 }
 
+func (s *mockHeritageClient) CreateAuthRequest(verb, requestURL, path string, args map[string]string) (*http.Request, error) {
+	return &http.Request{}, nil
+}
+
 func (s *mockHeritageClient) CCTarget() string {
-	return ""
+	return ccclient.URLPWSLogin
+}
+
+func (s *mockHeritageClient) HttpClient() ccclient.ClientDoer {
+	return new(mockClientDoer)
+}
+
+type mockClientDoer struct {
+	req *http.Request
+	res *http.Response
+	err error
+}
+
+func (s *mockClientDoer) Do(rq *http.Request) (rs *http.Response, e error) {
+	s.req = rq
+	return
 }

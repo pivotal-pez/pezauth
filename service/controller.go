@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/martini-contrib/render"
+	"github.com/xchapter7x/cloudcontroller-client"
 )
 
 const (
@@ -23,6 +24,7 @@ type Controller interface {
 type authRequestCreator interface {
 	CreateAuthRequest(verb, requestURL, path string, args map[string]string) (*http.Request, error)
 	CCTarget() string
+	HttpClient() ccclient.ClientDoer
 }
 
 func genericResponseFormatter(r render.Render, apikey string, payload map[string]interface{}, extErr error) {
