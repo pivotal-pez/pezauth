@@ -18,6 +18,8 @@ const (
 	OrgCreateSuccessStatusCode = 201
 	//OrgCreateEndpoint - the endpoint to hit for org creation in the cc api
 	OrgCreateEndpoint = "/v2/organizations"
+	//ListUsersEndpoint - get a list of all users in paas
+	ListUsersEndpoint = "/v2/users"
 )
 
 var (
@@ -28,6 +30,7 @@ var (
 type (
 	orgManager struct {
 		username   string
+		userGUID   string
 		log        *log.Logger
 		tokens     oauth2.Tokens
 		store      persistence
@@ -45,16 +48,26 @@ type (
 		CreatedAt string `json:"created_at"`
 		UpdatedAt string `json:"updated_at"`
 	}
+	//APIResponseList - a list of resources or apiresponse objects
+	APIResponseList struct {
+		Resources []APIResponse `json:"resources"`
+	}
 )
 
 func newOrg(username string, log *log.Logger, tokens oauth2.Tokens, store persistence, authClient authRequestCreator) *orgManager {
-	return &orgManager{
+	s := &orgManager{
 		username:   username,
 		log:        log,
 		tokens:     tokens,
 		store:      store,
 		authClient: authClient,
 	}
+
+	if err := s.setCurrentUserGUID(); err != nil {
+		log.Println("Could not find user guid: ", err)
+	}
+	log.Println("Request came in for guid: ", s.userGUID)
+	return s
 }
 
 func (s *orgManager) Show() (result *PivotOrg, err error) {
@@ -69,6 +82,11 @@ func (s *orgManager) Show() (result *PivotOrg, err error) {
 		log.Println(ErrCantCallAcrossUsers.Error())
 		err = ErrCantCallAcrossUsers
 	}).Run()
+	return
+}
+
+func (s *orgManager) setCurrentUserGUID() (err error) {
+	s.log.Println("setCurrentUserGUID")
 	return
 }
 
@@ -95,7 +113,7 @@ func (s *orgManager) Create() (record *PivotOrg, err error) {
 	return
 }
 
-func (s *orgManager) parseGUID(res *http.Response) (guid string) {
+func (s *orgManager) parseOrgGUID(res *http.Response) (guid string) {
 	apiResponse := new(APIResponse)
 	body, _ := ioutil.ReadAll(res.Body)
 	json.Unmarshal(body, apiResponse)
@@ -105,7 +123,7 @@ func (s *orgManager) parseGUID(res *http.Response) (guid string) {
 
 func (s *orgManager) upsert(res *http.Response) (record *PivotOrg, err error) {
 	orgname := getOrgNameFromEmail(s.username)
-	guid := s.parseGUID(res)
+	guid := s.parseOrgGUID(res)
 	record = &PivotOrg{
 		Email:   s.username,
 		OrgName: orgname,
