@@ -20,6 +20,8 @@ const (
 	OrgCreateEndpoint = "/v2/organizations"
 	//ListUsersEndpoint - get a list of all users in paas
 	ListUsersEndpoint = "/v2/users"
+	//GetApiInfo - the endpoint to grab api info data
+	GetAPIInfo = "/v2/info"
 )
 
 var (
@@ -35,6 +37,7 @@ type (
 		tokens     oauth2.Tokens
 		store      persistence
 		authClient authRequestCreator
+		apiInfo    map[string]interface{}
 	}
 	//APIResponse - cc http response object
 	APIResponse struct {
@@ -62,11 +65,6 @@ func newOrg(username string, log *log.Logger, tokens oauth2.Tokens, store persis
 		store:      store,
 		authClient: authClient,
 	}
-
-	if err := s.setCurrentUserGUID(); err != nil {
-		log.Println("Could not find user guid: ", err)
-	}
-	log.Println("Request came in for guid: ", s.userGUID)
 	return s
 }
 
@@ -74,42 +72,56 @@ func (s *orgManager) Show() (result *PivotOrg, err error) {
 	result = new(PivotOrg)
 	userInfo := GetUserInfo(s.tokens)
 	NewUserMatch().UserInfo(userInfo).UserName(s.username).OnSuccess(func() {
-		log.Println("getting userInfo: ", userInfo)
-		log.Println("result value: ", result)
+		s.log.Println("getting userInfo: ", userInfo)
+		s.log.Println("result value: ", result)
 		err = s.store.FindOne(bson.M{EmailFieldName: s.username}, result)
-		log.Println("response: ", result, err)
+		s.log.Println("response: ", result, err)
 	}).OnFailure(func() {
-		log.Println(ErrCantCallAcrossUsers.Error())
+		s.log.Println(ErrCantCallAcrossUsers.Error())
 		err = ErrCantCallAcrossUsers
 	}).Run()
 	return
 }
 
-func (s *orgManager) setCurrentUserGUID() (err error) {
-	s.log.Println("setCurrentUserGUID")
+func (s *orgManager) setApiInfo() {
+	if s.apiInfo == nil {
+		s.authRequestor("GET", nil, GetAPIInfo, SuccessStatus, func(res *http.Response) {
+			b, _ := ioutil.ReadAll(res.Body)
+			json.Unmarshal(b, s.apiInfo)
+		}, func(res *http.Response, e error) {
+			s.log.Println("error: ", e)
+		})
+	}
+}
+
+func (s *orgManager) getAuthEnpoint() string {
+	s.setApiInfo()
+	return s.apiInfo["authorization_endpoint"].(string)
+}
+
+func (s *orgManager) addRoles() (err error) {
+	s.log.Println("we still need to implement role creation")
 	return
 }
 
 func (s *orgManager) Create() (record *PivotOrg, err error) {
 	var (
-		res  *http.Response
-		req  *http.Request
 		data = map[string]string{
 			"name": getOrgNameFromEmail(s.username),
 		}
 	)
 
-	if req, err = s.authClient.CreateAuthRequest("POST", s.authClient.CCTarget(), OrgCreateEndpoint, data); err == nil {
+	s.authRequestor("POST", data, OrgCreateEndpoint, OrgCreateSuccessStatusCode, func(res *http.Response) {
+		s.log.Println("we created the org successfully")
 
-		if res, err = s.authClient.HttpClient().Do(req); res.StatusCode == OrgCreateSuccessStatusCode && err == nil {
-			defer res.Body.Close()
+		if err = s.addRoles(); err == nil {
 			record, err = s.upsert(res)
-
-		} else {
-			record = new(PivotOrg)
-			err = ErrOrgCreateAPICallFailure
 		}
-	}
+	}, func(res *http.Response, e error) {
+		s.log.Println("call to create org api failed")
+		record = new(PivotOrg)
+		err = ErrOrgCreateAPICallFailure
+	})
 	return
 }
 
@@ -129,8 +141,27 @@ func (s *orgManager) upsert(res *http.Response) (record *PivotOrg, err error) {
 		OrgName: orgname,
 		OrgGUID: guid,
 	}
-	s.store.Upsert(bson.M{EmailFieldName: s.username}, record)
+	err = s.store.Upsert(bson.M{EmailFieldName: s.username}, record)
 	return
+}
+
+func (s *orgManager) authRequestor(verb string, data map[string]string, path string, successCode int, callback func(*http.Response), callbackFail func(*http.Response, error)) {
+	var (
+		req *http.Request
+		res *http.Response
+		err error
+	)
+
+	if req, err = s.authClient.CreateAuthRequest(verb, s.authClient.CCTarget(), path, data); err == nil {
+
+		if res, err = s.authClient.HttpClient().Do(req); res.StatusCode == successCode && err == nil {
+			defer res.Body.Close()
+			callback(res)
+
+		} else {
+			callbackFail(res, err)
+		}
+	}
 }
 
 func getOrgNameFromEmail(email string) (orgName string) {
