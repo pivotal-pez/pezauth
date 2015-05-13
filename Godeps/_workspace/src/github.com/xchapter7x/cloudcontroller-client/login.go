@@ -90,21 +90,18 @@ func (s *Client) CreateAuthRequest(verb, requestURL, path string, args interface
 	return req, err
 }
 
-func (s *Client) ParseDataAsString(b bool) {
-	s.isStringData = b
-}
-
 func (s *Client) createRequestData(requestURL string, path string, postData interface{}) (apiUrl string, dataBuf *bytes.Buffer) {
 	data := url.Values{}
 
 	if postData != nil {
 
-		if s.isStringData {
-			dataBuf = bytes.NewBufferString(postData.(string))
+		if d, ok := postData.(string); ok {
+			dataBuf = bytes.NewBufferString(d)
+		}
 
-		} else {
+		if d, ok := postData.(map[string]string); ok {
 
-			for i, v := range postData.(map[string]string) {
+			for i, v := range d {
 				data.Add(i, v)
 			}
 			dataBuf = bytes.NewBufferString(data.Encode())

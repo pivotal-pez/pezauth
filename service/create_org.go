@@ -99,8 +99,41 @@ func (s *orgManager) getAuthEnpoint() string {
 	return s.apiInfo["authorization_endpoint"].(string)
 }
 
+func (s *orgManager) getUserGUID() (guid string, err error) {
+	data := map[string]string{
+		"attributes": "id",
+		"filter":     s.username,
+	}
+
+	s.authRequestor("POST", data, OrgCreateEndpoint, OrgCreateSuccessStatusCode, func(res *http.Response) {
+		s.log.Println("we have a user guid!")
+
+	}, func(res *http.Response, e error) {
+		s.log.Println("call for user guid failed :(")
+
+	})
+	return
+}
+
 func (s *orgManager) addRoles(orgGUID string) (err error) {
-	s.log.Println("we still need to implement role creation", orgGUID)
+	var (
+		guid string
+		data = map[string]string{
+			"attributes": "id",
+			"filter":     s.username,
+		}
+	)
+	s.log.Println("creating a role for orgguid: ", orgGUID)
+
+	if guid, err = s.getUserGUID(); err == nil {
+		s.authRequestor("POST", data, OrgCreateEndpoint, OrgCreateSuccessStatusCode, func(res *http.Response) {
+			s.log.Println("we have a user role!", guid)
+
+		}, func(res *http.Response, e error) {
+			s.log.Println("call for user role failed :(", e)
+
+		})
+	}
 	return
 }
 
@@ -149,7 +182,6 @@ func (s *orgManager) authRequestor(verb string, data interface{}, path string, s
 		res *http.Response
 		err error
 	)
-	s.authClient.ParseDataAsString(true)
 
 	if req, err = s.authClient.CreateAuthRequest(verb, s.authClient.CCTarget(), path, data); err == nil {
 

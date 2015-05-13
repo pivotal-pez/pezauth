@@ -86,7 +86,7 @@
 		},
 		{
 			"ImportPath": "github.com/xchapter7x/cloudcontroller-client",
-			"Rev": "7789de0ef3b8cb07ccbd22b00c0aa14ea98538ec"
+			"Rev": "5a4759ba07e864a25ae1ceda37131ee51d3601bb"
 		},
 		{
 			"ImportPath": "github.com/xchapter7x/goutil",

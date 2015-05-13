@@ -27,7 +27,6 @@ type authRequestCreator interface {
 	CreateAuthRequest(verb, requestURL, path string, args interface{}) (*http.Request, error)
 	CCTarget() string
 	HttpClient() ccclient.ClientDoer
-	ParseDataAsString(b bool)
 }
 
 func genericResponseFormatter(r render.Render, apikey string, payload map[string]interface{}, extErr error) {
