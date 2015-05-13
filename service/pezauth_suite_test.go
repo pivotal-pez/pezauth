@@ -235,6 +235,10 @@ func (s *mockHeritageClient) HttpClient() ccclient.ClientDoer {
 	}
 }
 
+func (s *mockHeritageClient) ParseDataAsString(b bool) {
+
+}
+
 type mockClientDoer struct {
 	req *http.Request
 	res *http.Response
