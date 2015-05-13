@@ -106,9 +106,7 @@ func (s *orgManager) addRoles() (err error) {
 
 func (s *orgManager) Create() (record *PivotOrg, err error) {
 	var (
-		data = map[string]string{
-			"name": getOrgNameFromEmail(s.username),
-		}
+		data = map[string]string{"abc": fmt.Sprintf(`{"name":"%s"}`, getOrgNameFromEmail(s.username))}
 	)
 
 	s.authRequestor("POST", data, OrgCreateEndpoint, OrgCreateSuccessStatusCode, func(res *http.Response) {
@@ -120,6 +118,9 @@ func (s *orgManager) Create() (record *PivotOrg, err error) {
 	}, func(res *http.Response, e error) {
 		s.log.Println("call to create org api failed")
 		record = new(PivotOrg)
+		s.log.Println("we are seeing this type of error: ", e)
+		b, _ := ioutil.ReadAll(res.Body)
+		s.log.Println("we are seeing this type of response: ", string(b[:]))
 		err = ErrOrgCreateAPICallFailure
 	})
 	return
@@ -151,6 +152,7 @@ func (s *orgManager) authRequestor(verb string, data map[string]string, path str
 		res *http.Response
 		err error
 	)
+	s.authClient.ParseDataAsString(true)
 
 	if req, err = s.authClient.CreateAuthRequest(verb, s.authClient.CCTarget(), path, data); err == nil {
 

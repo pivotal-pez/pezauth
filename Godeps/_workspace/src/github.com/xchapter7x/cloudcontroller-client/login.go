@@ -26,10 +26,11 @@ const (
 //New - creates a new cloud controller client
 func New(loginurl, user, pass string, client ClientDoer) *Client {
 	return &Client{
-		loginurl: loginurl,
-		user:     user,
-		pass:     pass,
-		client:   client,
+		loginurl:     loginurl,
+		user:         user,
+		pass:         pass,
+		client:       client,
+		isStringData: false,
 	}
 }
 
@@ -51,6 +52,7 @@ type (
 		pass         string
 		loginurl     string
 		client       ClientDoer
+		isStringData bool
 	}
 )
 
@@ -72,7 +74,7 @@ func (s *Client) Login() (*Client, error) {
 
 //CreateRequest - Creates a request object targeted at the cloud controller
 func (s *Client) CreateRequest(verb, requestURL, path string, args map[string]string) (*http.Request, error) {
-	urlStr, dataBuf := s.createRequestData(requestURL, RouteLogin, args)
+	urlStr, dataBuf := s.createRequestData(requestURL, path, args)
 	return http.NewRequest(verb, urlStr, dataBuf)
 }
 
@@ -88,19 +90,32 @@ func (s *Client) CreateAuthRequest(verb, requestURL, path string, args map[strin
 	return req, err
 }
 
+func (s *Client) ParseDataAsString(b bool) {
+	s.isStringData = b
+}
+
 func (s *Client) createRequestData(requestURL string, path string, postData map[string]string) (apiUrl string, dataBuf *bytes.Buffer) {
 	data := url.Values{}
 
 	if postData != nil {
 
-		for i, v := range postData {
-			data.Add(i, v)
+		if s.isStringData {
+
+			for _, v := range postData {
+				dataBuf = bytes.NewBufferString(v)
+			}
+
+		} else {
+
+			for i, v := range postData {
+				data.Add(i, v)
+			}
+			dataBuf = bytes.NewBufferString(data.Encode())
 		}
 	}
 	u, _ := url.ParseRequestURI(requestURL)
 	u.Path = path
 	apiUrl = fmt.Sprintf("%v", u)
-	dataBuf = bytes.NewBufferString(data.Encode())
 	return
 }
 

@@ -89,6 +89,7 @@ func main() {
 				defer session.Close()
 				session.SetMode(mgo.Monotonic, true)
 				mongoConn := session.DB(mongoDBName).C(mongoCollName)
+
 				heritageClient := &heritage{
 					Client:   ccclient.New(heritageLoginTarget, heritageLoginUser, heritageLoginPass, new(http.Client)),
 					ccTarget: heritageCCTarget,
