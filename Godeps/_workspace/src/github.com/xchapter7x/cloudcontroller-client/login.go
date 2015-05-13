@@ -73,7 +73,7 @@ func (s *Client) Login() (*Client, error) {
 }
 
 //CreateRequest - Creates a request object targeted at the cloud controller
-func (s *Client) CreateRequest(verb, requestURL, path string, args map[string]string) (*http.Request, error) {
+func (s *Client) CreateRequest(verb, requestURL, path string, args interface{}) (*http.Request, error) {
 	urlStr, dataBuf := s.createRequestData(requestURL, path, args)
 	return http.NewRequest(verb, urlStr, dataBuf)
 }
@@ -84,7 +84,7 @@ func (s *Client) HttpClient() ClientDoer {
 }
 
 //CreateAuthRequest - Creates a request w/ auth token added to the header to allow authenticated calls to the cloud controller
-func (s *Client) CreateAuthRequest(verb, requestURL, path string, args map[string]string) (*http.Request, error) {
+func (s *Client) CreateAuthRequest(verb, requestURL, path string, args interface{}) (*http.Request, error) {
 	req, err := s.CreateRequest(verb, requestURL, path, args)
 	req.Header.Add(HeaderAuth, fmt.Sprintf("%s %s", s.TokenType, s.AccessToken))
 	return req, err
@@ -94,20 +94,17 @@ func (s *Client) ParseDataAsString(b bool) {
 	s.isStringData = b
 }
 
-func (s *Client) createRequestData(requestURL string, path string, postData map[string]string) (apiUrl string, dataBuf *bytes.Buffer) {
+func (s *Client) createRequestData(requestURL string, path string, postData interface{}) (apiUrl string, dataBuf *bytes.Buffer) {
 	data := url.Values{}
 
 	if postData != nil {
 
 		if s.isStringData {
-
-			for _, v := range postData {
-				dataBuf = bytes.NewBufferString(v)
-			}
+			dataBuf = bytes.NewBufferString(postData.(string))
 
 		} else {
 
-			for i, v := range postData {
+			for i, v := range postData.(map[string]string) {
 				data.Add(i, v)
 			}
 			dataBuf = bytes.NewBufferString(data.Encode())

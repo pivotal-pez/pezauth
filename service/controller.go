@@ -24,7 +24,7 @@ type Controller interface {
 }
 
 type authRequestCreator interface {
-	CreateAuthRequest(verb, requestURL, path string, args map[string]string) (*http.Request, error)
+	CreateAuthRequest(verb, requestURL, path string, args interface{}) (*http.Request, error)
 	CCTarget() string
 	HttpClient() ccclient.ClientDoer
 	ParseDataAsString(b bool)

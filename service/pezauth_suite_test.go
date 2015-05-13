@@ -221,7 +221,7 @@ type mockHeritageClient struct {
 	res *http.Response
 }
 
-func (s *mockHeritageClient) CreateAuthRequest(verb, requestURL, path string, args map[string]string) (*http.Request, error) {
+func (s *mockHeritageClient) CreateAuthRequest(verb, requestURL, path string, args interface{}) (*http.Request, error) {
 	return &http.Request{}, nil
 }
 
