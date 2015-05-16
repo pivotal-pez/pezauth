@@ -31,7 +31,8 @@ var (
 	allowedDomains      = []string{
 		"pivotal.io",
 	}
-	OauthConfig *goauth2.Config
+	OauthConfig     *goauth2.Config
+	userObjectCache = make(map[string]map[string]interface{})
 )
 
 func isBlockedDomain(domain string) bool {
@@ -100,10 +101,15 @@ var GetUserInfo = func(tokens oauth2.Tokens) (userObject map[string]interface{})
 }
 
 func addUserObjectToCache(tokens oauth2.Tokens, userObject map[string]interface{}) (err error) {
+	userObjectCache[tokens.Access()] = userObject
 	return
 }
 
 func getUserInfoCached(tokens oauth2.Tokens) (userObject map[string]interface{}) {
+
+	if val, ok := userObjectCache[tokens.Access()]; ok {
+		userObject = val
+	}
 	return
 }
 
@@ -120,6 +126,7 @@ func getUserInfo(tokens oauth2.Tokens) (userObject map[string]interface{}) {
 	defer resp.Body.Close()
 	body, _ := ioutil.ReadAll(resp.Body)
 	json.Unmarshal(body, &userObject)
+	addUserObjectToCache(tokens, userObject)
 	return
 }
 

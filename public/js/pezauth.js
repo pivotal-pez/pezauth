@@ -11,7 +11,8 @@ var pezAuth = angular.module('pezAuth', [], function($interpolateProvider) {
     var messaging = {
       "hasOrgBtn": "View Org Now",
       "createOrgBtn": "Create Your Org Now",
-      "noApiKey": "You don't have a key yet"
+      "noApiKey": "You don't have a key yet",
+      "loading": "Loading... Please Wait"
     };
     var urls = {
       "okta": "http://login.run.pez.pivotal.io/saml/login/alias/login.run.pez.pivotal.io?disco=true"
@@ -36,13 +37,14 @@ var pezAuth = angular.module('pezAuth', [], function($interpolateProvider) {
     };
 
     pauth.createorg = function() {
-
-      if ($scope.orgButtonText === messaging.createOrgBtn) {
+      
+      if ($scope.orgButtonText === messaging.createOrgBtn) {        
         createOrg(getOrgRestUri());
         
       } else if ($scope.orgButtonText === messaging.hasOrgBtn) {
         $window.location.href = urls.okta;
       }
+      $scope.orgButtonText = messaging.loading;
     };
    
     pauth.create = function() {
