@@ -19,7 +19,7 @@ const (
 	//OrgCreateEndpoint - the endpoint to hit for org creation in the cc api
 	OrgCreateEndpoint = "/v2/organizations"
 	//ListUsersEndpoint - get a list of all users in paas
-	ListUsersEndpoint = "/v2/users"
+	ListUsersEndpoint = "/Users"
 	//GetApiInfo - the endpoint to grab api info data
 	GetAPIInfo = "/v2/info"
 )
@@ -55,6 +55,10 @@ type (
 	APIResponseList struct {
 		Resources []APIResponse `json:"resources"`
 	}
+	//UserAPIResponse - the user api response object
+	UserAPIResponse struct {
+		Resources []map[string]interface{}
+	}
 )
 
 func newOrg(username string, log *log.Logger, tokens oauth2.Tokens, store persistence, authClient authRequestCreator) *orgManager {
@@ -84,32 +88,73 @@ func (s *orgManager) Show() (result *PivotOrg, err error) {
 }
 
 func (s *orgManager) setApiInfo() {
+
 	if s.apiInfo == nil {
-		s.authRequestor("GET", nil, GetAPIInfo, SuccessStatus, func(res *http.Response) {
+		s.authRequestor(s.authClient.CCTarget(), "GET", "", GetAPIInfo, SuccessStatus, func(res *http.Response) {
+			defer res.Body.Close()
 			b, _ := ioutil.ReadAll(res.Body)
-			json.Unmarshal(b, s.apiInfo)
+			json.Unmarshal(b, &s.apiInfo)
+			s.log.Println(s.apiInfo)
+			s.log.Println(string(b[:]))
+
 		}, func(res *http.Response, e error) {
-			s.log.Println("error: ", e)
+			b, _ := ioutil.ReadAll(res.Body)
+			s.log.Println("error: ", e, string(b[:]))
 		})
+	} else {
+		s.log.Println("wtf is going on here")
 	}
 }
 
-func (s *orgManager) getAuthEnpoint() string {
+func (s *orgManager) getAuthEnpoint() (endpoint string) {
 	s.setApiInfo()
-	return s.apiInfo["authorization_endpoint"].(string)
+
+	switch authEndpoint := s.apiInfo["authorization_endpoint"].(type) {
+	case string:
+		endpoint = authEndpoint
+	}
+	return
+}
+
+func (s *orgManager) getUAAEnpoint() (endpoint string) {
+	s.setApiInfo()
+
+	switch tokenEndpoint := s.apiInfo["token_endpoint"].(type) {
+	case string:
+		endpoint = tokenEndpoint
+	}
+	return
 }
 
 func (s *orgManager) getUserGUID() (guid string, err error) {
-	data := map[string]string{
-		"attributes": "id",
-		"filter":     s.username,
-	}
+	var (
+		userResponse UserAPIResponse
+		data         = map[string]string{
+			"attributes": "id,userName",
+			//"filter":     fmt.Sprintf("userName Eq %s", s.username),
+		}
+	)
 
-	s.authRequestor("POST", data, OrgCreateEndpoint, OrgCreateSuccessStatusCode, func(res *http.Response) {
-		s.log.Println("we have a user guid!")
+	s.authRequestor(s.getUAAEnpoint(), "GET", data, ListUsersEndpoint, SuccessStatus, func(res *http.Response) {
+		defer res.Body.Close()
+		b, _ := ioutil.ReadAll(res.Body)
+		json.Unmarshal(b, &userResponse)
+
+		for _, resource := range userResponse.Resources {
+
+			switch id := resource["id"].(type) {
+			case string:
+
+				if resource["userName"] == s.username {
+					guid = id
+					s.log.Println("we have a user guid!", guid)
+				}
+			}
+		}
 
 	}, func(res *http.Response, e error) {
-		s.log.Println("call for user guid failed :(")
+		b, _ := ioutil.ReadAll(res.Body)
+		s.log.Println("call for user guid failed :(", e, string(b[:]))
 
 	})
 	return
@@ -117,24 +162,28 @@ func (s *orgManager) getUserGUID() (guid string, err error) {
 
 func (s *orgManager) addRoles(orgGUID string) (err error) {
 	var (
-		guid string
-		data = map[string]string{
-			"attributes": "id",
-			"filter":     s.username,
-		}
+		userGUID string
 	)
 	s.log.Println("creating a role for orgguid: ", orgGUID)
 
-	if guid, err = s.getUserGUID(); err == nil {
-		s.authRequestor("POST", data, OrgCreateEndpoint, OrgCreateSuccessStatusCode, func(res *http.Response) {
-			s.log.Println("we have a user role!", guid)
-
-		}, func(res *http.Response, e error) {
-			s.log.Println("call for user role failed :(", e)
-
-		})
+	if userGUID, err = s.getUserGUID(); err == nil {
+		managerPath := fmt.Sprintf("/v2/organizations/%s/managers/%s", orgGUID, userGUID)
+		usersPath := fmt.Sprintf("/v2/organizations/%s/users/%s", orgGUID, userGUID)
+		s.addRoleFromPath(managerPath)
+		s.addRoleFromPath(usersPath)
 	}
 	return
+}
+
+func (s *orgManager) addRoleFromPath(rolePath string) {
+	s.authRequestor(s.authClient.CCTarget(), "PUT", "", rolePath, OrgCreateSuccessStatusCode, func(res *http.Response) {
+		s.log.Println("we have a role!", rolePath)
+
+	}, func(res *http.Response, e error) {
+		b, _ := ioutil.ReadAll(res.Body)
+		s.log.Println("call for role failed :(", rolePath, e, res.StatusCode, string(b[:]))
+
+	})
 }
 
 func (s *orgManager) Create() (record *PivotOrg, err error) {
@@ -142,7 +191,7 @@ func (s *orgManager) Create() (record *PivotOrg, err error) {
 		data = fmt.Sprintf(`{"name":"%s"}`, getOrgNameFromEmail(s.username))
 	)
 
-	s.authRequestor("POST", data, OrgCreateEndpoint, OrgCreateSuccessStatusCode, func(res *http.Response) {
+	s.authRequestor(s.authClient.CCTarget(), "POST", data, OrgCreateEndpoint, OrgCreateSuccessStatusCode, func(res *http.Response) {
 		s.log.Println("we created the org successfully")
 		guid := s.parseOrgGUID(res)
 
@@ -176,20 +225,24 @@ func (s *orgManager) upsert(orgGUID string) (record *PivotOrg, err error) {
 	return
 }
 
-func (s *orgManager) authRequestor(verb string, data interface{}, path string, successCode int, callback func(*http.Response), callbackFail func(*http.Response, error)) {
+func (s *orgManager) authRequestor(url string, verb string, data interface{}, path string, successCode int, callback func(*http.Response), callbackFail func(*http.Response, error)) {
 	var (
 		req *http.Request
 		res *http.Response
 		err error
 	)
+	s.log.Println("making rest call to: ", url, "-", verb, "-", data, "-", path)
 
-	if req, err = s.authClient.CreateAuthRequest(verb, s.authClient.CCTarget(), path, data); err == nil {
+	if req, err = s.authClient.CreateAuthRequest(verb, url, path, data); err == nil {
+		s.log.Println("we created the decorated request")
 
 		if res, err = s.authClient.HttpClient().Do(req); res.StatusCode == successCode && err == nil {
+			s.log.Println("we are now going to execute the success callback")
 			defer res.Body.Close()
 			callback(res)
 
 		} else {
+			s.log.Println("we are now going to execute the failure callback")
 			callbackFail(res, err)
 		}
 	}

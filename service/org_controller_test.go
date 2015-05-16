@@ -68,7 +68,7 @@ var _ = Describe("NewOrgController", func() {
 			BeforeEach(func() {
 				orgPut = NewOrgController(&mockPersistence{
 					err:    ErrNoMatchInStore,
-					result: nil,
+					result: "",
 				}, &mockHeritageClient{
 					res: &http.Response{
 						StatusCode: OrgCreateSuccessStatusCode,
