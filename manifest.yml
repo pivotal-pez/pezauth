@@ -24,6 +24,8 @@ applications:
     MONGO_URI_NAME: uri
     MONGO_COLLECTION_NAME: org_users
     NEWRELIC_SERVICE_NAME: pez-heritage-newrelic
+    NEWRELIC_KEY_NAME: newrelic-key
+    NEWRELIC_APP_NAME: newrelic-app
   #env:
     #TGL_FEATURE1: false
     #TGL_FEATURE2: false
