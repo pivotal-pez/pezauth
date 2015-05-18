@@ -55,6 +55,16 @@
             "login-user": "jcalabrese@pivotal.io"
           },
           "syslog_drain_url": ""
+        },
+        {
+          "name": "pez-heritage-newrelic",
+          "label": "user-provided",
+          "tags": [],
+          "credentials": {
+            "newrelic-app": "pezauthdev",
+            "newrelic-key": "xxxxxxxxxxxxxxxxxxxxxxxxx"
+          },
+          "syslog_drain_url": ""
         }
       ]
     }

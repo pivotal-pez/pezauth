@@ -14,4 +14,7 @@ REDIS_PORT_NAME="port" \
 VCAP_APPLICATION=`cat service/vcap_application.local` \
 VCAP_SERVICES=`cat ~/vcap_services.local` \
 PORT=3000 \
+NEWRELIC_SERVICE_NAME=pez-heritage-newrelic \
+NEWRELIC_KEY_NAME=newrelic-key \
+NEWRELIC_APP_NAME=newrelic-app \
 godep go run main.go
