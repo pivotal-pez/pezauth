@@ -9,6 +9,7 @@ import (
 	cfenv "github.com/cloudfoundry-community/go-cfenv"
 	"github.com/garyburd/redigo/redis"
 	"github.com/go-martini/martini"
+	"github.com/martini-contrib/gorelic"
 	pez "github.com/pivotalservices/pezauth/service"
 	"github.com/xchapter7x/cloudcontroller-client"
 	"gopkg.in/mgo.v2"
@@ -50,8 +51,17 @@ func main() {
 	heritageLoginUserName := os.Getenv("HERITAGE_LOGIN_USER_NAME")
 	heritageLoginPassName := os.Getenv("HERITAGE_LOGIN_PASS_NAME")
 	heritageCCTargetName := os.Getenv("HERITAGE_CC_TARGET_NAME")
+	newrelicServiceName := os.Getenv("NEWRELIC_SERVICE_NAME")
+	newrelicKeyName := os.Getenv("NEWRELIC_KEY_NAME")
+	newrelicAppName := os.Getenv("NEWRELIC_APP_NAME")
+	newrelicService, err := appEnv.Services.WithName(newrelicServiceName)
 
+	if err != nil {
+		panic(err.Error())
+	}
 	m := martini.Classic()
+	gorelic.InitNewrelicAgent(newrelicService.Credentials[newrelicKeyName], newrelicService.Credentials[newrelicAppName], true)
+	m.Use(gorelic.Handler)
 	redisService, err := appEnv.Services.WithName(redisName)
 
 	if err != nil {

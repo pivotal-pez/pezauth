@@ -2,7 +2,7 @@ cf cups pezvalidator-service -p '{"target-url": "https://pezauthdev.cfapps.io/va
 cf cups pez-heritage-admin-service -p "login-target, login-user, login-pass, cc-target"
 cf cups pezauth-redis -p "hostname, password, port"
 cf cups pezauth-mongo -p "uri"
-
+cf cups pez-heritage-newrelic -p "newrelic-app, newrelic-key"
 
 
 
