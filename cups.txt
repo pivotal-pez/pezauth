@@ -3,6 +3,3 @@ cf cups pez-heritage-admin-service -p "login-target, login-user, login-pass, cc-
 cf cups pezauth-redis -p "hostname, password, port"
 cf cups pezauth-mongo -p "uri"
 cf cups pez-heritage-newrelic -p "newrelic-app, newrelic-key"
-
-
-

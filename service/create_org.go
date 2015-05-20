@@ -233,6 +233,10 @@ func (s *orgManager) authRequestor(url string, verb string, data interface{}, pa
 	)
 	s.log.Println("making rest call to: ", url, "-", verb, "-", data, "-", path)
 
+	if _, err = s.authClient.Login(); err != nil {
+		callbackFail(res, err)
+	}
+
 	if req, err = s.authClient.CreateAuthRequest(verb, url, path, data); err == nil {
 		s.log.Println("we created the decorated request")
 

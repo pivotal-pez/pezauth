@@ -235,6 +235,10 @@ func (s *mockHeritageClient) HttpClient() ccclient.ClientDoer {
 	}
 }
 
+func (s *mockHeritageClient) Login() (c *ccclient.Client, err error) {
+	return
+}
+
 type mockClientDoer struct {
 	req *http.Request
 	res *http.Response
