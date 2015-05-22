@@ -36,7 +36,7 @@ type Response struct {
 }
 
 //InitRoutes - initialize the mappings for controllers against valid routes
-func InitRoutes(m *martini.ClassicMartini, redisConn Doer, mongoConn mongoCollection, authClient authRequestCreator) {
+func InitRoutes(m *martini.ClassicMartini, redisConn Doer, mongoConn mongoCollection, authClient AuthRequestCreator) {
 	setOauthConfig()
 	keyGen := NewKeyGen(redisConn, &GUIDMake{})
 	m.Use(render.Renderer())

@@ -23,7 +23,7 @@ type Controller interface {
 	Delete() interface{}
 }
 
-type authRequestCreator interface {
+type AuthRequestCreator interface {
 	CreateAuthRequest(verb, requestURL, path string, args interface{}) (*http.Request, error)
 	CCTarget() string
 	HttpClient() ccclient.ClientDoer

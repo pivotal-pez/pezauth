@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -257,3 +258,38 @@ type nopCloser struct {
 }
 
 func (nopCloser) Close() error { return nil }
+
+func getMockNewOrg(showP, createP, safeCreateP *PivotOrg, showErr, createErr, safeCreateErr error) func(username string, log *log.Logger, tokens oauth2.Tokens, store Persistence, authClient AuthRequestCreator) OrgManager {
+	return func(username string, log *log.Logger, tokens oauth2.Tokens, store Persistence, authClient AuthRequestCreator) OrgManager {
+		s := &mockNewOrg{
+			showP:         showP,
+			createP:       createP,
+			safeCreateP:   safeCreateP,
+			showErr:       showErr,
+			createErr:     createErr,
+			safeCreateErr: safeCreateErr,
+		}
+		return s
+	}
+}
+
+type mockNewOrg struct {
+	showErr       error
+	createErr     error
+	safeCreateErr error
+	showP         *PivotOrg
+	createP       *PivotOrg
+	safeCreateP   *PivotOrg
+}
+
+func (s *mockNewOrg) Show() (result *PivotOrg, err error) {
+	return s.showP, s.showErr
+}
+
+func (s *mockNewOrg) Create() (record *PivotOrg, err error) {
+	return s.createP, s.createErr
+}
+
+func (s *mockNewOrg) SafeCreate() (record *PivotOrg, err error) {
+	return s.safeCreateP, s.safeCreateErr
+}

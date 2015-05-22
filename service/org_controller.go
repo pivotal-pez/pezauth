@@ -34,7 +34,7 @@ type (
 )
 
 type (
-	persistence interface {
+	Persistence interface {
 		FindOne(query interface{}, result interface{}) (err error)
 		Upsert(selector interface{}, update interface{}) (err error)
 	}
@@ -46,13 +46,13 @@ type (
 	}
 	orgController struct {
 		Controller
-		store      persistence
-		authClient authRequestCreator
+		store      Persistence
+		authClient AuthRequestCreator
 	}
 )
 
 //NewOrgController - a controller for me requests
-func NewOrgController(c persistence, authClient authRequestCreator) Controller {
+func NewOrgController(c Persistence, authClient AuthRequestCreator) Controller {
 	return &orgController{
 		store:      c,
 		authClient: authClient,
@@ -63,7 +63,7 @@ func NewOrgController(c persistence, authClient authRequestCreator) Controller {
 func (s *orgController) Get() interface{} {
 	var handler OrgGetHandler = func(params martini.Params, log *log.Logger, r render.Render, tokens oauth2.Tokens) {
 		username := params[UserParam]
-		org := newOrg(username, log, tokens, s.store, s.authClient)
+		org := NewOrg(username, log, tokens, s.store, s.authClient)
 		result, err := org.Show()
 		genericResponseFormatter(r, "", structs.Map(result), err)
 	}
@@ -79,10 +79,10 @@ func (s *orgController) Put() interface{} {
 			responsePayload map[string]interface{}
 		)
 		username := params[UserParam]
-		org := newOrg(username, log, tokens, s.store, s.authClient)
+		org := NewOrg(username, log, tokens, s.store, s.authClient)
 
 		if _, err = org.Show(); err == ErrNoMatchInStore {
-			payload, err = org.Create()
+			payload, err = org.SafeCreate()
 			responsePayload = structs.Map(payload)
 
 		} else {

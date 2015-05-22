@@ -8,12 +8,12 @@ type (
 		Upsert(selector interface{}, update interface{}) (info *mgo.ChangeInfo, err error)
 	}
 	mongoCollectionWrapper struct {
-		persistence
+		Persistence
 		col mongoCollection
 	}
 )
 
-func newMongoCollectionWrapper(c mongoCollection) persistence {
+func newMongoCollectionWrapper(c mongoCollection) Persistence {
 	return &mongoCollectionWrapper{
 		col: c,
 	}

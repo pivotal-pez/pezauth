@@ -57,6 +57,7 @@ var _ = Describe("NewOrgController", func() {
 
 		Context("when email is not in the system", func() {
 			var orgPut OrgPutHandler
+			var oldNewOrg = NewOrg
 			tokens := &mockTokens{}
 			result := PivotOrg{
 				Email:   fakeUser,
@@ -66,6 +67,7 @@ var _ = Describe("NewOrgController", func() {
 			controlResponse := Response{Payload: structs.Map(result)}
 
 			BeforeEach(func() {
+				NewOrg = getMockNewOrg(nil, &result, &result, ErrNoMatchInStore, nil, nil)
 				orgPut = NewOrgController(&mockPersistence{
 					err:    ErrNoMatchInStore,
 					result: "",
@@ -75,6 +77,10 @@ var _ = Describe("NewOrgController", func() {
 						Body:       nopCloser{bytes.NewBufferString(successOrgCreateBody)},
 					},
 				}).Put().(OrgPutHandler)
+			})
+
+			AfterEach(func() {
+				NewOrg = oldNewOrg
 			})
 
 			It("should create a new org record", func() {
@@ -99,7 +105,10 @@ var _ = Describe("NewOrgController", func() {
 				err:    ErrNoMatchInStore,
 				result: nil,
 			}, &mockHeritageClient{
-				res: &http.Response{StatusCode: 403},
+				res: &http.Response{
+					StatusCode: 403,
+					Body:       nopCloser{bytes.NewBufferString(`random test response`)},
+				},
 			}).Put().(OrgPutHandler)
 
 			It("should return an error response", func() {
@@ -108,7 +117,6 @@ var _ = Describe("NewOrgController", func() {
 				Ω(render.ResponseObject).ShouldNot(Equal(controlResponse))
 			})
 		})
-
 	})
 
 	Describe("Get Control handler", func() {

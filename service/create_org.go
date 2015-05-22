@@ -27,16 +27,23 @@ const (
 var (
 	//ErrOrgCreateAPICallFailure - error for failed call to create org endpoint
 	ErrOrgCreateAPICallFailure = errors.New("failed to create org on api call")
+	//ErrNoUserFound - error no user found
+	ErrNoUserFound = errors.New("no matching user found in system")
 )
 
 type (
+	OrgManager interface {
+		Show() (result *PivotOrg, err error)
+		Create() (record *PivotOrg, err error)
+		SafeCreate() (record *PivotOrg, err error)
+	}
 	orgManager struct {
 		username   string
 		userGUID   string
 		log        *log.Logger
 		tokens     oauth2.Tokens
-		store      persistence
-		authClient authRequestCreator
+		store      Persistence
+		authClient AuthRequestCreator
 		apiInfo    map[string]interface{}
 	}
 	//APIResponse - cc http response object
@@ -61,7 +68,7 @@ type (
 	}
 )
 
-func newOrg(username string, log *log.Logger, tokens oauth2.Tokens, store persistence, authClient authRequestCreator) *orgManager {
+var NewOrg = func(username string, log *log.Logger, tokens oauth2.Tokens, store Persistence, authClient AuthRequestCreator) OrgManager {
 	s := &orgManager{
 		username:   username,
 		log:        log,
@@ -131,7 +138,6 @@ func (s *orgManager) getUserGUID() (guid string, err error) {
 		userResponse UserAPIResponse
 		data         = map[string]string{
 			"attributes": "id,userName",
-			//"filter":     fmt.Sprintf("userName Eq %s", s.username),
 		}
 	)
 
@@ -155,8 +161,11 @@ func (s *orgManager) getUserGUID() (guid string, err error) {
 	}, func(res *http.Response, e error) {
 		b, _ := ioutil.ReadAll(res.Body)
 		s.log.Println("call for user guid failed :(", e, string(b[:]))
-
 	})
+
+	if guid == "" {
+		err = ErrNoUserFound
+	}
 	return
 }
 
@@ -166,7 +175,7 @@ func (s *orgManager) addRoles(orgGUID string) (err error) {
 	)
 	s.log.Println("creating a role for orgguid: ", orgGUID)
 
-	if userGUID, err = s.getUserGUID(); err == nil {
+	if userGUID, err = s.getUserGUID(); err == nil && userGUID != "" {
 		managerPath := fmt.Sprintf("/v2/organizations/%s/managers/%s", orgGUID, userGUID)
 		usersPath := fmt.Sprintf("/v2/organizations/%s/users/%s", orgGUID, userGUID)
 		s.addRoleFromPath(managerPath)
@@ -186,6 +195,18 @@ func (s *orgManager) addRoleFromPath(rolePath string) {
 	})
 }
 
+//SafeCreate - will check a user exists in uaa before trying to create their org
+func (s *orgManager) SafeCreate() (record *PivotOrg, err error) {
+	var guid string
+	record = new(PivotOrg)
+
+	if guid, err = s.getUserGUID(); err == nil && guid != "" {
+		record, err = s.Create()
+	}
+	return
+}
+
+//Create - will create an org for the given user
 func (s *orgManager) Create() (record *PivotOrg, err error) {
 	var (
 		data = fmt.Sprintf(`{"name":"%s"}`, getOrgNameFromEmail(s.username))
