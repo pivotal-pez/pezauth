@@ -12,10 +12,12 @@ var pezAuth = angular.module('pezAuth', [], function($interpolateProvider) {
       "hasOrgBtn": "View Org Now",
       "createOrgBtn": "Create Your Org Now",
       "noApiKey": "You don't have a key yet",
-      "loading": "Loading... Please Wait"
+      "loading": "Loading... Please Wait",
+      "invalidUser": "no matching user found in system"
     };
     var urls = {
-      "okta": "http://login.run.pez.pivotal.io/saml/login/alias/login.run.pez.pivotal.io?disco=true"
+      "okta": "http://login.run.pez.pivotal.io/saml/login/alias/login.run.pez.pivotal.io?disco=true",
+      "oktaHome": "https://pivotal.okta.com/app/UserHome"
     };
     
 
@@ -76,6 +78,14 @@ var pezAuth = angular.module('pezAuth', [], function($interpolateProvider) {
           
           if(status === 403) {
             console.log(data.ErrorMsg);
+            
+            if (messaging.invalidUser == data.ErrorMsg) {
+              forwardToOkta = confirm("You have not set up your account in Okta yet. Please head over to Okta and click on the `PEZ HeritageCF` tile.");
+            }
+
+            if ( forwardToOkta === true) {
+              $window.location.href = urls.oktaHome;
+            }
           }
       });
     }
