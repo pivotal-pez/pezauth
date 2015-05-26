@@ -64,13 +64,29 @@ func (s *orgManager) RollbackCreate() (err error) {
 //SafeCreate - will create an org for the given user
 func (s *orgManager) SafeCreate() (record *PivotOrg, err error) {
 	var (
-		orgName  = getOrgNameFromEmail(s.username)
-		orgGUID  string
 		userGUID string
 	)
+	record = new(PivotOrg)
+
+	if _, err = s.cfClient.QueryAPIInfo(); err == nil {
+
+		if userGUID, err = s.cfClient.QueryUserGUID(s.username); err != nil {
+			s.log.Println("QueryUserGUID failed w/ error: ", err)
+			err = ErrCouldNotGetUserGUID
+		} else {
+			record, err = s.runOrgCreateCallchain(userGUID)
+		}
+	}
+	return
+}
+
+func (s *orgManager) runOrgCreateCallchain(userGUID string) (record *PivotOrg, err error) {
+	var (
+		orgName = getOrgNameFromEmail(s.username)
+		orgGUID string
+	)
+	record = new(PivotOrg)
 	c := goutil.NewChain(nil)
-	c.Call(s.cfClient.QueryAPIInfo)
-	c.CallP(c.Returns(&userGUID, &err), s.cfClient.QueryUserGUID, s.username)
 	c.CallP(c.Returns(&orgGUID, &err), s.cfClient.AddOrg, orgName)
 	c.Call(s.cfClient.AddRole, cloudfoundryclient.OrgEndpoint, orgGUID, cloudfoundryclient.RoleTypeManager, userGUID)
 	c.Call(s.cfClient.AddRole, cloudfoundryclient.OrgEndpoint, orgGUID, cloudfoundryclient.RoleTypeUser, userGUID)
@@ -79,7 +95,6 @@ func (s *orgManager) SafeCreate() (record *PivotOrg, err error) {
 	if c.Error != nil {
 		s.log.Println("we experienced a failure, should roll back changes", c.Error)
 		err = c.Error
-		record = new(PivotOrg)
 		s.RollbackCreate()
 	}
 	return

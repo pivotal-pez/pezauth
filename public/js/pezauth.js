@@ -13,7 +13,7 @@ var pezAuth = angular.module('pezAuth', [], function($interpolateProvider) {
       "createOrgBtn": "Create Your Org Now",
       "noApiKey": "You don't have a key yet",
       "loading": "Loading... Please Wait",
-      "invalidUser": "no matching user found in system"
+      "invalidUser": "query failed. unable to find matching user guid."
     };
     var urls = {
       "okta": "http://login.run.pez.pivotal.io/saml/login/alias/login.run.pez.pivotal.io?disco=true",
