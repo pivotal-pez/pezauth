@@ -90,12 +90,12 @@
 		},
 		{
 			"ImportPath": "github.com/pivotalservices/pezdispenser/cloudfoundryclient",
-			"Comment": "0.0.1-51-gd781531",
-			"Rev": "d781531be2c1de5d6ba71b8e88fba446925ec126"
+			"Comment": "0.0.1-52-g8818835",
+			"Rev": "88188353166b4a7c10acdb606b949e80f9b1b69a"
 		},
 		{
 			"ImportPath": "github.com/xchapter7x/cloudcontroller-client",
-			"Rev": "5a4759ba07e864a25ae1ceda37131ee51d3601bb"
+			"Rev": "795e287327dd3faa6a5b65e000779cffe301cb3a"
 		},
 		{
 			"ImportPath": "github.com/xchapter7x/goutil",
