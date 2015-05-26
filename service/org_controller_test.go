@@ -73,7 +73,7 @@ var _ = Describe("NewOrgController", func() {
 					result: "",
 				}, &mockHeritageClient{
 					res: &http.Response{
-						StatusCode: OrgCreateSuccessStatusCode,
+						StatusCode: 201,
 						Body:       nopCloser{bytes.NewBufferString(successOrgCreateBody)},
 					},
 				}).Put().(OrgPutHandler)

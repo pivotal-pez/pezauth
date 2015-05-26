@@ -286,10 +286,6 @@ func (s *mockNewOrg) Show() (result *PivotOrg, err error) {
 	return s.showP, s.showErr
 }
 
-func (s *mockNewOrg) Create() (record *PivotOrg, err error) {
-	return s.createP, s.createErr
-}
-
 func (s *mockNewOrg) SafeCreate() (record *PivotOrg, err error) {
 	return s.safeCreateP, s.safeCreateErr
 }

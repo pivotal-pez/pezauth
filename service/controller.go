@@ -23,6 +23,7 @@ type Controller interface {
 	Delete() interface{}
 }
 
+//AuthRequestCreator - interface to an object which can decorate a request with auth tokens
 type AuthRequestCreator interface {
 	CreateAuthRequest(verb, requestURL, path string, args interface{}) (*http.Request, error)
 	CCTarget() string

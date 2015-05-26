@@ -34,6 +34,7 @@ type (
 )
 
 type (
+	//Persistence - interface to a persistence store of some kind
 	Persistence interface {
 		FindOne(query interface{}, result interface{}) (err error)
 		Upsert(selector interface{}, update interface{}) (err error)
