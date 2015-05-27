@@ -11,23 +11,6 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-type (
-	//OrgManager - interface to the org creation functionality
-	OrgManager interface {
-		Show() (result *PivotOrg, err error)
-		SafeCreate() (record *PivotOrg, err error)
-	}
-	orgManager struct {
-		username string
-		userGUID string
-		log      *log.Logger
-		tokens   oauth2.Tokens
-		store    Persistence
-		cfClient cloudfoundryclient.CloudFoundryClient
-		apiInfo  map[string]interface{}
-	}
-)
-
 //NewOrg - creates a new org manager
 var NewOrg = func(username string, log *log.Logger, tokens oauth2.Tokens, store Persistence, authClient AuthRequestCreator) OrgManager {
 	s := &orgManager{
@@ -56,11 +39,6 @@ func (s *orgManager) Show() (result *PivotOrg, err error) {
 	return
 }
 
-func (s *orgManager) RollbackCreate() (err error) {
-	s.log.Println("rolling back changes")
-	return
-}
-
 //SafeCreate - will create an org for the given user
 func (s *orgManager) SafeCreate() (record *PivotOrg, err error) {
 	var (
@@ -80,6 +58,21 @@ func (s *orgManager) SafeCreate() (record *PivotOrg, err error) {
 	return
 }
 
+//RollbackCreate - will rollback anything created by a failed SafeCreate call, so we dont have orphaned/incomplete records
+func (s *orgManager) RollbackCreate(orgGUID string) (err error) {
+	s.log.Println("rolling back changes")
+	if err = s.store.Remove(bson.M{EmailFieldName: s.username}); err == nil {
+
+		if err = nil; err == nil {
+			s.log.Println("time to delete the org.... not implemented yet")
+		}
+
+	} else {
+		s.log.Println("rollback mongodb error: ", err.Error())
+	}
+	return
+}
+
 func (s *orgManager) runOrgCreateCallchain(userGUID string) (record *PivotOrg, err error) {
 	var (
 		orgName = getOrgNameFromEmail(s.username)
@@ -95,7 +88,13 @@ func (s *orgManager) runOrgCreateCallchain(userGUID string) (record *PivotOrg, e
 	if c.Error != nil {
 		s.log.Println("we experienced a failure, should roll back changes", c.Error)
 		err = c.Error
-		s.RollbackCreate()
+
+		if orgGUID != "" {
+			s.RollbackCreate(orgGUID)
+
+		} else {
+			s.log.Println("nothing to rollback")
+		}
 	}
 	return
 }
