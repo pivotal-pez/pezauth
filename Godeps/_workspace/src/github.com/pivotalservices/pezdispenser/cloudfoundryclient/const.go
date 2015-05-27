@@ -9,6 +9,8 @@ const (
 	OrgEndpoint = "/v2/organizations"
 	//SpacesEndpont - the endpoint to hit for spaces actions
 	SpacesEndpont = "/v2/spaces"
+	//SpacesCreateSuccessStatusCode = success status code of spaces rest call
+	SpacesCreateSuccessStatusCode = 201
 	//ListUsersEndpoint - get a list of all users in paas
 	ListUsersEndpoint = "/Users"
 	//ListUsersSuccessStatus - success status code for users call
@@ -25,11 +27,17 @@ const (
 	RoleCreationURLFormat = "%s/%s/%s/%s"
 	//RoleCreateSuccessStatusCode - success status code for role assignment calls
 	RoleCreateSuccessStatusCode = 201
+	//OrgRemoveSuccessStatus - success status code for org removal
+	OrgRemoveSuccessStatus = 204
 )
 
 var (
 	//ErrOrgCreateAPICallFailure - error for failed call to create org endpoint
 	ErrOrgCreateAPICallFailure = errors.New("failed to create org on api call")
+	//ErrOrgRemoveAPICallFailure - error for failed call to remove org endpoint
+	ErrOrgRemoveAPICallFailure = errors.New("failed to remove org on api call")
+	//ErrSpaceCreateAPICallFailure - error for failed call to create org endpoint
+	ErrSpaceCreateAPICallFailure = errors.New("failed to create space on api call")
 	//ErrNoUserFound - error no user found
 	ErrNoUserFound = errors.New("no matching user found in system")
 	//ErrFailedStatusCode - we recieved a status code not matching the success code for the endpoint

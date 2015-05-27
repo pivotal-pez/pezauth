@@ -56,4 +56,6 @@ const (
 	HeaderKeyName = "X-API-KEY"
 	//ErrInvalidKeyFormatMsg - error msg for invalid key
 	ErrInvalidKeyFormatMsg = "Invalid key format"
+	//DefaultSpaceName - default space name created for each org
+	DefaultSpaceName = "development"
 )

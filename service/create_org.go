@@ -83,6 +83,7 @@ func (s *orgManager) runOrgCreateCallchain(userGUID string) (record *PivotOrg, e
 	c.CallP(c.Returns(&orgGUID, &err), s.cfClient.AddOrg, orgName)
 	c.Call(s.cfClient.AddRole, cloudfoundryclient.OrgEndpoint, orgGUID, cloudfoundryclient.RoleTypeManager, userGUID)
 	c.Call(s.cfClient.AddRole, cloudfoundryclient.OrgEndpoint, orgGUID, cloudfoundryclient.RoleTypeUser, userGUID)
+	c.Call(s.cfClient.AddSpace, DefaultSpaceName, orgGUID)
 	c.CallP(c.Returns(record, &err), s.upsert, orgGUID)
 
 	if c.Error != nil {
