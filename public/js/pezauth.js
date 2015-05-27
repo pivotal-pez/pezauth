@@ -13,6 +13,7 @@ var pezAuth = angular.module('pezAuth', [], function($interpolateProvider) {
       "createOrgBtn": "Create Your Org Now",
       "noApiKey": "You don't have a key yet",
       "loading": "Loading... Please Wait",
+      "oktaSetup": "Get Okta Tile for HeritageCF",
       "invalidUser": "query failed. unable to find matching user guid."
     };
     var urls = {
@@ -45,6 +46,9 @@ var pezAuth = angular.module('pezAuth', [], function($interpolateProvider) {
         
       } else if ($scope.orgButtonText === messaging.hasOrgBtn) {
         $window.location.href = urls.okta;
+      
+      }  else if ($scope.orgButtonText === messaging.oktaSetup) {
+        $window.location.href = urls.oktaHome;
       }
       $scope.orgButtonText = messaging.loading;
     };
@@ -85,6 +89,9 @@ var pezAuth = angular.module('pezAuth', [], function($interpolateProvider) {
 
             if ( forwardToOkta === true) {
               $window.location.href = urls.oktaHome;
+
+            } else {
+              $scope.orgButtonText = messaging.oktaSetup;
             }
           }
       });
