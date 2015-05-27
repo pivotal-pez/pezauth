@@ -63,8 +63,11 @@ func (s *orgManager) RollbackCreate(orgGUID string) (err error) {
 	s.log.Println("rolling back changes")
 	if err = s.store.Remove(bson.M{EmailFieldName: s.username}); err == nil {
 
-		if err = nil; err == nil {
-			s.log.Println("time to delete the org.... not implemented yet")
+		if err = s.cfClient.RemoveOrg(orgGUID); err == nil {
+			s.log.Println("org at guid deleted: ", orgGUID)
+
+		} else {
+			s.log.Println("org at guid could not be deleted: ", orgGUID, err)
 		}
 
 	} else {
