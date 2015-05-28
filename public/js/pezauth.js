@@ -122,6 +122,7 @@ var pezAuth = angular.module('pezAuth', [], function($interpolateProvider) {
       
       responsePromise.error(function(data, status, headers, config) {
         $scope.myApiKey = messaging.noApiKey;
+        pauth.create();
       });
     }
   });
