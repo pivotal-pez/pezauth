@@ -11,7 +11,7 @@ applications:
     - pez-heritage-newrelic
   env:
     REDIS_SERVICE_NAME: pezauth-redis
-    REDIS_HOSTNAME_NAME: hostname
+    REDIS_HOSTNAME_NAME: host
     REDIS_PASSWORD_NAME: password
     REDIS_PORT_NAME: port
     UPS_PEZVALIDATOR_NAME: pezvalidator-service
