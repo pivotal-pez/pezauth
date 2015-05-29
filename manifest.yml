@@ -9,6 +9,7 @@ applications:
     - pezvalidator-service
     - pez-heritage-admin-service
     - pez-heritage-newrelic
+    - oauth-client-details
   env:
     REDIS_SERVICE_NAME: pezauth-redis
     REDIS_HOSTNAME_NAME: host
@@ -26,6 +27,9 @@ applications:
     NEWRELIC_SERVICE_NAME: pez-heritage-newrelic
     NEWRELIC_KEY_NAME: newrelic-key
     NEWRELIC_APP_NAME: newrelic-app
+    OAUTH2_SERVICE_NAME: oauth-client-details
+    OAUTH2_CLIENT_ID: client-id
+    OAUTH2_CLIENT_SECRET: client-secret
   #env:
     #TGL_FEATURE1: false
     #TGL_FEATURE2: false

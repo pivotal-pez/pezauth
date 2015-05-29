@@ -7,6 +7,8 @@ import (
 )
 
 var (
+	ClientID               string
+	ClientSecret           string
 	ErrCouldNotGetUserGUID = errors.New("query failed. unable to find matching user guid.")
 	//Vars for my oauth calls
 	Scopes              = []string{"https://www.googleapis.com/auth/plus.me", "https://www.googleapis.com/auth/userinfo.email"}
@@ -36,8 +38,6 @@ var (
 
 //Constants to construct my oauth calls
 const (
-	ClientID      = "1083030294947-6g3bhhrgl3s7ul736jet625ajvp94f5p.apps.googleusercontent.com"
-	ClientSecret  = "kfgM5mT3BqPQ84VeXsYokAK_"
 	sessionName   = "pivotalpezauthservicesession"
 	sessionSecret = "shhh.donttellanyone"
 	//FailureStatus - failure response status from our unauthenticated rest endpoints

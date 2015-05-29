@@ -21,6 +21,9 @@ func main() {
 	newRelic := new(myNewRelic).New(appEnv)
 	gorelic.InitNewrelicAgent(newRelic.Key, newRelic.App, true)
 	m.Use(gorelic.Handler)
+	oauth2Client := new(myOAuth2).New(appEnv)
+	pez.ClientID = oauth2Client.ID
+	pez.ClientSecret = oauth2Client.Secret
 	rds := new(myRedis).New(appEnv)
 	defer rds.Conn.Close()
 	pez.InitSession(m, &redisCreds{
@@ -67,6 +70,10 @@ func (s *heritage) CCTarget() string {
 }
 
 type (
+	myOAuth2 struct {
+		ID     string
+		Secret string
+	}
 	myRedis struct {
 		URI  string
 		Pass string
@@ -87,6 +94,20 @@ type (
 		App string
 	}
 )
+
+func (s *myOAuth2) New(appEnv *cfenv.App) *myOAuth2 {
+	oauth2ServiceName := os.Getenv("OAUTH2_SERVICE_NAME")
+	clientIdName := os.Getenv("OAUTH2_CLIENT_ID")
+	clientSecretName := os.Getenv("OAUTH2_CLIENT_SECRET")
+	oauth2Service, err := appEnv.Services.WithName(oauth2ServiceName)
+
+	if err != nil {
+		panic(fmt.Sprintf("oauth2 client service name error: %s", err.Error()))
+	}
+	s.ID = oauth2Service.Credentials[clientIdName]
+	s.Secret = oauth2Service.Credentials[clientSecretName]
+	return s
+}
 
 func (s *myHeritage) New(appEnv *cfenv.App) *myHeritage {
 	heritageAdminServiceName := os.Getenv("UPS_PEZ_HERITAGE_ADMIN_NAME")
