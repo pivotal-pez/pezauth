@@ -30,10 +30,6 @@ func DomainChecker(res http.ResponseWriter, tokens oauth2.Tokens) {
 	userInfo := GetUserInfo(tokens)
 
 	if domain, ok := userInfo["domain"]; !ok || tokens.Expired() || isBlockedDomain(domain.(string)) {
-		fmt.Println("DEBUG userinfo: ", userInfo)
-		fmt.Println("DEBUG token: ", tokens.Expired())
-		fmt.Println("DEBUG domain: ", domain)
-		fmt.Println("DEBUG blocked: ", isBlockedDomain(domain.(string)))
 		res.WriteHeader(FailureStatus)
 		res.Write(AuthFailureResponse)
 	}
