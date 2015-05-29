@@ -3,6 +3,7 @@ var pezAuth = angular.module('pezAuth', [], function($interpolateProvider) {
       $interpolateProvider.endSymbol('}*}');
   })
   .controller('PezAuthController', function($scope, $http, $timeout, $window) {
+    $scope.hideCLIExample = true;
     var myData = {};
     var pauth = this;
     var restUriBase = "/v1/auth/api-key";
@@ -19,8 +20,7 @@ var pezAuth = angular.module('pezAuth', [], function($interpolateProvider) {
     var urls = {
       "okta": "http://login.run.pez.pivotal.io/saml/login/alias/login.run.pez.pivotal.io?disco=true",
       "oktaHome": "https://pivotal.okta.com/app/UserHome"
-    };
-    
+    };    
 
     $timeout(function () {  
       callMeUsingVerb($http.get, meUri);
@@ -76,6 +76,7 @@ var pezAuth = angular.module('pezAuth', [], function($interpolateProvider) {
       responsePromise.success(function(data, status, headers, config) {
         console.log(data);
         $scope.orgButtonText = messaging.hasOrgBtn;
+        $scope.hideCLIExample = false;
       });
       
       responsePromise.error(function(data, status, headers, config) {
