@@ -47,12 +47,8 @@ func (s *CFClient) QueryAPIInfo() (info *CloudFoundryAPIInfo, err error) {
 func getGUIDFromUsernameInResponse(username string, userResponse UserAPIResponse) (guid string, err error) {
 	for _, resource := range userResponse.Resources {
 
-		switch id := resource["id"].(type) {
-		case string:
-
-			if resource["userName"] == username {
-				guid = id
-			}
+		if resource.UserName == username {
+			guid = resource.ID
 		}
 	}
 
@@ -62,11 +58,10 @@ func getGUIDFromUsernameInResponse(username string, userResponse UserAPIResponse
 	return
 }
 
-//ListUsers - get the guid for the given user
-func (s *CFClient) ListUsers(startIndex, count int, filter string) (userList map[string]interface{}, err error) {
+//QueryUsers - get the guid for the given user
+func (s *CFClient) QueryUsers(startIndex, count int, attributes, filter string) (userList UserAPIResponse, err error) {
 	var (
-		userResponse = UserAPIResponse{}
-		data         = fmt.Sprintf("startIndex=%d&count=%d&%s", startIndex, count, filter)
+		data = fmt.Sprintf("startIndex=%d&count=%d%s%s", startIndex, count, parseArg("attributes", attributes), parseArg("filter", filter))
 	)
 
 	rest := &RestRunner{
@@ -83,7 +78,6 @@ func (s *CFClient) ListUsers(startIndex, count int, filter string) (userList map
 		b, _ := ioutil.ReadAll(res.Body)
 		fmt.Println(string(b[:]))
 		json.Unmarshal(b, &userList)
-		s.Log.Println("user response: ", userResponse)
 	}
 	rest.OnFailure = func(res *http.Response, e error) {
 		b, _ := ioutil.ReadAll(res.Body)
@@ -91,6 +85,16 @@ func (s *CFClient) ListUsers(startIndex, count int, filter string) (userList map
 		err = e
 	}
 	rest.Run()
+	return
+}
+
+func parseArg(name string, filter string) (parsedFilter string) {
+
+	if filter == "" {
+		parsedFilter = filter
+	} else {
+		parsedFilter = fmt.Sprintf("&%s=%s", name, filter)
+	}
 	return
 }
 
