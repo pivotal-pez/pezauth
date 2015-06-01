@@ -78,15 +78,18 @@ func (s *orgManager) RollbackCreate(orgGUID string) (err error) {
 
 func (s *orgManager) runOrgCreateCallchain(userGUID string) (record *PivotOrg, err error) {
 	var (
-		orgName = getOrgNameFromEmail(s.username)
-		orgGUID string
+		orgName   = getOrgNameFromEmail(s.username)
+		orgGUID   string
+		spaceGUID string
 	)
 	record = new(PivotOrg)
 	c := goutil.NewChain(nil)
 	c.CallP(c.Returns(&orgGUID, &err), s.cfClient.AddOrg, orgName)
 	c.Call(s.cfClient.AddRole, cloudfoundryclient.OrgEndpoint, orgGUID, cloudfoundryclient.RoleTypeManager, userGUID)
 	c.Call(s.cfClient.AddRole, cloudfoundryclient.OrgEndpoint, orgGUID, cloudfoundryclient.RoleTypeUser, userGUID)
-	c.Call(s.cfClient.AddSpace, DefaultSpaceName, orgGUID)
+	c.CallP(c.Returns(&spaceGUID, &err), s.cfClient.AddSpace, DefaultSpaceName, orgGUID)
+	c.Call(s.cfClient.AddRole, cloudfoundryclient.SpacesEndpont, spaceGUID, cloudfoundryclient.RoleTypeManager, userGUID)
+	c.Call(s.cfClient.AddRole, cloudfoundryclient.SpacesEndpont, spaceGUID, cloudfoundryclient.RoleTypeDeveloper, userGUID)
 
 	if record, err = s.upsert(orgGUID); err != nil {
 		c.Error = err
