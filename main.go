@@ -19,7 +19,7 @@ func main() {
 	appEnv, _ := cfenv.Current()
 	m := martini.Classic()
 	newRelic := new(myNewRelic).New(appEnv)
-	gorelic.InitNewrelicAgent(newRelic.Key, newRelic.App, true)
+	gorelic.InitNewrelicAgent(newRelic.Key, newRelic.App, false)
 	m.Use(gorelic.Handler)
 	oauth2Client := new(myOAuth2).New(appEnv)
 	pez.ClientID = oauth2Client.ID
