@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"time"
 
 	cfenv "github.com/cloudfoundry-community/go-cfenv"
 	"github.com/garyburd/redigo/redis"
@@ -80,8 +81,11 @@ type (
 		Conn redis.Conn
 	}
 	myMongo struct {
-		Col     *mgo.Collection
-		Session *mgo.Session
+		Col                *mgo.Collection
+		Session            *mgo.Session
+		mongoConnectionURI string
+		mongoDBName        string
+		mongoCollName      string
 	}
 	myHeritage struct {
 		LoginTarget string
@@ -144,22 +148,40 @@ func (s *myNewRelic) New(appEnv *cfenv.App) *myNewRelic {
 func (s *myMongo) New(appEnv *cfenv.App) *myMongo {
 	mongoServiceName := os.Getenv("MONGO_SERVICE_NAME")
 	mongoURIName := os.Getenv("MONGO_URI_NAME")
-	mongoCollName := os.Getenv("MONGO_COLLECTION_NAME")
+	s.mongoCollName = os.Getenv("MONGO_COLLECTION_NAME")
 	mongoService, err := appEnv.Services.WithName(mongoServiceName)
 
 	if err != nil {
 		panic(fmt.Sprintf("mongodb service name error: %s", err.Error()))
 	}
-	mongoConnectionURI := mongoService.Credentials[mongoURIName]
-	parsedURI := strings.Split(mongoConnectionURI, "/")
-	mongoDBName := parsedURI[len(parsedURI)-1]
+	s.mongoConnectionURI = mongoService.Credentials[mongoURIName]
+	parsedURI := strings.Split(s.mongoConnectionURI, "/")
+	s.mongoDBName = parsedURI[len(parsedURI)-1]
+	s.connect()
+	defer func() { go s.autoReconnect() }()
+	return s
+}
 
-	if s.Session, err = mgo.Dial(mongoConnectionURI); err != nil {
+func (s *myMongo) connect() {
+	var err error
+
+	if s.Session, err = mgo.Dial(s.mongoConnectionURI); err != nil {
 		panic(fmt.Sprintf("mongodb dial error: %s", err.Error()))
 	}
 	s.Session.SetMode(mgo.Monotonic, true)
-	s.Col = s.Session.DB(mongoDBName).C(mongoCollName)
-	return s
+	s.Col = s.Session.DB(s.mongoDBName).C(s.mongoCollName)
+}
+
+func (s *myMongo) autoReconnect() {
+	for {
+
+		if err := s.Session.Ping(); err != nil {
+			fmt.Printf("mongodb connection lost... attempting to reconnect")
+			s.Session.Close()
+			s.connect()
+		}
+		time.Sleep(5000 * time.Millisecond)
+	}
 }
 
 func (s *myRedis) New(appEnv *cfenv.App) *myRedis {
