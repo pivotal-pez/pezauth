@@ -1,11 +1,19 @@
 box: google/golang
 
+services:
+    - mongo
+    - redis
+    
 build:
   # The steps that will be executed on build
   steps:
     - setup-go-workspace
     - wercker/golint
 
+    - script:
+        name: env
+        code: env
+        
     # Get the dependencies
     - script:
         name: go get
