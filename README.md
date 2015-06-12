@@ -5,6 +5,12 @@ authentication service for pez resources
 
 [![GoDoc](https://godoc.org/github.com/pivotalservices/pezauth?status.png)](http://godoc.org/github.com/pivotalservices/pezauth)
 
+## How to run my pipeline
+* requires the wercker cli
+```
+$ ./runlocalbuild
+```
+
 
 
 
