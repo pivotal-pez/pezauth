@@ -14,6 +14,7 @@ the two above services will be decoupled in the near future, but remain in this 
 
 ## How to run my pipeline
 * requires the wercker cli
+* requires a dockerhost (boot2docker)
 ```
 $ git clone git@github.com:pivotalservices/pezauth.git
 $ cd pezauth
