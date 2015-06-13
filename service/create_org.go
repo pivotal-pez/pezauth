@@ -82,7 +82,8 @@ func (s *orgManager) runOrgCreateCallchain(userGUID string) (record *PivotOrg, e
 		orgGUID   string
 		spaceGUID string
 	)
-	record = new(PivotOrg)
+	rec := PivotOrg{}
+	record = &rec
 	c := goutil.NewChain(nil)
 	c.CallP(c.Returns(&orgGUID, &err), s.cfClient.AddOrg, orgName)
 	c.Call(s.cfClient.AddRole, cloudfoundryclient.OrgEndpoint, orgGUID, cloudfoundryclient.RoleTypeManager, userGUID)
@@ -90,10 +91,7 @@ func (s *orgManager) runOrgCreateCallchain(userGUID string) (record *PivotOrg, e
 	c.CallP(c.Returns(&spaceGUID, &err), s.cfClient.AddSpace, DefaultSpaceName, orgGUID)
 	c.Call(s.cfClient.AddRole, cloudfoundryclient.SpacesEndpont, spaceGUID, cloudfoundryclient.RoleTypeManager, userGUID)
 	c.Call(s.cfClient.AddRole, cloudfoundryclient.SpacesEndpont, spaceGUID, cloudfoundryclient.RoleTypeDeveloper, userGUID)
-
-	if record, err = s.upsert(orgGUID); err != nil {
-		c.Error = err
-	}
+	c.CallP(c.Returns(&rec, &err), s.upsert, orgGUID)
 
 	if c.Error != nil {
 		s.log.Println("we experienced a failure, should roll back changes", c.Error)
