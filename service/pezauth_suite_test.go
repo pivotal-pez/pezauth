@@ -192,17 +192,20 @@ func (s *mockRedisCreds) Uri() string {
 }
 
 type mockMongo struct {
+	err error
 }
 
-func (s *mockMongo) Find(query interface{}) (q *mgo.Query) {
-	return
+func (s *mockMongo) Find(query interface{}) *mgo.Query {
+	return new(mgo.Query)
 }
 
 func (s *mockMongo) Remove(selector interface{}) (err error) {
+	err = s.err
 	return
 }
 
 func (s *mockMongo) Upsert(selector interface{}, update interface{}) (info *mgo.ChangeInfo, err error) {
+	err = s.err
 	return
 }
 

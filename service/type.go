@@ -72,6 +72,7 @@ type (
 		Find(query interface{}) *mgo.Query
 		Upsert(selector interface{}, update interface{}) (info *mgo.ChangeInfo, err error)
 	}
+
 	mongoCollectionWrapper struct {
 		Persistence
 		col mongoCollection
