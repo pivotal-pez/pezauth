@@ -58,7 +58,7 @@ var _ = Describe("MyMongo", func() {
 		It("Should not error", func() {
 			mngo := new(integrations.MyMongo).New(appEnv)
 			col := mngo.Collection()
-			Ω(col.FindOne(nil, nil)).Should(Equal(mgo.ErrNotFound))
+			Ω(col.FindOne(nil, nil)).Should(BeNil())
 		})
 	})
 })
