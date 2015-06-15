@@ -68,7 +68,7 @@ var _ = Describe("NewOrgController", func() {
 
 			BeforeEach(func() {
 				NewOrg = getMockNewOrg(nil, &result, &result, ErrNoMatchInStore, nil, nil)
-				orgPut = NewOrgController(&mockPersistence{
+				orgPut = NewOrgController(&mockMongo{
 					err:    ErrNoMatchInStore,
 					result: "",
 				}, &mockHeritageClient{
@@ -101,7 +101,7 @@ var _ = Describe("NewOrgController", func() {
 				OrgName: fakeOrg,
 			}
 			controlResponse := Response{Payload: structs.Map(result)}
-			var orgPut OrgPutHandler = NewOrgController(&mockPersistence{
+			var orgPut OrgPutHandler = NewOrgController(&mockMongo{
 				err:    ErrNoMatchInStore,
 				result: nil,
 			}, &mockHeritageClient{
@@ -138,7 +138,7 @@ var _ = Describe("NewOrgController", func() {
 				tokens := &mockTokens{}
 				result := new(PivotOrg)
 				controlResponse := Response{ErrorMsg: ErrCantCallAcrossUsers.Error()}
-				var orgGet OrgGetHandler = NewOrgController(&mockPersistence{
+				var orgGet OrgGetHandler = NewOrgController(&mockMongo{
 					err:    ErrCantCallAcrossUsers,
 					result: result,
 				}, new(mockHeritageClient)).Get().(OrgGetHandler)
@@ -154,7 +154,7 @@ var _ = Describe("NewOrgController", func() {
 				tokens := &mockTokens{}
 				result := new(PivotOrg)
 				controlResponse := Response{ErrorMsg: ErrCantCallAcrossUsers.Error()}
-				var orgGet OrgGetHandler = NewOrgController(&mockPersistence{
+				var orgGet OrgGetHandler = NewOrgController(&mockMongo{
 					err:    ErrCantCallAcrossUsers,
 					result: result,
 				}, new(mockHeritageClient)).Get().(OrgGetHandler)
@@ -188,7 +188,7 @@ var _ = Describe("NewOrgController", func() {
 					OrgName: fakeOrg,
 				}
 				controlResponse := Response{ErrorMsg: ErrNoMatchInStore.Error()}
-				var orgGet OrgGetHandler = NewOrgController(&mockPersistence{
+				var orgGet OrgGetHandler = NewOrgController(&mockMongo{
 					err:    ErrNoMatchInStore,
 					result: result,
 				}, new(mockHeritageClient)).Get().(OrgGetHandler)
@@ -207,7 +207,7 @@ var _ = Describe("NewOrgController", func() {
 					OrgName: fakeOrg,
 				}
 				controlResponse := Response{Payload: structs.Map(result)}
-				var orgGet OrgGetHandler = NewOrgController(&mockPersistence{
+				var orgGet OrgGetHandler = NewOrgController(&mockMongo{
 					err:    nil,
 					result: result,
 				}, new(mockHeritageClient)).Get().(OrgGetHandler)

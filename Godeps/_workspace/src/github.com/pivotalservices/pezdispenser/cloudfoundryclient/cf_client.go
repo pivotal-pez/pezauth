@@ -31,6 +31,7 @@ func (s *CFClient) QueryAPIInfo() (info *CloudFoundryAPIInfo, err error) {
 	rest.OnSuccess = func(res *http.Response) {
 		b, _ := ioutil.ReadAll(res.Body)
 		json.Unmarshal(b, &s.Info)
+		s.Info.APIEndpoint = s.RequestDecorator.CCTarget()
 		s.Log.Println(s.Info)
 		s.Log.Println(string(b[:]))
 	}
@@ -41,6 +42,27 @@ func (s *CFClient) QueryAPIInfo() (info *CloudFoundryAPIInfo, err error) {
 	}
 	rest.Run()
 	info = s.Info
+	return
+}
+
+//Query - make a generic query against any rest endpoint
+func (s *CFClient) Query(verb string, domain string, path string, args interface{}) (response *http.Response) {
+	rest := &RestRunner{
+		Logger:            s.Log,
+		RequestDecorator:  s.RequestDecorator,
+		Verb:              verb,
+		URL:               domain,
+		Path:              path,
+		SuccessStatusCode: 0,
+		Data:              args,
+	}
+	rest.OnSuccess = func(res *http.Response) {
+		response = res
+	}
+	rest.OnFailure = func(res *http.Response, e error) {
+		response = res
+	}
+	rest.Run()
 	return
 }
 

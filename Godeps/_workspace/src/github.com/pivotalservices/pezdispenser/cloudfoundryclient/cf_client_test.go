@@ -8,6 +8,32 @@ import (
 )
 
 var _ = Describe("CFClient", func() {
+	Describe("Query", func() {
+		var (
+			cfclient   CloudFoundryClient
+			controlRes = mockHttpResponse(mockSuccessUserResponseBody, 200)
+		)
+
+		Context("Query called", func() {
+
+			BeforeEach(func() {
+				mockDoer := &mockClientDoer{
+					res: controlRes,
+					err: nil,
+				}
+				mockRequest := &mockRequestDecorator{
+					doer: mockDoer,
+				}
+				cfclient = NewCloudFoundryClient(mockRequest, new(mockLog))
+			})
+
+			It("should just pass back the response object", func() {
+				res := cfclient.Query("GET", "mydomain.com", "/v2/User", "")
+				Ω(res).Should(Equal(controlRes))
+			})
+		})
+	})
+
 	Describe("QueryUsers", func() {
 		var (
 			cfclient         CloudFoundryClient
@@ -339,6 +365,7 @@ var _ = Describe("CFClient", func() {
 		var cfclient CloudFoundryClient
 
 		Context("QueryAPIInfo called successfully", func() {
+			var controlAPIDomain = "api.test.org"
 
 			BeforeEach(func() {
 				mockDoer := &mockClientDoer{
@@ -346,7 +373,8 @@ var _ = Describe("CFClient", func() {
 					err: nil,
 				}
 				mockRequest := &mockRequestDecorator{
-					doer: mockDoer,
+					doer:        mockDoer,
+					apiEndpoint: controlAPIDomain,
 				}
 				cfclient = NewCloudFoundryClient(mockRequest, new(mockLog))
 			})
@@ -356,6 +384,7 @@ var _ = Describe("CFClient", func() {
 				Ω(info.LoggingEndpoint).ShouldNot(BeEmpty())
 				Ω(info.AuthorizationEndpoint).ShouldNot(BeEmpty())
 				Ω(info.TokenEndpoint).ShouldNot(BeEmpty())
+				Ω(info.APIEndpoint).Should(Equal(controlAPIDomain))
 				Ω(err).Should(BeNil())
 			})
 		})

@@ -1,6 +1,6 @@
 package pezauth
 
-func NewMongoCollectionWrapper(c mongoCollection) Persistence {
+func NewMongoCollectionWrapper(c MongoCollection) Persistence {
 	return &mongoCollectionWrapper{
 		col: c,
 	}

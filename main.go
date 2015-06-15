@@ -36,7 +36,7 @@ func main() {
 	defer mngo.Session.Close()
 
 	if _, err := heritageClient.Login(); err == nil {
-		pez.InitRoutes(m, rds.Conn, pez.NewMongoCollectionWrapper(mngo.Col), heritageClient)
+		pez.InitRoutes(m, rds.Conn, mngo, heritageClient)
 		m.Run()
 
 	} else {

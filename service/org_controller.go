@@ -10,9 +10,9 @@ import (
 )
 
 //NewOrgController - a controller for me requests
-func NewOrgController(c Persistence, authClient AuthRequestCreator) Controller {
+func NewOrgController(get mongoCollectionGetter, authClient AuthRequestCreator) Controller {
 	return &orgController{
-		store:      c,
+		store:      get.Collection,
 		authClient: authClient,
 	}
 }
@@ -21,7 +21,7 @@ func NewOrgController(c Persistence, authClient AuthRequestCreator) Controller {
 func (s *orgController) Get() interface{} {
 	var handler OrgGetHandler = func(params martini.Params, log *log.Logger, r render.Render, tokens oauth2.Tokens) {
 		username := params[UserParam]
-		org := NewOrg(username, log, tokens, s.store, s.authClient)
+		org := NewOrg(username, log, tokens, s.store(), s.authClient)
 		result, err := org.Show()
 		genericResponseFormatter(r, "", structs.Map(result), err)
 	}
@@ -37,7 +37,7 @@ func (s *orgController) Put() interface{} {
 			responsePayload map[string]interface{}
 		)
 		username := params[UserParam]
-		org := NewOrg(username, log, tokens, s.store, s.authClient)
+		org := NewOrg(username, log, tokens, s.store(), s.authClient)
 
 		if _, err = org.Show(); err == ErrNoMatchInStore {
 			payload, err = org.SafeCreate()

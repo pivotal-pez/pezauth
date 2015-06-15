@@ -29,7 +29,7 @@ var (
 )
 
 //InitRoutes - initialize the mappings for controllers against valid routes
-func InitRoutes(m *martini.ClassicMartini, redisConn Doer, mongoConn Persistence, authClient AuthRequestCreator) {
+func InitRoutes(m *martini.ClassicMartini, redisConn Doer, mongoConn mongoCollectionGetter, authClient AuthRequestCreator) {
 	setOauthConfig()
 	keyGen := NewKeyGen(redisConn, &GUIDMake{})
 	m.Use(render.Renderer())

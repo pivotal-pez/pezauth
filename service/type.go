@@ -67,7 +67,11 @@ type (
 		Controller
 	}
 
-	mongoCollection interface {
+	mongoCollectionGetter interface {
+		Collection() Persistence
+	}
+
+	MongoCollection interface {
 		Remove(selector interface{}) error
 		Find(query interface{}) *mgo.Query
 		Upsert(selector interface{}, update interface{}) (info *mgo.ChangeInfo, err error)
@@ -75,7 +79,7 @@ type (
 
 	mongoCollectionWrapper struct {
 		Persistence
-		col mongoCollection
+		col MongoCollection
 	}
 
 	//OrgGetHandler - func signature of org get handler
@@ -96,7 +100,7 @@ type (
 	}
 	orgController struct {
 		Controller
-		store      Persistence
+		store      func() Persistence
 		authClient AuthRequestCreator
 	}
 

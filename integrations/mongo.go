@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"os"
 	"strings"
-	"time"
 
 	"github.com/cloudfoundry-community/go-cfenv"
+	"github.com/pivotalservices/pezauth/service"
 	"gopkg.in/mgo.v2"
 )
 
@@ -24,7 +24,6 @@ func (s *MyMongo) New(appEnv *cfenv.App) *MyMongo {
 	parsedURI := strings.Split(s.mongoConnectionURI, "/")
 	s.mongoDBName = parsedURI[len(parsedURI)-1]
 	s.connect()
-	defer func() { go s.autoReconnect() }()
 	return s
 }
 
@@ -38,14 +37,7 @@ func (s *MyMongo) connect() {
 	s.Col = s.Session.DB(s.mongoDBName).C(s.mongoCollName)
 }
 
-func (s *MyMongo) autoReconnect() {
-	for {
-
-		if err := s.Session.Ping(); err != nil {
-			fmt.Printf("mongodb connection lost... attempting to reconnect")
-			s.Session.Close()
-			s.connect()
-		}
-		time.Sleep(5000 * time.Millisecond)
-	}
+func (s *MyMongo) Collection() pezauth.Persistence {
+	sess := s.Session.Copy()
+	return pezauth.NewMongoCollectionWrapper(sess.DB(s.mongoDBName).C(s.mongoCollName))
 }

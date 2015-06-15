@@ -90,8 +90,8 @@
 		},
 		{
 			"ImportPath": "github.com/pivotalservices/pezdispenser/cloudfoundryclient",
-			"Comment": "0.0.1-64-gffd2dfe",
-			"Rev": "ffd2dfe5d1e9b27c026b1d1770d5f68ed714abdb"
+			"Comment": "0.0.1-66-g537c787",
+			"Rev": "537c787122fd626467a31d2b601d6356c1c9f838"
 		},
 		{
 			"ImportPath": "github.com/xchapter7x/cloudcontroller-client",

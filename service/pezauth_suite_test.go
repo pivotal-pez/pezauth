@@ -192,7 +192,15 @@ func (s *mockRedisCreds) Uri() string {
 }
 
 type mockMongo struct {
-	err error
+	err    error
+	result interface{}
+}
+
+func (s *mockMongo) Collection() Persistence {
+	return &mockPersistence{
+		err:    s.err,
+		result: s.result,
+	}
 }
 
 func (s *mockMongo) Find(query interface{}) *mgo.Query {
