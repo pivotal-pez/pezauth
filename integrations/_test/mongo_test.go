@@ -36,4 +36,28 @@ var _ = Describe("MyMongo", func() {
 			Ω(mngo.Session.Ping()).Should(BeNil())
 		})
 	})
+
+	Context("Calling .Remove", func() {
+		It("Should not error", func() {
+			mngo := new(integrations.MyMongo).New(appEnv)
+			col := mngo.Collection()
+			Ω(col.Remove(nil)).Should(BeNil())
+		})
+	})
+
+	Context("Calling .Upsert", func() {
+		It("Should not error", func() {
+			mngo := new(integrations.MyMongo).New(appEnv)
+			col := mngo.Collection()
+			Ω(col.Upsert(nil, nil)).Should(BeNil())
+		})
+	})
+
+	Context("Calling .FindOne", func() {
+		It("Should not error", func() {
+			mngo := new(integrations.MyMongo).New(appEnv)
+			col := mngo.Collection()
+			Ω(col.FindOne(nil, nil)).Should(BeNil())
+		})
+	})
 })
