@@ -1,6 +1,7 @@
 package pezauth
 
-func NewMongoCollectionWrapper(c MongoCollection) Persistence {
+//NewMongoCollectionWrapper - wraps a mongo collection in as a Peristence interface implementation
+func NewMongoCollectionWrapper(c mongoCollection) Persistence {
 	return &mongoCollectionWrapper{
 		col: c,
 	}

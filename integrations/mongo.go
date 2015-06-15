@@ -37,6 +37,7 @@ func (s *MyMongo) connect() {
 	s.Col = s.Session.DB(s.mongoDBName).C(s.mongoCollName)
 }
 
+//Collection - this allows us to get a mongo collection with a new session wrapped as a persistence interface implementation
 func (s *MyMongo) Collection() pezauth.Persistence {
 	sess := s.Session.Copy()
 	return pezauth.NewMongoCollectionWrapper(sess.DB(s.mongoDBName).C(s.mongoCollName))

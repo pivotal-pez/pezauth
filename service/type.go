@@ -71,7 +71,7 @@ type (
 		Collection() Persistence
 	}
 
-	MongoCollection interface {
+	mongoCollection interface {
 		Remove(selector interface{}) error
 		Find(query interface{}) *mgo.Query
 		Upsert(selector interface{}, update interface{}) (info *mgo.ChangeInfo, err error)
@@ -79,7 +79,7 @@ type (
 
 	mongoCollectionWrapper struct {
 		Persistence
-		col MongoCollection
+		col mongoCollection
 	}
 
 	//OrgGetHandler - func signature of org get handler
