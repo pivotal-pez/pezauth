@@ -8,6 +8,7 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/pivotalservices/pezauth/integrations"
+	"gopkg.in/mgo.v2"
 )
 
 var _ = Describe("MyMongo", func() {
@@ -41,7 +42,7 @@ var _ = Describe("MyMongo", func() {
 		It("Should not error", func() {
 			mngo := new(integrations.MyMongo).New(appEnv)
 			col := mngo.Collection()
-			Ω(col.Remove(nil)).Should(BeNil())
+			Ω(col.Remove(nil)).Should(Equal(mgo.ErrNotFound))
 		})
 	})
 
@@ -57,7 +58,7 @@ var _ = Describe("MyMongo", func() {
 		It("Should not error", func() {
 			mngo := new(integrations.MyMongo).New(appEnv)
 			col := mngo.Collection()
-			Ω(col.FindOne(nil, nil)).Should(BeNil())
+			Ω(col.FindOne(nil, nil)).Should(Equal(mgo.ErrNotFound))
 		})
 	})
 })
