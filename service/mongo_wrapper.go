@@ -8,7 +8,6 @@ func NewMongoCollectionWrapper(c mongoCollection) Persistence {
 
 //FindOne - combining the Find and One calls of a mongo collection object
 func (s *mongoCollectionWrapper) FindOne(query interface{}, result interface{}) (err error) {
-
 	if err = s.col.Find(query).One(result); err != nil {
 		err = ErrNoMatchInStore
 	}
@@ -17,7 +16,6 @@ func (s *mongoCollectionWrapper) FindOne(query interface{}, result interface{}) 
 
 //Upsert - allow us to call upsert on mongo collection object
 func (s *mongoCollectionWrapper) Upsert(selector interface{}, update interface{}) (err error) {
-
 	if _, err = s.col.Upsert(selector, update); err != nil {
 		err = ErrCanNotAddOrgRec
 	}
