@@ -31,7 +31,7 @@ var _ = Describe("MyRedis", func() {
 	})
 
 	Context("Calling .New", func() {
-		It("Should return a valid redis session", func() {
+		XIt("Should return a valid redis session", func() {
 			rdis := new(integrations.MyRedis).New(appEnv)
 			Ω(rdis.Conn.Err()).Should(BeNil())
 		})
