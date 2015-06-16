@@ -50,13 +50,13 @@ var _ = Describe("MyMongo", func() {
 	})
 
 	Context("Calling .Remove on non-existing record", func() {
-		It("Should error", func() {
+		It("Should return error", func() {
 			Ω(col.Remove(controlField)).Should(Equal(mgo.ErrNotFound))
 		})
 	})
 
 	Context("Calling .Remove on valid record", func() {
-		It("Should not error", func() {
+		It("Should return error", func() {
 			col.Upsert(controlField, controlField)
 			err := col.Remove(controlField)
 			Ω(err).Should(BeNil())
@@ -73,7 +73,7 @@ var _ = Describe("MyMongo", func() {
 	})
 
 	Context("Calling .FindOne on noexistent record", func() {
-		It("Should not error", func() {
+		It("Should return error", func() {
 			mngo := new(integrations.MyMongo).New(appEnv)
 			col := mngo.Collection()
 			Ω(col.FindOne(controlField, nil)).Should(Equal(pezauth.ErrNoMatchInStore))
