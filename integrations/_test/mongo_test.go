@@ -8,13 +8,17 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/pivotalservices/pezauth/integrations"
+	"github.com/pivotalservices/pezauth/service"
 	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
 )
 
 var _ = Describe("MyMongo", func() {
 	var (
-		appEnv *cfenv.App
-		err    error
+		appEnv       *cfenv.App
+		err          error
+		col          pezauth.Persistence
+		controlField = bson.M{"fieldname": "test"}
 	)
 
 	BeforeEach(func() {
@@ -29,6 +33,13 @@ var _ = Describe("MyMongo", func() {
 
 		testEnv := cfenv.Env(validEnv)
 		appEnv, err = cfenv.New(testEnv)
+		mngo := new(integrations.MyMongo).New(appEnv)
+		col = mngo.Collection()
+		col.Remove(controlField)
+	})
+
+	AfterEach(func() {
+		col.Remove(controlField)
 	})
 
 	Context("Calling .New", func() {
@@ -38,11 +49,18 @@ var _ = Describe("MyMongo", func() {
 		})
 	})
 
-	Context("Calling .Remove", func() {
+	Context("Calling .Remove on non-existing record", func() {
+		It("Should error", func() {
+			Ω(col.Remove(controlField)).Should(Equal(mgo.ErrNotFound))
+		})
+	})
+
+	Context("Calling .Remove on valid record", func() {
 		It("Should not error", func() {
-			mngo := new(integrations.MyMongo).New(appEnv)
-			col := mngo.Collection()
-			Ω(col.Remove(nil)).Should(Equal(mgo.ErrNotFound))
+			col.Upsert(controlField, controlField)
+			err := col.Remove(controlField)
+			Ω(err).Should(BeNil())
+			Ω(err).ShouldNot(Equal(mgo.ErrNotFound))
 		})
 	})
 
@@ -50,7 +68,15 @@ var _ = Describe("MyMongo", func() {
 		It("Should not error", func() {
 			mngo := new(integrations.MyMongo).New(appEnv)
 			col := mngo.Collection()
-			Ω(col.Upsert(nil, nil)).Should(BeNil())
+			Ω(col.Upsert(controlField, controlField)).Should(BeNil())
+		})
+	})
+
+	Context("Calling .FindOne on noexistent record", func() {
+		It("Should not error", func() {
+			mngo := new(integrations.MyMongo).New(appEnv)
+			col := mngo.Collection()
+			Ω(col.FindOne(controlField, nil)).Should(Equal(pezauth.ErrNoMatchInStore))
 		})
 	})
 
@@ -58,7 +84,9 @@ var _ = Describe("MyMongo", func() {
 		It("Should not error", func() {
 			mngo := new(integrations.MyMongo).New(appEnv)
 			col := mngo.Collection()
-			Ω(col.FindOne(nil, nil)).Should(BeNil())
+			col.Upsert(controlField, controlField)
+			Ω(col.FindOne(controlField, nil)).ShouldNot(Equal(pezauth.ErrNoMatchInStore))
+			Ω(col.FindOne(controlField, nil)).Should(BeNil())
 		})
 	})
 })
