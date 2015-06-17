@@ -20,9 +20,9 @@ var pezAuth = angular.module('pezAuth', [], function($interpolateProvider) {
     var urls = {
       "okta": "http://login.run.pez.pivotal.io/saml/login/alias/login.run.pez.pivotal.io?disco=true",
       "oktaHome": "https://pivotal.okta.com/app/UserHome"
-    };    
+    };
 
-    $timeout(function () {  
+    $timeout(function () {
       callMeUsingVerb($http.get, meUri);
     }, 1);
 
@@ -40,32 +40,33 @@ var pezAuth = angular.module('pezAuth', [], function($interpolateProvider) {
     };
 
     pauth.createorg = function() {
-      
-      if ($scope.orgButtonText === messaging.createOrgBtn) {        
+
+      if ($scope.orgButtonText === messaging.createOrgBtn) {
         createOrg(getOrgRestUri());
-        
+
       } else if ($scope.orgButtonText === messaging.hasOrgBtn) {
         $window.location.href = urls.okta;
-      
+
       }  else if ($scope.orgButtonText === messaging.oktaSetup) {
         $window.location.href = urls.oktaHome;
       }
       $scope.orgButtonText = messaging.loading;
     };
-   
+
     pauth.create = function() {
       callAPIUsingVerb($http.put, getRestUri());
     };
- 
+
     pauth.remove = function() {
       callAPIUsingVerb($http.delete, getRestUri());
-    };   
+    };
 
     function callMeUsingVerb(verbCaller, uri) {
       var responsePromise = verbCaller(uri);
       responsePromise.success(function(data, status, headers, config) {
           $scope.myName = data.Payload.displayName;
           $scope.myEmail = data.Payload.emails[0].value;
+          $scope.displayName = $scope.myName ? $scope.myName : $scope.myEmail
           callAPIUsingVerb($http.get, getRestUri());
           pauth.getorg();
       });
@@ -78,12 +79,12 @@ var pezAuth = angular.module('pezAuth', [], function($interpolateProvider) {
         $scope.orgButtonText = messaging.hasOrgBtn;
         $scope.hideCLIExample = false;
       });
-      
+
       responsePromise.error(function(data, status, headers, config) {
-          
+
           if(status === 403) {
             console.log(data.ErrorMsg);
-            
+
             if (messaging.invalidUser == data.ErrorMsg) {
               forwardToOkta = confirm("You have not set up your account in Okta yet. Please head over to Okta and click on the `PEZ HeritageCF` tile.");
             }
@@ -105,9 +106,9 @@ var pezAuth = angular.module('pezAuth', [], function($interpolateProvider) {
         $scope.orgButtonText = messaging.hasOrgBtn;
         $scope.hideCLIExample = false;
       });
-      
+
       responsePromise.error(function(data, status, headers, config) {
-         
+
           if(status === 403) {
             $scope.orgButtonText = messaging.createOrgBtn;
             console.log(data.ErrorMsg);
@@ -121,7 +122,7 @@ var pezAuth = angular.module('pezAuth', [], function($interpolateProvider) {
           $scope.myData = data;
           $scope.myApiKey = data.APIKey;
       });
-      
+
       responsePromise.error(function(data, status, headers, config) {
         $scope.myApiKey = messaging.noApiKey;
         pauth.create();
