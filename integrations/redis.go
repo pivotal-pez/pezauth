@@ -34,8 +34,10 @@ func (s *MyRedis) connect() {
 		panic(fmt.Sprintf("redis dial error: %s", err.Error()))
 	}
 
-	if _, err = s.Conn.Do("AUTH", s.Pass); err != nil {
-		panic(fmt.Sprintf("redis auth error: %s", err.Error()))
+	if len(s.Pass) > 0 {
+		if _, err = s.Conn.Do("AUTH", s.Pass); err != nil {
+			panic(fmt.Sprintf("redis auth error: %s", err.Error()))
+		}
 	}
 }
 
