@@ -107,9 +107,9 @@ func (s *orgManager) runOrgCreateCallchain(userGUID string) (record *PivotOrg, e
 	return
 }
 
-func (s *orgManager) upsert(orgGUID string) (record *PivotOrg, err error) {
+func (s *orgManager) upsert(orgGUID string) (record PivotOrg, err error) {
 	orgname := getOrgNameFromEmail(s.username)
-	record = &PivotOrg{
+	record = PivotOrg{
 		Email:   s.username,
 		OrgName: orgname,
 		OrgGUID: orgGUID,
