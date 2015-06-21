@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"regexp"
 	"strings"
@@ -28,6 +29,7 @@ func InitSession(m *martini.ClassicMartini, rc redisCreds) {
 //DomainChecker - check the authenticated users domain to see if it is in the whitelist
 func DomainChecker(res http.ResponseWriter, tokens oauth2.Tokens) {
 	userInfo := GetUserInfo(tokens)
+	log.Println(userInfo)
 
 	if domain, ok := userInfo["domain"]; !ok || tokens.Expired() || isBlockedDomain(domain.(string)) {
 		res.WriteHeader(FailureStatus)

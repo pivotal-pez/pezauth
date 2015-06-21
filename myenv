@@ -1,0 +1,9 @@
+X_CF_USER=dsz0111@gmail.com
+X_CF_PASS=XXXXXXX
+X_CF_ORG=sding-pivot-org
+X_CF_SPACE=development
+X_CF_APIURL=api.run.pez.pivotal.io
+X_CF_APPNAME=pezauth
+X_CF_HOSTNAME=shaozhenauth
+X_CF_DOMAINNAME=cfapps.pez.pivotal.io
+X_DEBUG_STEP=true

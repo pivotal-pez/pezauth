@@ -1,6 +1,8 @@
-cf cups pezvalidator-service -p '{"target-url": "https://pezauthdev.cfapps.io/valid-key"}'
+cf cups pezvalidator-service -p '{"target-url": "https://test-shaozhen.cfapps.pez.pivotal.io/valid-key"}'
 cf cups pez-heritage-admin-service -p "login-target, login-user, login-pass, cc-target"
 cf cups pezauth-redis -p "hostname, password, port"
 cf cups pezauth-mongo -p "uri"
 cf cups pez-heritage-newrelic -p "newrelic-app, newrelic-key"
 cf cups oauth-client-details -p "client-id, client-secret"
+
+cf cups pez-heritage-admin-service -p "login.run.pez.pivotal.io, admin, login-pass, api.run.pez.pivotal.io"
