@@ -2,39 +2,74 @@ package pezauth
 
 import (
 	"bytes"
+	"fmt"
 	"log"
 	"net/smtp"
+	"os"
 	"strconv"
 	"text/template"
+
+	"github.com/cloudfoundry-community/go-cfenv"
 )
 
-//SMTPTemplate template to generate smtp data
-const SMTPTemplate = `From: {{.From}}
-To: {{.To}}
-Subject: {{.Subject}}
-
-{{.Body}}
-`
-
-//SMTPData data typr for smtp email info
-type SMTPData struct {
-	From    string
-	To      string
-	Subject string
-	Body    string
-}
-
-//EmailServer - email server pez auth use to send email
-type EmailServer struct {
-	host         string
-	port         int
-	auth         smtp.Auth
-	sendMailFunc SendMailFunc
+//NewEmailServerFromService - construct email server from vCap Service
+func NewEmailServerFromService(appEnv *cfenv.App) *EmailServer {
+	serviceName := os.Getenv("SMTP_SERVICE_NAME")
+	hostName := os.Getenv("SMTP_HOST")
+	portName := os.Getenv("SMTP_PORT")
+	userName := os.Getenv("SMTP_USERNAME")
+	passName := os.Getenv("SMTP_PASSNAME")
+	supportEmail := os.Getenv("SUPPORT_EMAIL")
+	service, err := appEnv.Services.WithName(serviceName)
+	if err != nil {
+		panic(fmt.Sprintf("email service name error: %s", err.Error()))
+	}
+	auth := smtp.PlainAuth("", service.Credentials[userName], service.Credentials[passName], service.Credentials[hostName])
+	port, err := strconv.Atoi(service.Credentials[portName])
+	if err != nil {
+		panic(fmt.Sprintf("The port for email server is not a valid integer %s", err.Error()))
+	}
+	return &EmailServer{
+		host:         service.Credentials[hostName],
+		port:         port,
+		auth:         auth,
+		sendMailFunc: DefaultSMTPSendEmail,
+		supportEmail: service.Credentials[supportEmail],
+	}
 }
 
 //DefaultSMTPSendEmail - This is the default SMTP server send email behavior
+//There are some issue with the smtp ssl certificate
+//Reimplementing the http://golang.org/src/net/smtp/smtp.go?s=7610:7688#L263
+//Will switch back to the default smtp.SendMail function
 func DefaultSMTPSendEmail(addr string, a smtp.Auth, from string, to []string, msg []byte) error {
-	return smtp.SendMail(addr, a, from, to, msg)
+	c, err := smtp.Dial(addr)
+	if err != nil {
+		return err
+	}
+	defer c.Close()
+	if err = c.Mail(from); err != nil {
+		return err
+	}
+	for _, addr := range to {
+		if err = c.Rcpt(addr); err != nil {
+			return err
+		}
+	}
+	w, err := c.Data()
+	if err != nil {
+		return err
+	}
+	_, err = w.Write(msg)
+	if err != nil {
+		return err
+	}
+	err = w.Close()
+	if err != nil {
+		return err
+	}
+	return c.Quit()
+
 }
 
 //SendMailFunc - Function to wrap the smtp SendMail behavior
@@ -70,4 +105,9 @@ func (emailServer *EmailServer) SendEmail(data *SMTPData) error {
 		[]string{data.To},
 		doc.Bytes())
 	return err
+}
+
+//GetSupportEmail - retrieve the support email address
+func (emailServer *EmailServer) GetSupportEmail() string {
+	return emailServer.supportEmail
 }

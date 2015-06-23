@@ -10,6 +10,7 @@ applications:
     - pez-heritage-admin-service
     - pez-heritage-newrelic
     - oauth-client-details
+    - email-server-service
   env:
     REDIS_SERVICE_NAME: pezauth-redis
     REDIS_HOSTNAME_NAME: host
@@ -30,6 +31,13 @@ applications:
     OAUTH2_SERVICE_NAME: oauth-client-details
     OAUTH2_CLIENT_ID: client-id
     OAUTH2_CLIENT_SECRET: client-secret
+    #SMTP_HOST: smtp.vchs.pivotal.io
+    SMTP_SERVICE_NAME: email-server-service
+    SMTP_HOST: smtp-host
+    SMTP_PORT: smtp-port
+    SMTP_USERNAME: smtp-port
+    SMTP_PASSWORD: smtp-password
+    SUPPORT_EMAIL: support-email
   #env:
     #TGL_FEATURE1: false
     #TGL_FEATURE2: false

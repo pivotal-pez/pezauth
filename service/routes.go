@@ -47,6 +47,8 @@ func InitRoutes(m *martini.ClassicMartini, redisConn Doer, mongoConn mongoCollec
 		r.HTML(SuccessStatus, "index", userInfo)
 	})
 
+	m.Post("/sandbox", oauth2.LoginRequired, DomainCheck, NewSandBoxController().Post())
+
 	m.Group(URLAuthBaseV1, func(r martini.Router) {
 		r.Put(APIKey, authKey.Put())
 		r.Get(APIKey, authKey.Get())

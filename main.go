@@ -22,6 +22,8 @@ func main() {
 	pez.ClientID = oauth2Client.ID
 	pez.ClientSecret = oauth2Client.Secret
 	rds := new(integrations.MyRedis).New(appEnv)
+	emailServer := pez.NewEmailServerFromService(appEnv)
+	m.Map(emailServer)
 	defer rds.Conn.Close()
 	pez.InitSession(m, &redisCreds{
 		pass: rds.Pass,

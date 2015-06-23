@@ -58,4 +58,11 @@ const (
 	ErrInvalidKeyFormatMsg = "Invalid key format"
 	//DefaultSpaceName - default space name created for each org
 	DefaultSpaceName = "development"
+	//SMTPTemplate template to generate smtp data
+	SMTPTemplate = `From: {{.From}}
+To: {{.To}}
+Subject: {{.Subject}}
+
+{{.Body}}
+`
 )

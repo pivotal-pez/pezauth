@@ -1,1 +1,2 @@
-wercker build --git-domain github.com --git-owner pivotalservices --git-repository pezauth
+wercker --environment myenv build --wercker-yml wercker_local.yml
+rm -rf _projects _builds _steps

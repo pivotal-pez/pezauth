@@ -3,6 +3,7 @@ package pezauth
 import (
 	"log"
 	"net/http"
+	"net/smtp"
 
 	"github.com/go-martini/martini"
 	"github.com/martini-contrib/oauth2"
@@ -104,6 +105,10 @@ type (
 		authClient AuthRequestCreator
 	}
 
+	sandBoxController struct {
+		Controller
+	}
+
 	//Response - generic response object
 	Response struct {
 		Payload  interface{}
@@ -149,5 +154,28 @@ type (
 		store    Persistence
 		cfClient cloudfoundryclient.CloudFoundryClient
 		apiInfo  map[string]interface{}
+	}
+
+	//SMTPData data typr for smtp email info
+	SMTPData struct {
+		From    string
+		To      string
+		Subject string
+		Body    string
+	}
+
+	//EmailServer - email server pez auth use to send email
+	EmailServer struct {
+		host         string
+		port         int
+		auth         smtp.Auth
+		sendMailFunc SendMailFunc
+		supportEmail string //TODO maybe make this as an independent environment variable
+	}
+
+	//Sender - the interface that can send email
+	Sender interface {
+		SendEmail(data *SMTPData) error
+		GetSupportEmail() string
 	}
 )

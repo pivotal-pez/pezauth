@@ -80,15 +80,15 @@ This is the body
 		// Context("Integration with real email server", func() {
 		// 	BeforeEach(func() {
 		// 		hasErr = true
-		// 		//emailServer = NewEmailServer("smtp.vchs.pivotal.io", 25, DefaultSMTPSendEmail)
-		// 		auth = smtp.PlainAuth("", "test@gmail.com", "password", "smtp.gmail.com")
-		// 		emailServer = NewEmailServer("smtp.gmail.com", 587, auth, DefaultSMTPSendEmail)
+		// 		auth = smtp.PlainAuth("", "", "", "smtp.gmail.com")
+		// 		emailServer = NewEmailServer("smtp.vchs.gopivotal.com", 25, auth, DefaultSMTPSendEmail)
+		// 		//emailServer = NewEmailServer("smtp.gmail.com", 587, auth, DefaultSMTPSendEmail)
 		// 	})
 		//
 		// 	It("Should send email without error", func() {
 		// 		testEmail := &SMTPData{
-		// 			From:    "from@gmail.com",
-		// 			To:      "to@pivotal.io",
+		// 			From:    "sding@pivotal.io",
+		// 			To:      "dsz0111@gmail.com",
 		// 			Subject: "This is a test email",
 		// 			Body:    "This is the body",
 		// 		}
