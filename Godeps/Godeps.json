@@ -90,13 +90,13 @@
 		},
 		{
 			"ImportPath": "github.com/pivotal-pez/pezdispenser/cloudfoundryclient",
-			"Comment": "v0.0.22-13-ga36f2dc",
-			"Rev": "a36f2dc2a66de03dc4821dcf9a2f814fa9964597"
+			"Comment": "v0.0.22-15-gb2c2a83",
+			"Rev": "b2c2a8390bd2c87bcf0d6a11a43d3c012396fe19"
 		},
 		{
 			"ImportPath": "github.com/pivotal-pez/pezdispenser/service",
-			"Comment": "v0.0.22-13-ga36f2dc",
-			"Rev": "a36f2dc2a66de03dc4821dcf9a2f814fa9964597"
+			"Comment": "v0.0.22-15-gb2c2a83",
+			"Rev": "b2c2a8390bd2c87bcf0d6a11a43d3c012396fe19"
 		},
 		{
 			"ImportPath": "github.com/xchapter7x/cloudcontroller-client",
