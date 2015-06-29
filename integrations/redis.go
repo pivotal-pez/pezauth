@@ -16,8 +16,8 @@ func (s *MyRedis) New(appEnv *cfenv.App) *MyRedis {
 	redisPass := os.Getenv("REDIS_PASSWORD_NAME")
 	redisPort := os.Getenv("REDIS_PORT_NAME")
 	redisService, err := appEnv.Services.WithName(redisName)
-	s.Pass = redisService.Credentials[redisPass]
-	s.URI = fmt.Sprintf("%s:%s", redisService.Credentials[redisHost], redisService.Credentials[redisPort])
+	s.Pass = redisService.Credentials[redisPass].(string)
+	s.URI = fmt.Sprintf("%s:%d", redisService.Credentials[redisHost].(string), int(redisService.Credentials[redisPort].(float64)))
 
 	if err != nil {
 		panic(fmt.Sprintf("redis service name error: %s", err.Error()))

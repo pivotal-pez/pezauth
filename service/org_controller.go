@@ -7,10 +7,11 @@ import (
 	"github.com/go-martini/martini"
 	"github.com/martini-contrib/oauth2"
 	"github.com/martini-contrib/render"
+	"github.com/pivotal-pez/pezdispenser/service"
 )
 
 //NewOrgController - a controller for me requests
-func NewOrgController(get mongoCollectionGetter, authClient AuthRequestCreator) Controller {
+func NewOrgController(get pezdispenser.MongoCollectionGetter, authClient AuthRequestCreator) Controller {
 	return &orgController{
 		store:      get.Collection,
 		authClient: authClient,

@@ -24,17 +24,17 @@ func NewEmailServerFromService(appEnv *cfenv.App) *EmailServer {
 	if err != nil {
 		panic(fmt.Sprintf("email service name error: %s", err.Error()))
 	}
-	auth := smtp.PlainAuth("", service.Credentials[userName], service.Credentials[passName], service.Credentials[hostName])
-	port, err := strconv.Atoi(service.Credentials[portName])
+	auth := smtp.PlainAuth("", service.Credentials[userName].(string), service.Credentials[passName].(string), service.Credentials[hostName].(string))
+	port, err := strconv.Atoi(service.Credentials[portName].(string))
 	if err != nil {
 		panic(fmt.Sprintf("The port for email server is not a valid integer %s", err.Error()))
 	}
 	return &EmailServer{
-		host:         service.Credentials[hostName],
+		host:         service.Credentials[hostName].(string),
 		port:         port,
 		auth:         auth,
 		sendMailFunc: DefaultSMTPSendEmail,
-		supportEmail: service.Credentials[supportEmail],
+		supportEmail: service.Credentials[supportEmail].(string),
 	}
 }
 

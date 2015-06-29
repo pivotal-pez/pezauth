@@ -104,22 +104,24 @@ func generateSpec(args []string, agouti, noDot bool) {
 }
 
 func generateSpecForSubject(subject string, agouti, noDot bool) error {
-	packageName, specFilePrefix, formattedName := getPackageAndFormattedName()
-	if subject != "" {
+	packageName := getPackage()
+	if subject == "" {
+		subject = packageName
+	} else {
 		subject = strings.Split(subject, ".go")[0]
 		subject = strings.Split(subject, "_test")[0]
-		specFilePrefix = subject
-		formattedName = prettifyPackageName(subject)
 	}
+
+	formattedSubject := strings.Replace(strings.Title(strings.Replace(subject, "_", " ", -1)), " ", "", -1)
 
 	data := specData{
 		Package:           packageName,
-		Subject:           formattedName,
+		Subject:           formattedSubject,
 		PackageImportPath: getPackageImportPath(),
 		IncludeImports:    !noDot,
 	}
 
-	targetFile := fmt.Sprintf("%s_test.go", specFilePrefix)
+	targetFile := fmt.Sprintf("%s_test.go", subject)
 	if fileExists(targetFile) {
 		return fmt.Errorf("%s already exists.", targetFile)
 	} else {

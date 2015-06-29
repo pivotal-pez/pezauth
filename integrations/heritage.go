@@ -19,9 +19,9 @@ func (s *MyHeritage) New(appEnv *cfenv.App) *MyHeritage {
 	if err != nil {
 		panic(fmt.Sprintf("heritage service name error: %s", err.Error()))
 	}
-	s.LoginTarget = heritageAdminService.Credentials[heritageLoginTargetName]
-	s.LoginUser = heritageAdminService.Credentials[heritageLoginUserName]
-	s.LoginPass = heritageAdminService.Credentials[heritageLoginPassName]
-	s.CCTarget = heritageAdminService.Credentials[heritageCCTargetName]
+	s.LoginTarget = heritageAdminService.Credentials[heritageLoginTargetName].(string)
+	s.LoginUser = heritageAdminService.Credentials[heritageLoginUserName].(string)
+	s.LoginPass = heritageAdminService.Credentials[heritageLoginPassName].(string)
+	s.CCTarget = heritageAdminService.Credentials[heritageCCTargetName].(string)
 	return s
 }

@@ -8,7 +8,7 @@ build:
   # The steps that will be executed on build
   steps:
     - setup-go-workspace:
-        package-dir: github.com/pivotalservices/pezauth
+        package-dir: github.com/pivotal-pez/pezauth
     - wercker/golint
 
     - script:

@@ -8,7 +8,7 @@ import (
 	"github.com/go-martini/martini"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	. "github.com/pivotalservices/pezauth/service"
+	. "github.com/pivotal-pez/pezauth/service"
 )
 
 var _ = Describe("AuthKeyController", func() {

@@ -17,7 +17,7 @@ func (s *MyNewRelic) New(appEnv *cfenv.App) *MyNewRelic {
 	if err != nil {
 		panic(fmt.Sprintf("new relic service name error: %s", err.Error()))
 	}
-	s.Key = service.Credentials[keyName]
-	s.App = service.Credentials[appName]
+	s.Key = service.Credentials[keyName].(string)
+	s.App = service.Credentials[appName].(string)
 	return s
 }

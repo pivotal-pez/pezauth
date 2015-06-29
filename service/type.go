@@ -8,9 +8,9 @@ import (
 	"github.com/go-martini/martini"
 	"github.com/martini-contrib/oauth2"
 	"github.com/martini-contrib/render"
-	"github.com/pivotalservices/pezdispenser/cloudfoundryclient"
+	"github.com/pivotal-pez/pezdispenser/cloudfoundryclient"
+	"github.com/pivotal-pez/pezdispenser/service"
 	"github.com/xchapter7x/cloudcontroller-client"
-	"gopkg.in/mgo.v2"
 )
 
 type (
@@ -56,7 +56,7 @@ type (
 		Delete(user string) error
 	}
 
-	//Doer - interface to make a call to persistence store
+	//Doer - interface to make a call to pezdispenser.Persistence store
 	Doer interface {
 		Do(commandName string, args ...interface{}) (reply interface{}, err error)
 	}
@@ -68,31 +68,11 @@ type (
 		Controller
 	}
 
-	mongoCollectionGetter interface {
-		Collection() Persistence
-	}
-
-	mongoCollection interface {
-		Remove(selector interface{}) error
-		Find(query interface{}) *mgo.Query
-		Upsert(selector interface{}, update interface{}) (info *mgo.ChangeInfo, err error)
-	}
-
-	mongoCollectionWrapper struct {
-		Persistence
-		col mongoCollection
-	}
-
 	//OrgGetHandler - func signature of org get handler
 	OrgGetHandler func(params martini.Params, log *log.Logger, r render.Render, tokens oauth2.Tokens)
 	//OrgPutHandler - func signature of org put handler
 	OrgPutHandler func(params martini.Params, log *log.Logger, r render.Render, tokens oauth2.Tokens)
-	//Persistence - interface to a persistence store of some kind
-	Persistence interface {
-		Remove(selector interface{}) error
-		FindOne(query interface{}, result interface{}) (err error)
-		Upsert(selector interface{}, update interface{}) (err error)
-	}
+
 	//PivotOrg - struct for pivot org record
 	PivotOrg struct {
 		Email   string
@@ -101,7 +81,7 @@ type (
 	}
 	orgController struct {
 		Controller
-		store      func() Persistence
+		store      func() pezdispenser.Persistence
 		authClient AuthRequestCreator
 	}
 
@@ -151,7 +131,7 @@ type (
 		userGUID string
 		log      *log.Logger
 		tokens   oauth2.Tokens
-		store    Persistence
+		store    pezdispenser.Persistence
 		cfClient cloudfoundryclient.CloudFoundryClient
 		apiInfo  map[string]interface{}
 	}

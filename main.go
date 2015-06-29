@@ -7,8 +7,8 @@ import (
 	cfenv "github.com/cloudfoundry-community/go-cfenv"
 	"github.com/go-martini/martini"
 	"github.com/martini-contrib/gorelic"
-	"github.com/pivotalservices/pezauth/integrations"
-	pez "github.com/pivotalservices/pezauth/service"
+	"github.com/pivotal-pez/pezauth/integrations"
+	pez "github.com/pivotal-pez/pezauth/service"
 	"github.com/xchapter7x/cloudcontroller-client"
 )
 

@@ -4,7 +4,7 @@ import (
 	"errors"
 	"net/smtp"
 
-	. "github.com/pivotalservices/pezauth/service"
+	. "github.com/pivotal-pez/pezauth/service"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"

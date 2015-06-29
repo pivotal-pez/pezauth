@@ -6,7 +6,7 @@ import (
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	. "github.com/pivotalservices/pezauth/keycheck"
+	. "github.com/pivotal-pez/pezauth/keycheck"
 
 	"testing"
 )

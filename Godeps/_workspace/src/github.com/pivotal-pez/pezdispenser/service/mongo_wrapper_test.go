@@ -1,11 +1,11 @@
-package pezauth_test
+package pezdispenser_test
 
 import (
 	"errors"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	. "github.com/pivotalservices/pezauth/service"
+	. "github.com/pivotal-pez/pezdispenser/service"
 )
 
 var _ = Describe("NewMongoCollectionWrapper", func() {

@@ -8,7 +8,7 @@ import (
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	. "github.com/pivotalservices/pezauth/service"
+	. "github.com/pivotal-pez/pezauth/service"
 )
 
 var data *SMTPData

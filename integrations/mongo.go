@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/cloudfoundry-community/go-cfenv"
-	"github.com/pivotalservices/pezauth/service"
+	"github.com/pivotal-pez/pezdispenser/service"
 	"gopkg.in/mgo.v2"
 )
 
@@ -20,7 +20,7 @@ func (s *MyMongo) New(appEnv *cfenv.App) *MyMongo {
 	if err != nil {
 		panic(fmt.Sprintf("mongodb service name error: %s", err.Error()))
 	}
-	s.mongoConnectionURI = mongoService.Credentials[mongoURIName]
+	s.mongoConnectionURI = mongoService.Credentials[mongoURIName].(string)
 	parsedURI := strings.Split(s.mongoConnectionURI, "/")
 	s.mongoDBName = parsedURI[len(parsedURI)-1]
 	s.connect()
@@ -37,8 +37,8 @@ func (s *MyMongo) connect() {
 	s.Col = s.Session.DB(s.mongoDBName).C(s.mongoCollName)
 }
 
-//Collection - this allows us to get a mongo collection with a new session wrapped as a persistence interface implementation
-func (s *MyMongo) Collection() pezauth.Persistence {
+//Collection - this allows us to get a mongo collection with a new session wrapped as a pezdispenser.Persistence interface implementation
+func (s *MyMongo) Collection() pezdispenser.Persistence {
 	sess := s.Session.Copy()
-	return pezauth.NewMongoCollectionWrapper(sess.DB(s.mongoDBName).C(s.mongoCollName))
+	return pezdispenser.NewMongoCollectionWrapper(sess.DB(s.mongoDBName).C(s.mongoCollName))
 }

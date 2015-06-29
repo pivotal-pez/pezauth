@@ -7,6 +7,7 @@ import (
 	"github.com/go-martini/martini"
 	"github.com/martini-contrib/oauth2"
 	"github.com/martini-contrib/render"
+	"github.com/pivotal-pez/pezdispenser/service"
 )
 
 //Constants to construct routes with
@@ -29,7 +30,7 @@ var (
 )
 
 //InitRoutes - initialize the mappings for controllers against valid routes
-func InitRoutes(m *martini.ClassicMartini, redisConn Doer, mongoConn mongoCollectionGetter, authClient AuthRequestCreator) {
+func InitRoutes(m *martini.ClassicMartini, redisConn Doer, mongoConn pezdispenser.MongoCollectionGetter, authClient AuthRequestCreator) {
 	setOauthConfig()
 	keyGen := NewKeyGen(redisConn, &GUIDMake{})
 	m.Use(render.Renderer())

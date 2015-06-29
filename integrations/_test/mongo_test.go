@@ -7,8 +7,9 @@ import (
 	"github.com/cloudfoundry-community/go-cfenv"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"github.com/pivotalservices/pezauth/integrations"
-	"github.com/pivotalservices/pezauth/service"
+	"github.com/pivotal-pez/pezauth/integrations"
+	"github.com/pivotal-pez/pezauth/service"
+	"github.com/pivotal-pez/pezdispenser/service"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
@@ -17,7 +18,7 @@ var _ = Describe("MyMongo", func() {
 	var (
 		appEnv       *cfenv.App
 		err          error
-		col          pezauth.Persistence
+		col          pezdispenser.Persistence
 		controlField = bson.M{"fieldname": "test"}
 	)
 

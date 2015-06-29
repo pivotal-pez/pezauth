@@ -13,7 +13,8 @@ import (
 	"github.com/martini-contrib/render"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	. "github.com/pivotalservices/pezauth/service"
+	. "github.com/pivotal-pez/pezauth/service"
+	"github.com/pivotal-pez/pezdispenser/service"
 	"github.com/xchapter7x/cloudcontroller-client"
 	"github.com/xchapter7x/goutil"
 	"gopkg.in/mgo.v2"
@@ -196,7 +197,7 @@ type mockMongo struct {
 	result interface{}
 }
 
-func (s *mockMongo) Collection() Persistence {
+func (s *mockMongo) Collection() pezdispenser.Persistence {
 	return &mockPersistence{
 		err:    s.err,
 		result: s.result,
@@ -278,8 +279,8 @@ type nopCloser struct {
 
 func (nopCloser) Close() error { return nil }
 
-func getMockNewOrg(showP, createP, safeCreateP *PivotOrg, showErr, createErr, safeCreateErr error) func(username string, log *log.Logger, tokens oauth2.Tokens, store Persistence, authClient AuthRequestCreator) OrgManager {
-	return func(username string, log *log.Logger, tokens oauth2.Tokens, store Persistence, authClient AuthRequestCreator) OrgManager {
+func getMockNewOrg(showP, createP, safeCreateP *PivotOrg, showErr, createErr, safeCreateErr error) func(username string, log *log.Logger, tokens oauth2.Tokens, store pezdispenser.Persistence, authClient AuthRequestCreator) OrgManager {
+	return func(username string, log *log.Logger, tokens oauth2.Tokens, store pezdispenser.Persistence, authClient AuthRequestCreator) OrgManager {
 		s := &mockNewOrg{
 			showP:         showP,
 			createP:       createP,

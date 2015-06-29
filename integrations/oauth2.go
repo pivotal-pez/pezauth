@@ -17,7 +17,7 @@ func (s *MyOAuth2) New(appEnv *cfenv.App) *MyOAuth2 {
 	if err != nil {
 		panic(fmt.Sprintf("oauth2 client service name error: %s", err.Error()))
 	}
-	s.ID = oauth2Service.Credentials[clientIdName]
-	s.Secret = oauth2Service.Credentials[clientSecretName]
+	s.ID = oauth2Service.Credentials[clientIdName].(string)
+	s.Secret = oauth2Service.Credentials[clientSecretName].(string)
 	return s
 }

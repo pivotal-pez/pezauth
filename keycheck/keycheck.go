@@ -1,13 +1,9 @@
 package keycheck
 
-import (
-	"net/http"
-
-	"github.com/pivotalservices/pezauth/service"
-)
+import "net/http"
 
 var (
-	HeaderKeyName = pezauth.HeaderKeyName
+	HeaderKeyName = "X-API-KEY"
 )
 
 //New - a new keychecker targetted at the given url

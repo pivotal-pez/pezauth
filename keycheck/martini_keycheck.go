@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	"github.com/go-martini/martini"
-	"github.com/pivotalservices/pezauth/service"
 )
 
 const (
@@ -14,7 +13,7 @@ const (
 	//AuthSuccessStatus - success status code
 	AuthSuccessStatus = 200
 	//KeyLength - valid length of a api-key
-	KeyLength = pezauth.GUIDLength
+	KeyLength = 36
 )
 
 var (

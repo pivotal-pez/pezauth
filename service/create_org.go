@@ -6,13 +6,14 @@ import (
 	"strings"
 
 	"github.com/martini-contrib/oauth2"
-	"github.com/pivotalservices/pezdispenser/cloudfoundryclient"
+	"github.com/pivotal-pez/pezdispenser/cloudfoundryclient"
+	"github.com/pivotal-pez/pezdispenser/service"
 	"github.com/xchapter7x/goutil"
 	"gopkg.in/mgo.v2/bson"
 )
 
 //NewOrg - creates a new org manager
-var NewOrg = func(username string, log *log.Logger, tokens oauth2.Tokens, store Persistence, authClient AuthRequestCreator) OrgManager {
+var NewOrg = func(username string, log *log.Logger, tokens oauth2.Tokens, store pezdispenser.Persistence, authClient AuthRequestCreator) OrgManager {
 	s := &orgManager{
 		username: username,
 		log:      log,

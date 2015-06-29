@@ -3,7 +3,7 @@ authentication service for pez resources
 
 [![wercker status](https://app.wercker.com/status/01d1f291e61f5edfc16f0b0ac182af8f/m/master "wercker status")](https://app.wercker.com/project/bykey/01d1f291e61f5edfc16f0b0ac182af8f)
 
-[![GoDoc](https://godoc.org/github.com/pivotalservices/pezauth?status.png)](http://godoc.org/github.com/pivotalservices/pezauth)
+[![GoDoc](https://godoc.org/github.com/pivotal-pez/pezauth?status.png)](http://godoc.org/github.com/pivotal-pez/pezauth)
 
 ## background
 this is a combination of 2 products the auth service & the pez portal.
@@ -16,7 +16,7 @@ the two above services will be decoupled in the near future, but remain in this 
 * requires the wercker cli
 * requires a dockerhost (boot2docker)
 ```
-$ git clone git@github.com:pivotalservices/pezauth.git
+$ git clone git@github.com:pivotal-pez/pezauth.git
 $ cd pezauth
 $ ./runlocalbuild
 ```

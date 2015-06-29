@@ -9,8 +9,6 @@ import (
 	"strings"
 	"text/template"
 
-	"go/build"
-
 	"github.com/onsi/ginkgo/ginkgo/nodot"
 )
 
@@ -43,9 +41,9 @@ import (
 	"testing"
 )
 
-func Test{{.FormattedName}}(t *testing.T) {
+func Test{{.FormattedPackage}}(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "{{.FormattedName}} Suite")
+	RunSpecs(t, "{{.FormattedPackage}} Suite")
 }
 `
 
@@ -59,9 +57,9 @@ import (
 	"testing"
 )
 
-func Test{{.FormattedName}}(t *testing.T) {
+func Test{{.FormattedPackage}}(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "{{.FormattedName}} Suite")
+	RunSpecs(t, "{{.FormattedPackage}} Suite")
 }
 
 var agoutiDriver WebDriver
@@ -85,37 +83,19 @@ var _ = AfterSuite(func() {
 `
 
 type bootstrapData struct {
-	Package       string
-	FormattedName string
-	GinkgoImport  string
-	GomegaImport  string
+	Package          string
+	FormattedPackage string
+	GinkgoImport     string
+	GomegaImport     string
 }
 
-func getPackageAndFormattedName() (string, string, string) {
-	path, err := os.Getwd()
+func getPackage() string {
+	workingDir, err := os.Getwd()
 	if err != nil {
-		complainAndQuit("Could not get current working directory: \n" + err.Error())
+		complainAndQuit("Could not find package: " + err.Error())
 	}
-
-	dirName := strings.Replace(filepath.Base(path), "-", "_", -1)
-	dirName = strings.Replace(dirName, " ", "_", -1)
-
-	pkg, err := build.ImportDir(path, 0)
-	packageName := pkg.Name
-	if err != nil {
-		packageName = dirName
-	}
-
-	formattedName := prettifyPackageName(filepath.Base(path))
-	return packageName, dirName, formattedName
-}
-
-func prettifyPackageName(name string) string {
-	name = strings.Replace(name, "-", " ", -1)
-	name = strings.Replace(name, "_", " ", -1)
-	name = strings.Title(name)
-	name = strings.Replace(name, " ", "", -1)
-	return name
+	packageName := filepath.Base(workingDir)
+	return strings.Replace(packageName, "-", "_", -1)
 }
 
 func fileExists(path string) bool {
@@ -127,12 +107,13 @@ func fileExists(path string) bool {
 }
 
 func generateBootstrap(agouti bool, noDot bool) {
-	packageName, bootstrapFilePrefix, formattedName := getPackageAndFormattedName()
+	packageName := getPackage()
+	formattedPackage := strings.Replace(strings.Title(strings.Replace(packageName, "_", " ", -1)), " ", "", -1)
 	data := bootstrapData{
-		Package:       packageName,
-		FormattedName: formattedName,
-		GinkgoImport:  `. "github.com/onsi/ginkgo"`,
-		GomegaImport:  `. "github.com/onsi/gomega"`,
+		Package:          packageName,
+		FormattedPackage: formattedPackage,
+		GinkgoImport:     `. "github.com/onsi/ginkgo"`,
+		GomegaImport:     `. "github.com/onsi/gomega"`,
 	}
 
 	if noDot {
@@ -140,7 +121,7 @@ func generateBootstrap(agouti bool, noDot bool) {
 		data.GomegaImport = `"github.com/onsi/gomega"`
 	}
 
-	targetFile := fmt.Sprintf("%s_suite_test.go", bootstrapFilePrefix)
+	targetFile := fmt.Sprintf("%s_suite_test.go", packageName)
 	if fileExists(targetFile) {
 		fmt.Printf("%s already exists.\n\n", targetFile)
 		os.Exit(1)

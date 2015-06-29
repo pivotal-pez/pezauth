@@ -1,5 +1,5 @@
 {
-	"ImportPath": "github.com/pivotalservices/pezauth",
+	"ImportPath": "github.com/pivotal-pez/pezauth",
 	"GoVersion": "go1.4.2",
 	"Packages": [
 		"./..."
@@ -12,13 +12,13 @@
 		},
 		{
 			"ImportPath": "github.com/boj/redistore",
-			"Comment": "v1-2-g0cd5558",
-			"Rev": "0cd55584b172cefd31c4cb84e2904585d898c7b2"
+			"Comment": "v1-9-g9c0e6ba",
+			"Rev": "9c0e6bab4dd444285424f189b8fb0cb03f653242"
 		},
 		{
 			"ImportPath": "github.com/cloudfoundry-community/go-cfenv",
-			"Comment": "v1.11",
-			"Rev": "d09cf526a66903121cc1387caa5951b9dcb35642"
+			"Comment": "v1.12",
+			"Rev": "c682e189b94b0b2ec6edf12363df2eecf29d7256"
 		},
 		{
 			"ImportPath": "github.com/codegangsta/inject",
@@ -27,20 +27,20 @@
 		},
 		{
 			"ImportPath": "github.com/fatih/structs",
-			"Rev": "c06d8730d42f16f3e8dddc236c7d69c0952a8a2c"
+			"Rev": "a9f7daa9c2729e97450c2da2feda19130a367d8f"
 		},
 		{
 			"ImportPath": "github.com/garyburd/redigo/internal",
-			"Rev": "cca3df8fa0670249a3f746bcc062c69aeba0517c"
+			"Rev": "8b1d80a45a732e6d95e22dcc2e067312c664936c"
 		},
 		{
 			"ImportPath": "github.com/garyburd/redigo/redis",
-			"Rev": "cca3df8fa0670249a3f746bcc062c69aeba0517c"
+			"Rev": "8b1d80a45a732e6d95e22dcc2e067312c664936c"
 		},
 		{
 			"ImportPath": "github.com/go-martini/martini",
-			"Comment": "v1.0-114-g6241001",
-			"Rev": "6241001738f6e1b1ea7c4a4089195e1b0681609a"
+			"Comment": "v1.0-115-g8412a65",
+			"Rev": "8412a652ddae77553a9442708a527d0e616939a3"
 		},
 		{
 			"ImportPath": "github.com/gorilla/context",
@@ -48,11 +48,11 @@
 		},
 		{
 			"ImportPath": "github.com/gorilla/securecookie",
-			"Rev": "8e98dd730fc43f1383f19615db6f2e702c9738e8"
+			"Rev": "68004d2ba3cbc80d3a9949ea431b5c9f22ee8707"
 		},
 		{
 			"ImportPath": "github.com/gorilla/sessions",
-			"Rev": "3e759b5c5532bec4f3934ea4c745e4ae5d69737a"
+			"Rev": "f61c3ec2cf65d69e7efedfd4d060fe128882c951"
 		},
 		{
 			"ImportPath": "github.com/martini-contrib/gorelic",
@@ -72,26 +72,31 @@
 		},
 		{
 			"ImportPath": "github.com/mitchellh/mapstructure",
-			"Rev": "442e588f213303bec7936deba67901f8fc8f18b1"
+			"Rev": "2caf8efc93669b6c43e0441cdc6aed17546c96f3"
 		},
 		{
 			"ImportPath": "github.com/onsi/ginkgo",
-			"Comment": "v1.1.0-30-g5ce32b7",
-			"Rev": "5ce32b7910cdddcdd8bac6d761e2de9f27f9377b"
+			"Comment": "v1.1.0-24-g7891f86",
+			"Rev": "7891f8646dc62f4e32642ba332bbe7cf0097d8c5"
 		},
 		{
 			"ImportPath": "github.com/onsi/gomega",
-			"Comment": "v1.0-26-gdc751ce",
-			"Rev": "dc751ce5f266d83c26fae5c0a9093973b29cb61d"
+			"Comment": "v1.0-23-g2cd6d99",
+			"Rev": "2cd6d99ccf3ac7ae8398d8296429161bf7061ae2"
 		},
 		{
 			"ImportPath": "github.com/oxtoacart/bpool",
 			"Rev": "754d38fccfc6e52083355014b6abc8d626445dfd"
 		},
 		{
-			"ImportPath": "github.com/pivotalservices/pezdispenser/cloudfoundryclient",
-			"Comment": "0.0.1-67-g4b18741",
-			"Rev": "4b1874111ae49cf043759a31f977af14e2780189"
+			"ImportPath": "github.com/pivotal-pez/pezdispenser/cloudfoundryclient",
+			"Comment": "v0.0.22-13-ga36f2dc",
+			"Rev": "a36f2dc2a66de03dc4821dcf9a2f814fa9964597"
+		},
+		{
+			"ImportPath": "github.com/pivotal-pez/pezdispenser/service",
+			"Comment": "v0.0.22-13-ga36f2dc",
+			"Rev": "a36f2dc2a66de03dc4821dcf9a2f814fa9964597"
 		},
 		{
 			"ImportPath": "github.com/xchapter7x/cloudcontroller-client",
@@ -99,7 +104,7 @@
 		},
 		{
 			"ImportPath": "github.com/xchapter7x/goutil",
-			"Rev": "d11405d449b25127a32fab25ce8b1fc0388da5b3"
+			"Rev": "189c9c150f54f5b0fe1de1a659e7ef20fa490cfb"
 		},
 		{
 			"ImportPath": "github.com/yvasiyarov/go-metrics",
@@ -107,8 +112,8 @@
 		},
 		{
 			"ImportPath": "github.com/yvasiyarov/gorelic",
-			"Comment": "v0.0.6-22-g9fe479b",
-			"Rev": "9fe479b46261664fba456a6aacdc31933b94cfd1"
+			"Comment": "v0.0.6-24-g1c0ed4e",
+			"Rev": "1c0ed4e38e62548df0051140795e569d35cf2ded"
 		},
 		{
 			"ImportPath": "github.com/yvasiyarov/newrelic_platform_go",
@@ -116,24 +121,24 @@
 		},
 		{
 			"ImportPath": "golang.org/x/net/context",
-			"Rev": "7dbad50ab5b31073856416cdcfeb2796d682f844"
+			"Rev": "34ff4cd5e6de00702100a0ab3bb73de8de5ab35d"
 		},
 		{
 			"ImportPath": "golang.org/x/oauth2",
-			"Rev": "3046bc76d6dfd7d3707f6640f85e42d9c4050f50"
+			"Rev": "b5adcc2dcdf009d0391547edc6ecbaff889f5bb9"
 		},
 		{
 			"ImportPath": "google.golang.org/cloud/compute/metadata",
-			"Rev": "f20d6dcccb44ed49de45ae3703312cb46e627db1"
+			"Rev": "31c67eb99ff2683eae276fc59c7c8633a410adaf"
 		},
 		{
 			"ImportPath": "google.golang.org/cloud/internal",
-			"Rev": "f20d6dcccb44ed49de45ae3703312cb46e627db1"
+			"Rev": "31c67eb99ff2683eae276fc59c7c8633a410adaf"
 		},
 		{
 			"ImportPath": "gopkg.in/mgo.v2",
-			"Comment": "r2015.01.24",
-			"Rev": "c6a7dce14133ccac2dcac3793f1d6e2ef048503a"
+			"Comment": "r2015.06.03-3-g3569c88",
+			"Rev": "3569c88678d88179dcbd68d02ab081cbca3cd4d0"
 		}
 	]
 }
