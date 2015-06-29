@@ -1,8 +1,8 @@
-var pezAuth = angular.module('pezAuth', [], function($interpolateProvider) {
+var pezAuth = angular.module('pezAuth', ['ngDialog'], function($interpolateProvider) {
       $interpolateProvider.startSymbol('{*{');
       $interpolateProvider.endSymbol('}*}');
   })
-  .controller('PezAuthController', function($scope, $http, $timeout, $window) {
+  .controller('PezAuthController', function($scope, ngDialog, $http, $timeout, $window) {
     $scope.hideCLIExample = true;
     var myData = {};
     var pauth = this;
@@ -59,6 +59,41 @@ var pezAuth = angular.module('pezAuth', [], function($interpolateProvider) {
 
     pauth.remove = function() {
       callAPIUsingVerb($http.delete, getRestUri());
+    };
+
+    pauth.sandbox = function() {
+      console.log("show sandbox dialog");
+      ngDialog.open({
+        template: 'templates/sandbox.html',
+        className: 'ngdialog-theme-default',
+        //controller: 'pac',
+        scope: $scope
+      });
+    };
+
+    pauth.submitSandbox = function() {
+        var formData = jQuery.param(
+          {
+            from: $scope.myEmail,
+            name: $scope.myName
+          }
+        );
+        $http({
+            method: 'POST',
+            url: "/sandbox",
+            data: formData,
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+        }).success(function (data, status, headers, config) {
+          jQuery("#sandboxRequestResult")
+            .addClass("success")
+            .text("Sandbox request is sent, you will be notified through email once the sandbox is created");
+          jQuery("#sandboxSubmit").hide();
+        }).error(function (data, status, headers, config) {
+          jQuery("#sandboxRequestResult")
+            .addClass("error")
+            .text("The request could not be fullfiled, please contact ask@pivotal.io");
+          jQuery("#sandboxSubmit").hide();
+        })
     };
 
     function callMeUsingVerb(verbCaller, uri) {

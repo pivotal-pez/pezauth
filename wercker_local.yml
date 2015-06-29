@@ -60,7 +60,7 @@ build:
         name: download wget and cf cli
         code: |
           sudo apt-get install -y wget
-          wget http://go-cli.s3-website-us-east-1.amazonaws.com/releases/latest/cf-linux-amd64.tgz
+          wget http://go-cli.s3-website-us-east-1.amazonaws.com/releases/v6.11.1/cf-linux-amd64.tgz
           tar -zxvf cf-linux-amd64.tgz
           export CF_CLI=$(pwd)/cf
     - script:
