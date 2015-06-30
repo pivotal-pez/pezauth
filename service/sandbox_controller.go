@@ -11,10 +11,16 @@ import (
 const SUBJECT = "Pez Request: Sandbox"
 
 //BODY - Email body for sandbox request
-const BODY = `Here is %s:
-I would like to request a sandbox environment
-My email address is: %s
-Thanks
+const BODY = `To whom it may concern:
+
+I am requesting a PEZ Sandbox environment.
+
+My info:
+
+%s
+%s
+
+Thank you.
 `
 
 //NewSandBoxController - Create a Sandbox controller instance
