@@ -2,8 +2,11 @@ package pezauth_test
 
 import (
 	"errors"
+	"fmt"
 	"net/smtp"
+	"os"
 
+	"github.com/cloudfoundry-community/go-cfenv"
 	. "github.com/pivotal-pez/pezauth/service"
 
 	. "github.com/onsi/ginkgo"
@@ -11,6 +14,41 @@ import (
 )
 
 var _ = Describe("Email", func() {
+	Describe("NewEmailServerFromService", func() {
+
+		Context("when given valid smtp credentials", func() {
+			os.Setenv("SMTP_SERVICE_NAME", "email-server-service")
+			os.Setenv("SMTP_HOST", "smtp-host")
+			os.Setenv("SMTP_PORT", "smtp-port")
+			os.Setenv("SUPPORT_EMAIL", "support-email")
+			validEnv := []string{
+				`VCAP_APPLICATION={}`,
+				fmt.Sprintf("VCAP_SERVICES=%s", `{    
+          "user-provided": [   
+            {
+                "name": "email-server-service",
+                "label": "user-provided",
+                "tags": [],
+                "credentials": {
+                  "smtp-host": "smtp.test.com",
+                  "smtp-port": "25",
+                  "support-email": "someone@gmail.com"
+                },
+                "syslog_drain_url": ""
+              }
+            ]
+          }`),
+			}
+
+			testEnv := cfenv.Env(validEnv)
+			appEnv, _ := cfenv.New(testEnv)
+
+			It("should not panic", func() {
+				Ω(func() { NewEmailServerFromService(appEnv) }).ShouldNot(Panic())
+			})
+		})
+	})
+
 	Describe("SendEmail", func() {
 		var (
 			address, from string

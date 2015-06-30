@@ -21,10 +21,15 @@ func NewEmailServerFromService(appEnv *cfenv.App) *EmailServer {
 	passName := ""
 	supportEmail := os.Getenv("SUPPORT_EMAIL")
 	service, err := appEnv.Services.WithName(serviceName)
+
 	if err != nil {
 		panic(fmt.Sprintf("email service name error: %s", err.Error()))
 	}
-	auth := smtp.PlainAuth("", service.Credentials[userName].(string), service.Credentials[passName].(string), service.Credentials[hostName].(string))
+
+	if service.Credentials[hostName] == nil {
+		panic(fmt.Sprintf("credentials contains a nil value for (%s, %s or %s): %v", userName, passName, hostName, service.Credentials))
+	}
+	auth := smtp.PlainAuth("", userName, passName, service.Credentials[hostName].(string))
 	port, err := strconv.Atoi(service.Credentials[portName].(string))
 	if err != nil {
 		panic(fmt.Sprintf("The port for email server is not a valid integer %s", err.Error()))
