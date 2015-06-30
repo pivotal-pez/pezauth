@@ -1,7 +1,7 @@
 # pezauth
 authentication service for pez resources
 
-[![wercker status](https://app.wercker.com/status/01d1f291e61f5edfc16f0b0ac182af8f/m/master "wercker status")](https://app.wercker.com/project/bykey/01d1f291e61f5edfc16f0b0ac182af8f)
+[![wercker status](https://app.wercker.com/status/4ccfbbbb72ec786a0cc02dabc5de3f41/s/master "wercker status")](https://app.wercker.com/project/bykey/4ccfbbbb72ec786a0cc02dabc5de3f41)
 
 [![GoDoc](https://godoc.org/github.com/pivotal-pez/pezauth?status.png)](http://godoc.org/github.com/pivotal-pez/pezauth)
 
