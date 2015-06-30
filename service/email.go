@@ -17,8 +17,8 @@ func NewEmailServerFromService(appEnv *cfenv.App) *EmailServer {
 	serviceName := os.Getenv("SMTP_SERVICE_NAME")
 	hostName := os.Getenv("SMTP_HOST")
 	portName := os.Getenv("SMTP_PORT")
-	userName := os.Getenv("SMTP_USERNAME")
-	passName := os.Getenv("SMTP_PASSNAME")
+	userName := ""
+	passName := ""
 	supportEmail := os.Getenv("SUPPORT_EMAIL")
 	service, err := appEnv.Services.WithName(serviceName)
 	if err != nil {
