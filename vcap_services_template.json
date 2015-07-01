@@ -1,0 +1,86 @@
+{
+  "p-mongodb": [
+   {
+    "credentials": {
+     "uri": "mongodb://{{.MONGO_PORT_27017_TCP_ADDR}}:{{.MONGO_PORT_27017_TCP_PORT}}/59501f9b-5528-421b-84e9-93f9dc6f1080"
+    },
+    "label": "p-mongodb",
+    "name": "pezauth-mongo",
+    "plan": "development",
+    "tags": [
+     "pivotal",
+     "mongodb"
+    ]
+   }
+  ],
+  "p-redis": [
+   {
+    "credentials": {
+     "host": "{{.REDIS_PORT_6379_TCP_ADDR}}",
+     "password": "",
+     "port": {{.REDIS_PORT_6379_TCP_PORT}}
+    },
+    "label": "p-redis",
+    "name": "pezauth-redis",
+    "plan": "shared-vm",
+    "tags": [
+     "pivotal",
+     "redis"
+    ]
+   }
+  ],
+  "user-provided": [
+   {
+    "credentials": {
+     "target-url": "http://{{.DOCKER_IP}}.xip.io:5000/valid-key"
+    },
+    "label": "user-provided",
+    "name": "pezvalidator-service",
+    "syslog_drain_url": "",
+    "tags": []
+   },
+   {
+    "credentials": {
+     "client-id": "{{.GOOGLE_CLIENT_ID}}",
+     "client-secret": "{{.GOOGLE_CLIENT_SECRET}}"
+    },
+    "label": "user-provided",
+    "name": "oauth-client-details",
+    "syslog_drain_url": "",
+    "tags": []
+   },
+   {
+    "credentials": {
+     "cc-target": "https://{{.CF_APIURL}}",
+     "login-pass": "{{.CF_PASS}}",
+     "login-target": "https://{{.CF_LOGINURL}}",
+     "login-user": "{{.CF_USER}}"
+    },
+    "label": "user-provided",
+    "name": "pez-heritage-admin-service",
+    "syslog_drain_url": "",
+    "tags": []
+   },
+   {
+    "credentials": {
+     "smtp-host": "{{.SMTP_HOST}}",
+     "smtp-port": "{{.SMTP_PORT}}",
+     "support-email": "{{.SMTP_SUPPORT_EMAIL}}"
+    },
+    "label": "user-provided",
+    "name": "email-server-service",
+    "syslog_drain_url": "",
+    "tags": []
+   },
+   {
+    "credentials": {
+     "newrelic-app": "{{.NEWRELIC_APP}}",
+     "newrelic-key": "{{.NEWRELIC_KEY}}"
+    },
+    "label": "user-provided",
+    "name": "pez-heritage-newrelic",
+    "syslog_drain_url": "",
+    "tags": []
+   }
+  ]
+}
