@@ -12,17 +12,4 @@ pez portal is the user facing web client (pez landing page) which will be a user
 
 the two above services will be decoupled in the near future, but remain in this repo for now.
 
-## How to run my pipeline
-* requires the [wercker cli](http://devcenter.wercker.com/docs/using-the-cli/installing.html)
-* requires a dockerhost (boot2docker)
-```
-$ git clone git@github.com:pivotal-pez/pezauth.git
-$ cd pezauth
-$ ./runlocalbuild
-```
-
-
-
-
-
-
+## [How to run local deployment](docs\RUN_PEZAUTH_LOCAL.md)
