@@ -45,17 +45,18 @@ X_DOCKER_IP=192.168.59.104
 * Cloudfoundry environment variables
 
 Developer could get a cloudfoundry org from [pez](https://hcf.cfapps.pez.pivotal.io)
-Note: In order to fully functional testing creation of org. Developer needs to setup these variables with a cloudfoundry admin role user
+
+**Note: In order to fully functional testing creation of org. Developer needs to setup these variables with a cloudfoundry admin role user**
 
 * Google oauth client key
 
 Developer could use [developer console] (https://console.developers.google.com) to get a client id and client secret and make sure the redirect URI including the ${X_DOCKER_IP}.xip.io/oauth2callback
 
-![Sample client id/secret](images\client_id.png)
+![Sample client id_secret](images/client_id.png)
 
 Also make sure the google+ API is enabled
 
-![Google+ API](images\google+.png)
+![Google+ API](images/google+.png)
 
 * New Relic APP name and New Relic secret
 
@@ -73,7 +74,7 @@ boot2docker ip
 * How to run
 
 ```
-./runlocaldeploy
+./runlocaldeploy [env file]
 ```
 
 Once the application is up. Developer can functionally test their application at: http://192.168.59.103.xip.io

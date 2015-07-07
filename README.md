@@ -12,4 +12,4 @@ pez portal is the user facing web client (pez landing page) which will be a user
 
 the two above services will be decoupled in the near future, but remain in this repo for now.
 
-## [How to run local deployment](docs\RUN_PEZAUTH_LOCAL.md)
+## [How to run local deployment](docs/RUN_PEZAUTH_LOCAL.md)
