@@ -36,15 +36,18 @@ func (s *orgController) Put() interface{} {
 			err             error
 			payload         *PivotOrg
 			responsePayload map[string]interface{}
+			result          *PivotOrg
 		)
 		username := params[UserParam]
 		org := NewOrg(username, log, tokens, s.store(), s.authClient)
 
-		if _, err = org.Show(); err == ErrNoMatchInStore {
+		if result, err = org.Show(); err == ErrNoMatchInStore {
+			log.Println("Show yielded no results: ", err)
 			payload, err = org.SafeCreate()
 			responsePayload = structs.Map(payload)
 
 		} else {
+			log.Println("Show yielded a result: ", result)
 			err = ErrCanNotCreateOrg
 		}
 		genericResponseFormatter(r, "", responsePayload, err)

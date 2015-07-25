@@ -82,6 +82,7 @@ var pezPortal = angular.module('pezPortal', [], function($interpolateProvider) {
       });
 
       responsePromise.error(function(data, status, headers, config) {
+          var forwardToOkta = false;
 
           if(status === 403) {
             console.log(data.ErrorMsg);
