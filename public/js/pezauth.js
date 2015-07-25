@@ -1,8 +1,8 @@
-var pezAuth = angular.module('pezAuth', ['ngDialog'], function($interpolateProvider) {
+var pezPortal = angular.module('pezPortal', [], function($interpolateProvider) {
       $interpolateProvider.startSymbol('{*{');
       $interpolateProvider.endSymbol('}*}');
   })
-  .controller('PezAuthController', function($scope, ngDialog, $http, $timeout, $window) {
+  .controller('PezPortalController', function($scope, $http, $timeout, $window) {
     $scope.hideCLIExample = true;
     var myData = {};
     var pauth = this;
@@ -17,6 +17,7 @@ var pezAuth = angular.module('pezAuth', ['ngDialog'], function($interpolateProvi
       "oktaSetup": "Get Okta Tile for HeritageCF",
       "invalidUser": "query failed. unable to find matching user guid."
     };
+    
     var urls = {
       "okta": "http://login.run.pez.pivotal.io/saml/login/alias/login.run.pez.pivotal.io?disco=true",
       "oktaHome": "https://pivotal.okta.com/app/UserHome"
@@ -26,11 +27,11 @@ var pezAuth = angular.module('pezAuth', ['ngDialog'], function($interpolateProvi
       callMeUsingVerb($http.get, meUri);
     }, 1);
 
-    function getRestUri() {
+    pauth.getRestUri = function() {
       return [restUriBase, $scope.myEmail].join("/");
     }
 
-    function getOrgRestUri() {
+    pauth.getOrgRestUri = function() {
       return [restOrgUriBase, $scope.myEmail].join("/");
     }
 
@@ -42,7 +43,7 @@ var pezAuth = angular.module('pezAuth', ['ngDialog'], function($interpolateProvi
     pauth.createorg = function() {
 
       if ($scope.orgButtonText === messaging.createOrgBtn) {
-        createOrg(getOrgRestUri());
+        createOrg(this.getOrgRestUri());
 
       } else if ($scope.orgButtonText === messaging.hasOrgBtn) {
         $window.location.href = urls.okta;
@@ -54,46 +55,11 @@ var pezAuth = angular.module('pezAuth', ['ngDialog'], function($interpolateProvi
     };
 
     pauth.create = function() {
-      callAPIUsingVerb($http.put, getRestUri());
+      callAPIUsingVerb($http.put, this.getRestUri());
     };
 
     pauth.remove = function() {
-      callAPIUsingVerb($http.delete, getRestUri());
-    };
-
-    pauth.sandbox = function() {
-      console.log("show sandbox dialog");
-      ngDialog.open({
-        template: 'templates/sandbox.html',
-        className: 'ngdialog-theme-default',
-        //controller: 'pac',
-        scope: $scope
-      });
-    };
-
-    pauth.submitSandbox = function() {
-        var formData = jQuery.param(
-          {
-            from: $scope.myEmail,
-            name: $scope.myName
-          }
-        );
-        $http({
-            method: 'POST',
-            url: "/sandbox",
-            data: formData,
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'}
-        }).success(function (data, status, headers, config) {
-          jQuery("#sandboxRequestResult")
-            .addClass("success")
-            .text("Sandbox request is sent, you will be notified through email once the sandbox is created");
-          jQuery("#sandboxSubmit").hide();
-        }).error(function (data, status, headers, config) {
-          jQuery("#sandboxRequestResult")
-            .addClass("error")
-            .text("The request could not be fullfiled, please contact ask@pivotal.io");
-          jQuery("#sandboxSubmit").hide();
-        })
+      callAPIUsingVerb($http.delete, this.getRestUri());
     };
 
     function callMeUsingVerb(verbCaller, uri) {
@@ -102,7 +68,7 @@ var pezAuth = angular.module('pezAuth', ['ngDialog'], function($interpolateProvi
           $scope.myName = data.Payload.displayName;
           $scope.myEmail = data.Payload.emails[0].value;
           $scope.displayName = $scope.myName ? $scope.myName : $scope.myEmail
-          callAPIUsingVerb($http.get, getRestUri());
+          callAPIUsingVerb($http.get, this.getRestUri());
           pauth.getorg();
       });
     }
@@ -153,6 +119,7 @@ var pezAuth = angular.module('pezAuth', ['ngDialog'], function($interpolateProvi
 
     function callAPIUsingVerb(verbCaller, uri) {
       var responsePromise = verbCaller(uri);
+            
       responsePromise.success(function(data, status, headers, config) {
           $scope.myData = data;
           $scope.myApiKey = data.APIKey;
@@ -161,6 +128,6 @@ var pezAuth = angular.module('pezAuth', ['ngDialog'], function($interpolateProvi
       responsePromise.error(function(data, status, headers, config) {
         $scope.myApiKey = messaging.noApiKey;
         pauth.create();
-      });
+      });      
     }
   });
