@@ -8,7 +8,6 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/pivotal-pez/pezauth/integrations"
-	"github.com/pivotal-pez/pezauth/service"
 	"github.com/pivotal-pez/pezdispenser/service"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
@@ -77,7 +76,7 @@ var _ = Describe("MyMongo", func() {
 		It("Should return error", func() {
 			mngo := new(integrations.MyMongo).New(appEnv)
 			col := mngo.Collection()
-			Ω(col.FindOne(controlField, nil)).Should(Equal(pezauth.ErrNoMatchInStore))
+			Ω(col.FindOne(controlField, nil)).Should(Equal(pezdispenser.ErrNoMatchInStore))
 		})
 	})
 
@@ -86,7 +85,7 @@ var _ = Describe("MyMongo", func() {
 			mngo := new(integrations.MyMongo).New(appEnv)
 			col := mngo.Collection()
 			col.Upsert(controlField, controlField)
-			Ω(col.FindOne(controlField, nil)).ShouldNot(Equal(pezauth.ErrNoMatchInStore))
+			Ω(col.FindOne(controlField, nil)).ShouldNot(Equal(pezdispenser.ErrNoMatchInStore))
 			Ω(col.FindOne(controlField, nil)).Should(BeNil())
 		})
 	})
