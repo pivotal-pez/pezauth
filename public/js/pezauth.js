@@ -36,8 +36,8 @@ var pezPortal = angular.module('pezPortal', [], function($interpolateProvider) {
     }
 
     pauth.getorg = function() {
-      console.log(getOrgRestUri());
-      getOrgStatus(getOrgRestUri());
+      console.log(pauth.getOrgRestUri());
+      getOrgStatus(pauth.getOrgRestUri());
     };
 
     pauth.createorg = function() {
