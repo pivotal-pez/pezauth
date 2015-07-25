@@ -41,13 +41,13 @@ func (s *orgController) Put() interface{} {
 		username := params[UserParam]
 		org := NewOrg(username, log, tokens, s.store(), s.authClient)
 
-		if result, err = org.Show(); err == ErrNoMatchInStore {
+		if result, err = org.Show(); err == pezdispenser.ErrNoMatchInStore {
 			log.Println("Show yielded no results: ", err)
 			payload, err = org.SafeCreate()
 			responsePayload = structs.Map(payload)
 
 		} else {
-			log.Println("Show yielded a result: ", result)
+			log.Println("Show yielded a result: ", result, ":", err, "!=", pezdispenser.ErrNoMatchInStore)
 			err = ErrCanNotCreateOrg
 		}
 		genericResponseFormatter(r, "", responsePayload, err)

@@ -12,6 +12,7 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	. "github.com/pivotal-pez/pezauth/service"
+	"github.com/pivotal-pez/pezdispenser/service"
 )
 
 var _ = Describe("NewOrgController", func() {
@@ -67,9 +68,9 @@ var _ = Describe("NewOrgController", func() {
 			controlResponse := Response{Payload: structs.Map(result)}
 
 			BeforeEach(func() {
-				NewOrg = getMockNewOrg(nil, &result, &result, ErrNoMatchInStore, nil, nil)
+				NewOrg = getMockNewOrg(nil, &result, &result, pezdispenser.ErrNoMatchInStore, nil, nil)
 				orgPut = NewOrgController(&mockMongo{
-					err:    ErrNoMatchInStore,
+					err:    pezdispenser.ErrNoMatchInStore,
 					result: "",
 				}, &mockHeritageClient{
 					res: &http.Response{
@@ -102,7 +103,7 @@ var _ = Describe("NewOrgController", func() {
 			}
 			controlResponse := Response{Payload: structs.Map(result)}
 			var orgPut OrgPutHandler = NewOrgController(&mockMongo{
-				err:    ErrNoMatchInStore,
+				err:    pezdispenser.ErrNoMatchInStore,
 				result: nil,
 			}, &mockHeritageClient{
 				res: &http.Response{
@@ -187,9 +188,9 @@ var _ = Describe("NewOrgController", func() {
 					Email:   fakeUser,
 					OrgName: fakeOrg,
 				}
-				controlResponse := Response{ErrorMsg: ErrNoMatchInStore.Error()}
+				controlResponse := Response{ErrorMsg: pezdispenser.ErrNoMatchInStore.Error()}
 				var orgGet OrgGetHandler = NewOrgController(&mockMongo{
-					err:    ErrNoMatchInStore,
+					err:    pezdispenser.ErrNoMatchInStore,
 					result: result,
 				}, new(mockHeritageClient)).Get().(OrgGetHandler)
 

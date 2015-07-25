@@ -24,12 +24,8 @@ var (
 	ErrUnparsableHash = errors.New("Could not parse the hash or hash was nil")
 	//ErrEmptyKeyResponse - an error for a invalid or empty key
 	ErrEmptyKeyResponse = errors.New("The key could not be found or was not valid")
-	//ErrNoMatchInStore - error when there is no matching org in the datastore
-	ErrNoMatchInStore = errors.New("Could not find a matching user org or connection failure")
 	//ErrCanNotCreateOrg - error when we can not create an org
 	ErrCanNotCreateOrg = errors.New("Could not create a new org")
-	//ErrCanNotAddOrgRec - error when we can not add a new org record to the datastore
-	ErrCanNotAddOrgRec = errors.New("Could not add a new org record")
 	//ErrCantCallAcrossUsers - error when a user is trying to update a user record other than their own
 	ErrCantCallAcrossUsers = errors.New("user calling another users endpoint")
 	//UserMatch exported vars
