@@ -17,7 +17,7 @@ var pezPortal = angular.module('pezPortal', [], function($interpolateProvider) {
       "oktaSetup": "Get Okta Tile for HeritageCF",
       "invalidUser": "query failed. unable to find matching user guid."
     };
-    
+
     var urls = {
       "okta": "http://login.run.pez.pivotal.io/saml/login/alias/login.run.pez.pivotal.io?disco=true",
       "oktaHome": "https://pivotal.okta.com/app/UserHome"
@@ -43,7 +43,7 @@ var pezPortal = angular.module('pezPortal', [], function($interpolateProvider) {
     pauth.createorg = function() {
 
       if ($scope.orgButtonText === messaging.createOrgBtn) {
-        createOrg(this.getOrgRestUri());
+        createOrg(pauth.getOrgRestUri());
 
       } else if ($scope.orgButtonText === messaging.hasOrgBtn) {
         $window.location.href = urls.okta;
@@ -55,11 +55,11 @@ var pezPortal = angular.module('pezPortal', [], function($interpolateProvider) {
     };
 
     pauth.create = function() {
-      callAPIUsingVerb($http.put, this.getRestUri());
+      callAPIUsingVerb($http.put, pauth.getRestUri());
     };
 
     pauth.remove = function() {
-      callAPIUsingVerb($http.delete, this.getRestUri());
+      callAPIUsingVerb($http.delete, pauth.getRestUri());
     };
 
     function callMeUsingVerb(verbCaller, uri) {
@@ -68,7 +68,7 @@ var pezPortal = angular.module('pezPortal', [], function($interpolateProvider) {
           $scope.myName = data.Payload.displayName;
           $scope.myEmail = data.Payload.emails[0].value;
           $scope.displayName = $scope.myName ? $scope.myName : $scope.myEmail
-          callAPIUsingVerb($http.get, this.getRestUri());
+          callAPIUsingVerb($http.get, pauth.getRestUri());
           pauth.getorg();
       });
     }
@@ -119,7 +119,7 @@ var pezPortal = angular.module('pezPortal', [], function($interpolateProvider) {
 
     function callAPIUsingVerb(verbCaller, uri) {
       var responsePromise = verbCaller(uri);
-            
+
       responsePromise.success(function(data, status, headers, config) {
           $scope.myData = data;
           $scope.myApiKey = data.APIKey;
@@ -128,6 +128,6 @@ var pezPortal = angular.module('pezPortal', [], function($interpolateProvider) {
       responsePromise.error(function(data, status, headers, config) {
         $scope.myApiKey = messaging.noApiKey;
         pauth.create();
-      });      
+      });
     }
   });
