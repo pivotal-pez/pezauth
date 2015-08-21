@@ -154,6 +154,9 @@ func (r *mockRenderer) Header() (h http.Header) {
 	return
 }
 
+func (r *mockRenderer) Text(i int, s string) {
+}
+
 func setGetUserInfo(domain string, username string) {
 	var oldGetUserInfo func(tokens oauth2.Tokens) map[string]interface{}
 

@@ -31,28 +31,28 @@
 		},
 		{
 			"ImportPath": "github.com/garyburd/redigo/internal",
-			"Rev": "8b1d80a45a732e6d95e22dcc2e067312c664936c"
+			"Rev": "9d4db5d1dbeff473d50e1bb82f5405c8cca0f0ac"
 		},
 		{
 			"ImportPath": "github.com/garyburd/redigo/redis",
-			"Rev": "8b1d80a45a732e6d95e22dcc2e067312c664936c"
+			"Rev": "9d4db5d1dbeff473d50e1bb82f5405c8cca0f0ac"
 		},
 		{
 			"ImportPath": "github.com/go-martini/martini",
-			"Comment": "v1.0-115-g8412a65",
-			"Rev": "8412a652ddae77553a9442708a527d0e616939a3"
+			"Comment": "v1.0-134-g184178f",
+			"Rev": "184178ffc6b2f7b86b8b99c2a411de8771708a0a"
 		},
 		{
 			"ImportPath": "github.com/gorilla/context",
-			"Rev": "215affda49addc4c8ef7e2534915df2c8c35c6cd"
+			"Rev": "1c83b3eabd45b6d76072b66b746c20815fb2872d"
 		},
 		{
 			"ImportPath": "github.com/gorilla/securecookie",
-			"Rev": "68004d2ba3cbc80d3a9949ea431b5c9f22ee8707"
+			"Rev": "e95799a481bbcc3d01c2ad5178524cb8bec9f370"
 		},
 		{
 			"ImportPath": "github.com/gorilla/sessions",
-			"Rev": "f61c3ec2cf65d69e7efedfd4d060fe128882c951"
+			"Rev": "b6bcae186ac3099dba8fafce125dc930393f1e5e"
 		},
 		{
 			"ImportPath": "github.com/martini-contrib/gorelic",
@@ -64,7 +64,7 @@
 		},
 		{
 			"ImportPath": "github.com/martini-contrib/render",
-			"Rev": "b65063311fac6cbf84d3538f5715f7847e648322"
+			"Rev": "ec18f8345a1181146728238980606fb1d6f40e8c"
 		},
 		{
 			"ImportPath": "github.com/martini-contrib/sessions",
@@ -72,31 +72,31 @@
 		},
 		{
 			"ImportPath": "github.com/mitchellh/mapstructure",
-			"Rev": "2caf8efc93669b6c43e0441cdc6aed17546c96f3"
+			"Rev": "281073eb9eb092240d33ef253c404f1cca550309"
 		},
 		{
 			"ImportPath": "github.com/onsi/ginkgo",
-			"Comment": "v1.1.0-24-g7891f86",
-			"Rev": "7891f8646dc62f4e32642ba332bbe7cf0097d8c5"
+			"Comment": "v1.2.0-11-gd94e2f4",
+			"Rev": "d94e2f4000332f62b356ecb2840c98f4218f5358"
 		},
 		{
 			"ImportPath": "github.com/onsi/gomega",
-			"Comment": "v1.0-23-g2cd6d99",
-			"Rev": "2cd6d99ccf3ac7ae8398d8296429161bf7061ae2"
+			"Comment": "v1.0-52-ga2ab864",
+			"Rev": "a2ab8644e0b6a33df2cbe44673bd0f6ebba9abc3"
 		},
 		{
 			"ImportPath": "github.com/oxtoacart/bpool",
-			"Rev": "754d38fccfc6e52083355014b6abc8d626445dfd"
+			"Rev": "4e1c5567d7c2dd59fa4c7c83d34c2f3528b025d6"
 		},
 		{
 			"ImportPath": "github.com/pivotal-pez/pezdispenser/cloudfoundryclient",
-			"Comment": "v0.0.22-15-gb2c2a83",
-			"Rev": "b2c2a8390bd2c87bcf0d6a11a43d3c012396fe19"
+			"Comment": "v0.0.24-25-gca3e3e7",
+			"Rev": "ca3e3e70c5c2ea655c698ecbdbc9bb38da7731de"
 		},
 		{
 			"ImportPath": "github.com/pivotal-pez/pezdispenser/service",
-			"Comment": "v0.0.22-15-gb2c2a83",
-			"Rev": "b2c2a8390bd2c87bcf0d6a11a43d3c012396fe19"
+			"Comment": "v0.0.24-25-gca3e3e7",
+			"Rev": "ca3e3e70c5c2ea655c698ecbdbc9bb38da7731de"
 		},
 		{
 			"ImportPath": "github.com/xchapter7x/cloudcontroller-client",
@@ -104,7 +104,7 @@
 		},
 		{
 			"ImportPath": "github.com/xchapter7x/goutil",
-			"Rev": "189c9c150f54f5b0fe1de1a659e7ef20fa490cfb"
+			"Rev": "d11405d449b25127a32fab25ce8b1fc0388da5b3"
 		},
 		{
 			"ImportPath": "github.com/yvasiyarov/go-metrics",
@@ -112,33 +112,33 @@
 		},
 		{
 			"ImportPath": "github.com/yvasiyarov/gorelic",
-			"Comment": "v0.0.6-24-g1c0ed4e",
-			"Rev": "1c0ed4e38e62548df0051140795e569d35cf2ded"
+			"Comment": "v0.0.6-32-gd835cea",
+			"Rev": "d835cea68f58c5e4eed594ed7fbad5214bd0ced7"
 		},
 		{
 			"ImportPath": "github.com/yvasiyarov/newrelic_platform_go",
-			"Rev": "cef0ebd22fb48453114ba645d0fb80fea6e670de"
+			"Rev": "db03d6dfd965ebc22dbfd910567c641b326ff055"
 		},
 		{
 			"ImportPath": "golang.org/x/net/context",
-			"Rev": "34ff4cd5e6de00702100a0ab3bb73de8de5ab35d"
+			"Rev": "66f0418ca41253f8d1a024eb9754e9441a8e79b9"
 		},
 		{
 			"ImportPath": "golang.org/x/oauth2",
-			"Rev": "b5adcc2dcdf009d0391547edc6ecbaff889f5bb9"
+			"Rev": "397fe7649477ff2e8ced8fc0b2696f781e53745a"
 		},
 		{
 			"ImportPath": "google.golang.org/cloud/compute/metadata",
-			"Rev": "31c67eb99ff2683eae276fc59c7c8633a410adaf"
+			"Rev": "c8de7fb24e8f427e2a56ffe08fcf0f6791228595"
 		},
 		{
 			"ImportPath": "google.golang.org/cloud/internal",
-			"Rev": "31c67eb99ff2683eae276fc59c7c8633a410adaf"
+			"Rev": "c8de7fb24e8f427e2a56ffe08fcf0f6791228595"
 		},
 		{
 			"ImportPath": "gopkg.in/mgo.v2",
-			"Comment": "r2015.06.03-3-g3569c88",
-			"Rev": "3569c88678d88179dcbd68d02ab081cbca3cd4d0"
+			"Comment": "r2015.06.03-4-gf4923a5",
+			"Rev": "f4923a569136442e900b8cf5c1a706c0a8b0883c"
 		}
 	]
 }
