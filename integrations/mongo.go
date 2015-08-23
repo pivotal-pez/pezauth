@@ -7,7 +7,7 @@ import (
 
 	"github.com/cloudfoundry-community/go-cfenv"
 	"github.com/pivotal-pez/pezdispenser/service"
-	"gopkg.in/mgo.v2"
+	"labix.org/v2/mgo"
 )
 
 //New - create a new mongo integration wrapper

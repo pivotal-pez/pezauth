@@ -9,8 +9,8 @@ import (
 	. "github.com/onsi/gomega"
 	"github.com/pivotal-pez/pezauth/integrations"
 	"github.com/pivotal-pez/pezdispenser/service"
-	"gopkg.in/mgo.v2"
-	"gopkg.in/mgo.v2/bson"
+	"labix.org/v2/mgo"
+	"labix.org/v2/mgo/bson"
 )
 
 var _ = Describe("MyMongo", func() {
