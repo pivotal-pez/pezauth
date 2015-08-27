@@ -2,7 +2,7 @@ package integrations
 
 import (
 	"github.com/garyburd/redigo/redis"
-	"gopkg.in/mgo.v2"
+	"labix.org/v2/mgo"
 )
 
 type (

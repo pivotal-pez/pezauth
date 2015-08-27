@@ -17,7 +17,7 @@ import (
 	"github.com/pivotal-pez/pezdispenser/service"
 	"github.com/xchapter7x/cloudcontroller-client"
 	"github.com/xchapter7x/goutil"
-	"gopkg.in/mgo.v2"
+	"labix.org/v2/mgo"
 
 	"html/template"
 	"testing"

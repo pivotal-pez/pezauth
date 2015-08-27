@@ -90,13 +90,28 @@
 		},
 		{
 			"ImportPath": "github.com/pivotal-pez/pezdispenser/cloudfoundryclient",
-			"Comment": "v0.0.24-25-gca3e3e7",
-			"Rev": "ca3e3e70c5c2ea655c698ecbdbc9bb38da7731de"
+			"Comment": "v0.0.24-57-g3c7e639",
+			"Rev": "3c7e639be9b0ae926c46dba276ebb55efc155ddb"
 		},
 		{
 			"ImportPath": "github.com/pivotal-pez/pezdispenser/service",
-			"Comment": "v0.0.24-25-gca3e3e7",
-			"Rev": "ca3e3e70c5c2ea655c698ecbdbc9bb38da7731de"
+			"Comment": "v0.0.24-57-g3c7e639",
+			"Rev": "3c7e639be9b0ae926c46dba276ebb55efc155ddb"
+		},
+		{
+			"ImportPath": "github.com/pivotal-pez/pezdispenser/skus",
+			"Comment": "v0.0.24-57-g3c7e639",
+			"Rev": "3c7e639be9b0ae926c46dba276ebb55efc155ddb"
+		},
+		{
+			"ImportPath": "github.com/pivotal-pez/pezdispenser/taskmanager",
+			"Comment": "v0.0.24-57-g3c7e639",
+			"Rev": "3c7e639be9b0ae926c46dba276ebb55efc155ddb"
+		},
+		{
+			"ImportPath": "github.com/pivotal-pez/pezdispenser/vcloudclient",
+			"Comment": "v0.0.24-57-g3c7e639",
+			"Rev": "3c7e639be9b0ae926c46dba276ebb55efc155ddb"
 		},
 		{
 			"ImportPath": "github.com/xchapter7x/cloudcontroller-client",
@@ -136,9 +151,14 @@
 			"Rev": "c8de7fb24e8f427e2a56ffe08fcf0f6791228595"
 		},
 		{
-			"ImportPath": "gopkg.in/mgo.v2",
+			"ImportPath": "gopkg.in/mgo.v2/bson",
 			"Comment": "r2015.06.03-4-gf4923a5",
 			"Rev": "f4923a569136442e900b8cf5c1a706c0a8b0883c"
+		},
+		{
+			"ImportPath": "labix.org/v2/mgo",
+			"Comment": "287",
+			"Rev": "gustavo@niemeyer.net-20140501184651-975yyw9ipld92pji"
 		}
 	]
 }

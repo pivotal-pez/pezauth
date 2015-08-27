@@ -1,0 +1,61 @@
+box: google/golang
+
+services:
+    - mongo
+    - redis
+
+dev:
+  # The steps that will be executed on build
+  steps:
+    - setup-go-workspace:
+        package-dir: github.com/pivotal-pez/pezauth
+
+    - script:
+        name: env
+        code: env
+
+    # Get the dependencies
+    - script:
+        name: go get
+        code: |
+          cd $WERCKER_SOURCE_DIR
+          go version
+          go get -u github.com/tools/godep
+          go get -u github.com/datianshi/envtemplate
+          export PATH=$WERCKER_SOURCE_DIR/bin:$PATH
+    - script:
+        name: set vcap services/application
+        code: |
+          export VCAP_SERVICES=`envtemplate -file=vcap_services_template.json`
+          export VCAP_APPLICATION=`envtemplate -file=vcap_application_template.json`
+    - script:
+        name: build the server binary
+        code: |
+          godep go build main.go
+    - internal/watch:
+        code: >
+          UPS_PEZ_HERITAGE_ADMIN_NAME="pez-heritage-admin-service"
+          HERITAGE_LOGIN_TARGET_NAME="login-target"
+          HERITAGE_LOGIN_USER_NAME="login-user"
+          HERITAGE_LOGIN_PASS_NAME="login-pass"
+          HERITAGE_CC_TARGET_NAME="cc-target"
+          MONGO_DB_NAME="pezauth"
+          MONGO_COLLECTION_NAME="org_users"
+          MONGO_SERVICE_NAME="pezauth-mongo"
+          MONGO_URI_NAME="uri"
+          REDIS_SERVICE_NAME="pezauth-redis"
+          REDIS_HOSTNAME_NAME="host"
+          REDIS_PASSWORD_NAME="password"
+          REDIS_PORT_NAME="port"
+          PORT=80
+          NEWRELIC_SERVICE_NAME=pez-heritage-newrelic
+          NEWRELIC_KEY_NAME=newrelic-key
+          NEWRELIC_APP_NAME=newrelic-app
+          OAUTH2_SERVICE_NAME=oauth-client-details
+          OAUTH2_CLIENT_ID=client-id
+          OAUTH2_CLIENT_SECRET=client-secret
+          SMTP_SERVICE_NAME=email-server-service
+          SMTP_HOST=smtp-host
+          SMTP_PORT=smtp-port
+          SUPPORT_EMAIL=support-email
+          ./main

@@ -4,4 +4,4 @@ _steps
 service/coverage.out
 node_modules
 .DS_Store
-myenv
+local_wercker_configs

@@ -1,0 +1,29 @@
+# Cloudfoundry environment
+
+X_CF_USER=xxxxxxxxxxxxxxx
+X_CF_PASS=xxxxxxxxxxx
+X_CF_ORG=xxxxxxxx
+X_CF_SPACE=xxxxxxxxx
+X_CF_APPNAME=xxxxxxxx
+X_CF_HOSTNAME=xxxxxxx
+X_CF_DOMAINNAME=cfapps.pez.pivotal.io
+X_CF_LOGINURL=login.run.pez.pivotal.io
+# Wercker debug
+
+X_DEBUG_STEP=true
+
+#New Relic
+X_NEWRELIC_APP=pezauthdev
+X_NEWRELIC_KEY=ef74423ffa3dfaa0cf17d3811dc3ee6213aac75c
+
+# SMTP Server
+X_SMTP_HOST=smtp.vchs.pivotal.io
+X_SMTP_PORT=25
+X_SMTP_SUPPORT_EMAIL=test@pivotal.io
+
+# Google oauth client key
+X_GOOGLE_CLIENT_ID=xxxxxxxxxxxxxxxxxxxxxxxxxxxx-eslmimdl7rlgcp5rflg164bnb71vvdsn.apps.googleusercontent.com
+X_GOOGLE_CLIENT_SECRET=xxxxxxxxxxxxxxxxxxxxxxxx
+
+# Local DOCKER IP Address
+X_DOCKER_IP=192.168.59.103

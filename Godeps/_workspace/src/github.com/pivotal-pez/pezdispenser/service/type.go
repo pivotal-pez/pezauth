@@ -1,7 +1,12 @@
 package pezdispenser
 
 import (
-	"gopkg.in/mgo.v2"
+	"time"
+
+	"github.com/pivotal-pez/pezdispenser/service/integrations"
+	"github.com/pivotal-pez/pezdispenser/skus"
+	"github.com/pivotal-pez/pezdispenser/taskmanager"
+	"labix.org/v2/mgo"
 )
 
 type (
@@ -28,5 +33,22 @@ type (
 		Remove(selector interface{}) error
 		FindOne(query interface{}, result interface{}) (err error)
 		Upsert(selector interface{}, update interface{}) (err error)
+	}
+
+	//Lease - this represents a lease object
+	Lease struct {
+		taskCollection  integrations.Collection
+		taskManager     *taskmanager.TaskManager
+		availableSkus   map[string]skus.Sku
+		ID              string                 `json:"_id"`
+		InventoryID     string                 `json:"inventory_id"`
+		UserName        string                 `json:"username"`
+		Sku             string                 `json:"sku"`
+		LeaseDuration   float64                `json:"lease_duration"`
+		LeaseEndDate    time.Time              `json:"lease_end_date"`
+		LeaseStartDate  time.Time              `json:"lease_start_date"`
+		ConsumerMeta    map[string]interface{} `json:"consumer_meta"`
+		ProcurementMeta map[string]interface{} `json:"procurement_meta"`
+		Task            *taskmanager.Task      `json:"task"`
 	}
 )
