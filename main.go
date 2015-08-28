@@ -13,7 +13,11 @@ import (
 )
 
 func main() {
-	appEnv, _ := cfenv.Current()
+	appEnv, err := cfenv.Current()
+
+	if appEnv == nil || err != nil {
+		panic(fmt.Sprintf("appEnv is not set: ", appEnv))
+	}
 	m := martini.Classic()
 	newRelic := new(integrations.MyNewRelic).New(appEnv)
 	gorelic.InitNewrelicAgent(newRelic.Key, newRelic.App, false)
