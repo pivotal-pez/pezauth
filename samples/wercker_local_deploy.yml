@@ -26,8 +26,8 @@ dev:
     - script:
         name: set vcap services/application
         code: |
-          export VCAP_SERVICES=`envtemplate -file=vcap_services_template.json`
-          export VCAP_APPLICATION=`envtemplate -file=vcap_application_template.json`
+          export VCAP_SERVICES=`envtemplate -file=local_wercker_configs/vcap_services_template.json`
+          export VCAP_APPLICATION=`envtemplate -file=local_wercker_configs/vcap_application_template.json`
     - script:
         name: build the server binary
         code: |
@@ -47,7 +47,6 @@ dev:
           REDIS_HOSTNAME_NAME="host"
           REDIS_PASSWORD_NAME="password"
           REDIS_PORT_NAME="port"
-          PORT=80
           NEWRELIC_SERVICE_NAME=pez-heritage-newrelic
           NEWRELIC_KEY_NAME=newrelic-key
           NEWRELIC_APP_NAME=newrelic-app
@@ -58,4 +57,5 @@ dev:
           SMTP_HOST=smtp-host
           SMTP_PORT=smtp-port
           SUPPORT_EMAIL=support-email
+          PORT=80
           ./main

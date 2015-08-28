@@ -5,3 +5,4 @@ service/coverage.out
 node_modules
 .DS_Store
 local_wercker_configs
+pezauth

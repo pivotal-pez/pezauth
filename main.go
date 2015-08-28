@@ -16,7 +16,7 @@ func main() {
 	appEnv, err := cfenv.Current()
 
 	if appEnv == nil || err != nil {
-		panic(fmt.Sprintf("appEnv is not set: ", appEnv))
+		panic(fmt.Sprintf("appEnv is not set: %v %v", appEnv, err))
 	}
 	m := martini.Classic()
 	newRelic := new(integrations.MyNewRelic).New(appEnv)
