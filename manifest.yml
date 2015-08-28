@@ -38,6 +38,8 @@ applications:
     SMTP_USERNAME: smtp-port
     SMTP_PASSWORD: smtp-password
     SUPPORT_EMAIL: support-email
+    DISPLAY_NEW_SERVICES: NO
   #env:
+
     #TGL_FEATURE1: false
     #TGL_FEATURE2: false

@@ -3,6 +3,8 @@ package pezauth
 import (
 	"fmt"
 	"log"
+	"strings"
+	"os"
 
 	"github.com/go-martini/martini"
 	"github.com/martini-contrib/oauth2"
@@ -29,6 +31,8 @@ var (
 	URLOrgBaseV1  = fmt.Sprintf("/%s/%s", APIVersion1, OrgGroup)
 )
 
+var displayNewServices = strings.ToUpper(os.Getenv("DISPLAY_NEW_SERVICES")) == "YES"
+
 //InitRoutes - initialize the mappings for controllers against valid routes
 func InitRoutes(m *martini.ClassicMartini, redisConn Doer, mongoConn pezdispenser.MongoCollectionGetter, authClient AuthRequestCreator) {
 	setOauthConfig()
@@ -44,8 +48,12 @@ func InitRoutes(m *martini.ClassicMartini, redisConn Doer, mongoConn pezdispense
 	m.Get("/me", oauth2.LoginRequired, DomainCheck, NewMeController().Get())
 
 	m.Get("/", oauth2.LoginRequired, DomainCheck, func(params martini.Params, log *log.Logger, r render.Render, tokens oauth2.Tokens) {
-		userInfo := GetUserInfo(tokens)
-		r.HTML(SuccessStatus, "index", userInfo)
+		userInfo := GetUserInfo(tokens)		
+		if displayNewServices {
+			r.HTML(SuccessStatus, "index_newservices", userInfo)
+		} else {
+			r.HTML(SuccessStatus, "index", userInfo)
+		}
 	})
 
 	m.Post("/sandbox", oauth2.LoginRequired, DomainCheck, NewSandBoxController().Post())
