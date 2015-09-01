@@ -97,30 +97,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-lg-8 col-lg-offset-2 text-center">
-                    <a class="btn btn-lg btn-outline" ng-click="pac.createorg()">
-                        <i class="fa fa-cloud"></i> {*{ orgButtonText }*}
-                    </a>
-                </div>
-                <div class="col-sm-12 text-center">
-                    <span class="small">Everyone's a Pivot here. You inherit a PivotalCF Org. It's that simple.</span>
-                </div>
 
-            </div>
-            <div class="row ng-hide" ng-hide="hideCLIExample" style="margin-top: 40px;">
-              <div class="col-lg-6 col-md-8 col-sm-10 col-lg-offset-3 col-md-offset-2 col-sm-offset-1 v-center">
-                <div style="text-align:left">
-                  <pre style="padding-left: 30px; padding-bottom: 0px;">
-                    <code>
-$ wget http://bit.ly/1GIceDZ -O cf.tgz && tar -xvzf cf.tgz
-$ ./cf api api.run.pez.pivotal.io
-$ ./cf login --sso
-</code>
-                  </pre>
-                </div>
-              </div>
-              </div>
         </div>
     </header>
 
@@ -225,13 +202,33 @@ $ ./cf login --sso
               <i class="fa fa-cloud fa-stack-1x text-primary"></i>
            </span>
            <h2>Heritage CF</h2>
+           <hr class="star-light">
          </div>
        </div>
        <div class="row">
-         <div class="col-lg-4 col-lg-offset-2">
-             <p>TBD</p>
-         </div>
+           <div class="col-lg-8 col-lg-offset-2 text-center">
+               <a class="btn btn-lg btn-outline" ng-click="pac.createorg()">
+                   <i class="fa fa-cloud"></i> {*{ orgButtonText }*}
+               </a>
+           </div>
+           <div class="col-sm-12 text-center">
+               <span class="small">Everyone's a Pivot here. You inherit a PivotalCF Org. It's that simple.</span>
+           </div>
+
        </div>
+       <div class="row ng-hide" ng-hide="hideCLIExample" style="margin-top: 40px;">
+         <div class="col-lg-6 col-md-8 col-sm-10 col-lg-offset-3 col-md-offset-2 col-sm-offset-1 v-center">
+           <div style="text-align:left">
+             <pre style="padding-left: 30px; padding-bottom: 0px;">
+               <code>
+$ wget http://bit.ly/1GIceDZ -O cf.tgz && tar -xvzf cf.tgz
+$ ./cf api api.run.pez.pivotal.io
+$ ./cf login --sso
+</code>
+             </pre>
+           </div>
+         </div>
+         </div>
      </div>
    </section>
 
@@ -244,52 +241,62 @@ $ ./cf login --sso
               <i class="fa fa-circle fa-stack-2x"></i>
               <i class="fa fa-flask fa-stack-1x text-primary"></i>
            </span>
-           <h2>PCFaaS</h2>
+           <h2>PCF as a Service</h2>
+           <hr class="star-light">
          </div>
        </div>
        <div class="row">
-         <div class="col-lg-4 col-lg-offset-2">
-             <p>TBD</p>
+         <div class="col-lg-12 text-center">
+             <span>A private Pivotal Cloud Foundry installation</span>
+         </div>
+         <div class="col-sm-12 text-center"><br/>
+            <!-- <span>You have <b>1 week</b> left on your lease of <b>2C.small</b></span> -->
+              <!--<span>There are no available PCFaaS lab environment leases. The next one will be available in <b>4 days</b>.<span> -->
+              <a class="btn btn-lg btn-outline" ng-click="pac.claimlease()">
+                 <i class="fa fa-flask"></i> Got Pez?
+             </a>
          </div>
        </div>
      </div>
    </section>
 
-   <!-- PCFaaS section -->
+   <!-- Sandbox section -->
    <section class="success" id="sandbox-about">
      <div class="container">
        <div class="row">
          <div class="col-lg-12 text-center">
            <span class="fa-stack fa-4x">
               <i class="fa fa-circle fa-stack-2x"></i>
-              <i class="fa fa-cogs fa-stack-1x text-primary"></i>
+              <i class="fa fa-cogs fa-stack-1x text-primary" style="color:lightgray;"></i>
            </span>
-           <h2>Sandbox</h2>
+           <h2 style="color:lightgray;">Sandbox</h2>
+           <hr class="star-light">
          </div>
        </div>
        <div class="row">
-         <div class="col-lg-4 col-lg-offset-2">
-             <p>TBD</p>
+         <div class="col-lg-12 text-center">
+             <p>Free IaaS Lab - (Not yet implemented)</p>
          </div>
        </div>
      </div>
    </section>
 
-   <!-- PCFaaS section -->
+   <!-- Hybrid Sandbox section -->
    <section class="success" id="hybridsandbox-about">
      <div class="container">
        <div class="row">
          <div class="col-lg-12 text-center">
            <span class="fa-stack fa-4x">
               <i class="fa fa-circle fa-stack-2x"></i>
-              <i class="fa fa-h-square fa-stack-1x text-primary"></i>
+              <i class="fa fa-h-square fa-stack-1x text-primary" style="color:lightgray;"></i>
            </span>
-           <h2>Hybrid Sandbox</h2>
+           <h2 style="color:lightgray;">Hybrid Sandbox</h2>
+           <hr class="star-light">
          </div>
        </div>
        <div class="row">
-         <div class="col-lg-4 col-lg-offset-2">
-             <p>TBD</p>
+         <div class="col-lg-12 text-center">
+             <p>True Hardware Lab - (Not yet implemented)</p>
          </div>
        </div>
      </div>
