@@ -39,6 +39,14 @@ describe('PezPortalController', function() {
     });
   });
 
+  describe('$scope.hideClaimButton', function() {
+    it('should initialize to false', function() {
+      var $scope = {};
+      var controller = $controller('PezPortalController', { $scope: $scope });
+      expect($scope.hideClaimButton).toEqual(false);
+    });
+  });
+  
   describe('pezportal.getOrgRestUri', function() {
     it('should combine the ORG API base with email into a path', function() {
       var $scope = {"myEmail": testEmailAddy};

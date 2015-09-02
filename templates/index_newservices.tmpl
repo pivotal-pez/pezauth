@@ -249,12 +249,17 @@ $ ./cf login --sso
          <div class="col-lg-12 text-center">
              <span>A private Pivotal Cloud Foundry installation</span>
          </div>
-         <div class="col-sm-12 text-center"><br/>
-            <!-- <span>You have <b>1 week</b> left on your lease of <b>2C.small</b></span> -->
+         <div class="col-sm-12 text-center" ng-show="hideClaimButton"><br/>
+            <span>{*{ claimStatusText }*}</span>
               <!--<span>There are no available PCFaaS lab environment leases. The next one will be available in <b>4 days</b>.<span> -->
-              <a class="btn btn-lg btn-outline" ng-click="pac.claimlease()">
-                 <i class="fa fa-flask"></i> Got Pez?
-             </a>
+
+         </div>
+         <div class="row ng-hide" ng-hide="hideClaimButton" style="margin-top: 40px;">
+           <div class="col-sm-12 text-center">
+             <a class="btn btn-lg btn-outline" ng-click="pac.claimLease()">
+                <i class="fa fa-flask"></i> {*{ claimButtonText }*}
+            </a>
+           </div>
          </div>
        </div>
      </div>

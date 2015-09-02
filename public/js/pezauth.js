@@ -12,11 +12,23 @@ var pezPortal = angular.module('pezPortal', [], function($interpolateProvider) {
     var messaging = {
       "hasOrgBtn": "View Org Now",
       "createOrgBtn": "Create Your Org Now",
+      "claimLease" : "Get One Now",
       "noApiKey": "You don't have a key yet",
       "loading": "Loading... Please Wait",
       "oktaSetup": "Get Okta Tile for HeritageCF",
       "invalidUser": "query failed. unable to find matching user guid."
     };
+
+    $scope.claimButtonText = messaging.claimLease;
+    $scope.hideClaimButton = false;
+
+    // this will get dynamically populated by calling the local go pcfaas service
+    // once created.
+    //$scope.claimStatusText = "You have 1 week left on your lease of 2C.small.";
+    //$scope.claimStatusText = "There are no available leases. The next one will be available in 3 days.";
+
+    console.log('claim button text: ' + $scope.claimButtonText);
+    console.log('hide claim button: ' + $scope.hideClaimButton);
 
     var urls = {
       "okta": "http://login.run.pez.pivotal.io/saml/login/alias/login.run.pez.pivotal.io?disco=true",
