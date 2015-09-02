@@ -63,6 +63,8 @@ type (
 
 	//MeGetHandler - a get control handler for me requests
 	MeGetHandler func(log *log.Logger, r render.Render, tokens oauth2.Tokens)
+
+	//PcfaasGetInventoryHandler - a get control handler for pcfaas inventory requests
 	PcfaasGetInventoryHandler func(log *log.Logger, r render.Render, tokens oauth2.Tokens)
 
 	meController struct {
@@ -158,7 +160,7 @@ type (
 		supportEmail string //TODO maybe make this as an independent environment variable
 	}
 
-	// Inventory item - entity from inventory query, includes lease status
+	// InventoryItem - entity from inventory query, includes lease status
 	InventoryItem struct {
 		SKU						string		`json:"sku"`
 		Tier					string		`json:"tier"`
