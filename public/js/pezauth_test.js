@@ -82,17 +82,21 @@ describe('PezPortalController', function() {
     it('should return the right item among multiple expiring items', function() {
         var $scope = {};
         $scope.inventoryItems = createSoonExpiringInventoryItems();
+        var originalLength = $scope.inventoryItems.length;
         var controller = $controller('PezPortalController', { $scope: $scope });
         var item = controller.soonestexpiringinventoryitem();
         expect(item.id).toEqual("abc234guid")
+        expect(originalLength).toEqual($scope.inventoryItems.length); 
     });
 
     it('should return nil when no leases are outstanding', function() {
       var $scope = {};
       $scope.inventoryItems = createInventoryItemsWithNoPendingExpirations();
+      var originalLength = $scope.inventoryItems.length;
       var controller = $controller('PezPortalController', { $scope: $scope });
       var item = controller.soonestexpiringinventoryitem();
       expect(item).toBe(null);
+      expect(originalLength).toEqual($scope.inventoryItems.length);
     });
   });
 
@@ -100,17 +104,21 @@ describe('PezPortalController', function() {
     it('should return the first item with status available', function() {
       var $scope = {};
       $scope.inventoryItems = createInventoryItemsWithMixedAvailability();
+      var originalLength = $scope.inventoryItems.length;
       var controller = $controller('PezPortalController', { $scope: $scope });
       var item = controller.firstavailableinventoryitem();
       expect(item.id).toEqual("abc234guid");
+      expect(originalLength).toEqual($scope.inventoryItems.length); // assert we didn't modify the raw items list
     });
 
     it('should return null when no available items', function() {
       var $scope = {};
       $scope.inventoryItems = createNoAvailableInventoryItems();
+      var originalLength = $scope.inventoryItems.length;
       var controller = $controller('PezPortalController', { $scope: $scope });
       var item = controller.firstavailableinventoryitem();
       expect(item).toBe(null);
+      expect(originalLength).toEqual($scope.inventoryItems.length); // assert we didn't modify the raw items list
     });
   })
 
