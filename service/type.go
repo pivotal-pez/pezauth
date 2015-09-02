@@ -162,12 +162,13 @@ type (
 
 	// InventoryItem - entity from inventory query, includes lease status
 	InventoryItem struct {
-		SKU						string		`json:"sku"`
-		Tier					string		`json:"tier"`
-		OfferingType	string		`json:"offeringType"`
-		Size					string		`json:"size"`
-		Status				string 		`json:"status"`
-		ID						string		`json:"id"`
+		SKU          			string `json:"sku"`
+		Tier         			string `json:"tier"`
+		OfferingType 			string `json:"offeringType"`
+		Size         			string `json:"size"`
+		Status       			string `json:"status"`
+		ID           			string `json:"id"`
+		DaysUntilExpires	int		 `json:"daysUntilExpires"`
 	}
 
 	//Sender - the interface that can send email

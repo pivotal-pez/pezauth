@@ -80,6 +80,14 @@ var pezPortal = angular.module('pezPortal', [], function($interpolateProvider) {
       callAPIUsingVerb($http.delete, pauth.getRestUri());
     };
 
+    pauth.soonestexpiringinventoryitem = function() {
+       return getSoonestExpiringInventoryItem($scope.inventoryItems);
+    }
+
+    pauth.firstavailableinventoryitem = function() {
+      return getFirstAvailableInventoryItem($scope.inventoryItems);
+    }
+
     function callMeUsingVerb(verbCaller, uri) {
       var responsePromise = verbCaller(uri);
       responsePromise.success(function(data, status, headers, config) {
@@ -90,6 +98,33 @@ var pezPortal = angular.module('pezPortal', [], function($interpolateProvider) {
           pauth.getorg();
           pauth.getInventory();
       });
+    }
+
+    function getFirstAvailableInventoryItem(inventoryItems) {
+      var result = inventoryItems.filter(function(el) {
+        return el.status.toLowerCase() === "available"
+      });
+      if (result.length > 0) {
+        return result[0];
+      } else {
+        return null;
+      }
+    }
+
+    function getSoonestExpiringInventoryItem(inventoryItems) {
+      var copiedItems = JSON.parse(JSON.stringify(inventoryItems))
+      copiedItems = copiedItems.filter(function(el) {
+        // could also get fancy here and return only inventory items of specific status
+        return el.daysUntilExpires > 0
+      });
+      copiedItems = copiedItems.sort(function(a, b){
+          return a.daysUntilExpires - b.daysUntilExpires
+      });
+      if (copiedItems.length > 0) {
+        return copiedItems[0];
+      } else {
+        return null;
+      }
     }
 
     function createOrg(uri) {

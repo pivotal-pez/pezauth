@@ -7,6 +7,37 @@ describe('PezPortalController', function() {
   var testName = "Testy Larue";
   var testAPIKey = "12345";
 
+  function createSoonExpiringInventoryItems() {
+    return [
+      {"sku":"2C.small","tier":"2","offeringType":"C","size":"small","status":"available","id":"abc123guid","daysUntilExpires":0},
+      {"sku":"2C.small","tier":"2","offeringType":"C","size":"small","status":"leased","id":"abc234guid","daysUntilExpires":3},
+      {"sku":"2C.small","tier":"2","offeringType":"C","size":"small","status":"leased","id":"abc456guid","daysUntilExpires":7}
+    ];
+  }
+
+  function createInventoryItemsWithMixedAvailability() {
+    return [
+      {"sku":"2C.small","tier":"2","offeringType":"C","size":"small","status":"leased","id":"abc123guid","daysUntilExpires":9},
+      {"sku":"2C.small","tier":"2","offeringType":"C","size":"small","status":"available","id":"abc234guid","daysUntilExpires":0},
+      {"sku":"2C.small","tier":"2","offeringType":"C","size":"small","status":"available","id":"abc456guid","daysUntilExpires":0}
+    ];
+  }
+
+  function createNoAvailableInventoryItems() {
+    return [
+      {"sku":"2C.small","tier":"2","offeringType":"C","size":"small","status":"leased","id":"abc123guid","daysUntilExpires":9},
+      {"sku":"2C.small","tier":"2","offeringType":"C","size":"small","status":"leased","id":"abc234guid","daysUntilExpires":5}
+    ];
+  }
+
+  function createInventoryItemsWithNoPendingExpirations() {
+    return [
+      {"sku":"2C.small","tier":"2","offeringType":"C","size":"small","status":"available","id":"abc123guid","daysUntilExpires":0},
+      {"sku":"2C.small","tier":"2","offeringType":"C","size":"small","status":"available","id":"abc234guid","daysUntilExpires":0},
+      {"sku":"2C.small","tier":"2","offeringType":"C","size":"small","status":"available","id":"abc456guid","daysUntilExpires":0}
+    ];
+  }
+
   beforeEach(inject(function($injector){
     $httpBackend = $injector.get('$httpBackend');
     $controller = $injector.get('$controller');
@@ -46,8 +77,44 @@ describe('PezPortalController', function() {
       expect($scope.hideClaimButton).toEqual(false);
     });
   });
-  
-  describe('pezportal.getOrgRestUri', function() {
+
+  describe('$scope.soonestexpiringinventoryitem', function() {
+    it('should return the right item among multiple expiring items', function() {
+        var $scope = {};
+        $scope.inventoryItems = createSoonExpiringInventoryItems();
+        var controller = $controller('PezPortalController', { $scope: $scope });
+        var item = controller.soonestexpiringinventoryitem();
+        expect(item.id).toEqual("abc234guid")
+    });
+
+    it('should return nil when no leases are outstanding', function() {
+      var $scope = {};
+      $scope.inventoryItems = createInventoryItemsWithNoPendingExpirations();
+      var controller = $controller('PezPortalController', { $scope: $scope });
+      var item = controller.soonestexpiringinventoryitem();
+      expect(item).toBe(null);
+    });
+  });
+
+  describe('$scope.firstavailableinventoryitem', function() {
+    it('should return the first item with status available', function() {
+      var $scope = {};
+      $scope.inventoryItems = createInventoryItemsWithMixedAvailability();
+      var controller = $controller('PezPortalController', { $scope: $scope });
+      var item = controller.firstavailableinventoryitem();
+      expect(item.id).toEqual("abc234guid");
+    });
+
+    it('should return null when no available items', function() {
+      var $scope = {};
+      $scope.inventoryItems = createNoAvailableInventoryItems();
+      var controller = $controller('PezPortalController', { $scope: $scope });
+      var item = controller.firstavailableinventoryitem();
+      expect(item).toBe(null);
+    });
+  })
+
+   describe('pezportal.getOrgRestUri', function() {
     it('should combine the ORG API base with email into a path', function() {
       var $scope = {"myEmail": testEmailAddy};
       var controller = $controller('PezPortalController', { $scope: $scope });
