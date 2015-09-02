@@ -5,7 +5,7 @@ import (
 	"log"
 	"strings"
 	"os"
-
+	
 	"github.com/go-martini/martini"
 	"github.com/martini-contrib/oauth2"
 	"github.com/martini-contrib/render"
@@ -46,9 +46,10 @@ func InitRoutes(m *martini.ClassicMartini, redisConn Doer, mongoConn pezdispense
 	m.Get(ValidKeyCheck, NewValidateV1(keyGen).Get())
 
 	m.Get("/me", oauth2.LoginRequired, DomainCheck, NewMeController().Get())
+	m.Get("/pcfaas/inventory", oauth2.LoginRequired, DomainCheck, NewPcfaasController().Get())
 
 	m.Get("/", oauth2.LoginRequired, DomainCheck, func(params martini.Params, log *log.Logger, r render.Render, tokens oauth2.Tokens) {
-		userInfo := GetUserInfo(tokens)		
+		userInfo := GetUserInfo(tokens)
 		if displayNewServices {
 			r.HTML(SuccessStatus, "index_newservices", userInfo)
 		} else {

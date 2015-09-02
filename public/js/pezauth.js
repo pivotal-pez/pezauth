@@ -52,6 +52,12 @@ var pezPortal = angular.module('pezPortal', [], function($interpolateProvider) {
       getOrgStatus(pauth.getOrgRestUri());
     };
 
+    pauth.getInventory = function() {
+      var uri = '/pcfaas/inventory';
+      console.log('Getting inventory ' + uri );
+      getInventoryList(uri);
+    }
+
     pauth.createorg = function() {
 
       if ($scope.orgButtonText === messaging.createOrgBtn) {
@@ -82,6 +88,7 @@ var pezPortal = angular.module('pezPortal', [], function($interpolateProvider) {
           $scope.displayName = $scope.myName ? $scope.myName : $scope.myEmail
           callAPIUsingVerb($http.get, pauth.getRestUri());
           pauth.getorg();
+          pauth.getInventory();
       });
     }
 
@@ -127,6 +134,18 @@ var pezPortal = angular.module('pezPortal', [], function($interpolateProvider) {
             $scope.orgButtonText = messaging.createOrgBtn;
             console.log(data.ErrorMsg);
           }
+      });
+    }
+
+    function getInventoryList(uri) {
+      var responsePromise = $http.get(uri);
+      responsePromise.success(function(data, status, headers, config) {
+        console.log(data);
+        $scope.inventoryItems = data;
+      });
+
+      responsePromise.error(function(data, status, headers, config) {
+        console.log(data.ErrorMsg);
       });
     }
 

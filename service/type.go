@@ -63,8 +63,13 @@ type (
 
 	//MeGetHandler - a get control handler for me requests
 	MeGetHandler func(log *log.Logger, r render.Render, tokens oauth2.Tokens)
+	PcfaasGetInventoryHandler func(log *log.Logger, r render.Render, tokens oauth2.Tokens)
 
 	meController struct {
+		Controller
+	}
+
+	pcfaasController struct {
 		Controller
 	}
 
@@ -151,6 +156,16 @@ type (
 		auth         smtp.Auth
 		sendMailFunc SendMailFunc
 		supportEmail string //TODO maybe make this as an independent environment variable
+	}
+
+	// Inventory item - entity from inventory query, includes lease status
+	InventoryItem struct {
+		SKU						string		`json:"sku"`
+		Tier					string		`json:"tier"`
+		OfferingType	string		`json:"offeringType"`
+		Size					string		`json:"size"`
+		Status				string 		`json:"status"`
+		ID						string		`json:"id"`
 	}
 
 	//Sender - the interface that can send email
