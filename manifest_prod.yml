@@ -9,6 +9,5 @@ hosts:
 - home
 domains:
 - pezapp.io 
-- cfapps.pez.pivotal.io
 env:
   DISPLAY_NEW_SERVICES: NO
