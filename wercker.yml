@@ -58,13 +58,6 @@ build:
         code: |
           godep go build main.go
 
-    #- internal/docker-push:
-        #username: $DOCKER_USER
-        #password: $DOCKER_P
-        #tag: ${WERCKER_GIT_COMMIT}.${WERCKER_GIT_BRANCH}
-        #repository: $DOCKER_REPO
-        #registry: $DOCKER_REGISTRY
-
     - script:
         name: add repo to artifact
         code: |
@@ -93,8 +86,7 @@ deploy:
         api_url: $CF_APIURL
         app_name: $CF_APPNAME
         use_manifest: true
-        host: $CF_HOSTNAME
-        domain: $CF_DOMAINNAME
+        manifest: $CF_MANIFEST_FILE_PATH
 
     - xchapter7x/flowy-release:
         action: "tag-only-release"
