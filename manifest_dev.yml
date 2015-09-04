@@ -4,6 +4,8 @@ hosts:
 - pezdev
 - wwwdev
 - hcfdev
+- startdev
+- portaldev
 - homedev
 domains:
 - pezapp.io 

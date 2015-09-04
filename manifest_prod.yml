@@ -4,6 +4,8 @@ hosts:
 - pez
 - www
 - hcf 
+- start
+- portal
 - home
 domains:
 - pezapp.io 
