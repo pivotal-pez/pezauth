@@ -160,6 +160,12 @@ type (
 		supportEmail string //TODO maybe make this as an independent environment variable
 	}
 
+	// InventoryLease - represents information about an active lease of an inventory item.
+	InventoryLease struct {
+			DaysUntilExpires		int			`json:"daysUntilExpires"`
+			Username						string	`json:"userName"`
+	}
+
 	// InventoryItem - entity from inventory query, includes lease status
 	InventoryItem struct {
 		SKU          			string `json:"sku"`
@@ -168,7 +174,7 @@ type (
 		Size         			string `json:"size"`
 		Status       			string `json:"status"`
 		ID           			string `json:"id"`
-		DaysUntilExpires	int		 `json:"daysUntilExpires"`
+		CurrentLease			InventoryLease	`json:"currentLease"`
 	}
 
 	//Sender - the interface that can send email

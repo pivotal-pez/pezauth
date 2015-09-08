@@ -17,11 +17,12 @@ func (s *pcfaasController) Get() interface{} {
 	var handler PcfaasGetInventoryHandler = func(log *log.Logger, r render.Render, tokens oauth2.Tokens) {
 		userInfo := GetUserInfo(tokens)
 		log.Println("getting userInfo: ", userInfo)
-    
+
     // TODO stop hardcoding this and eventually consume inventory service
 		statusCode := SuccessStatus
-		invItem := InventoryItem{SKU: "2C.small", Tier: "2", OfferingType: "C", Size: "small", Status: "available", ID: "abc123guid", DaysUntilExpires: 0}
-		invItem2 := InventoryItem{SKU: "2C.small", Tier: "2", OfferingType: "C", Size: "small", Status: "leased", ID: "abc32123guid", DaysUntilExpires: 4}
+		theLease := InventoryLease{DaysUntilExpires: 4, Username: "kehoffman@pivotal.io"}
+		invItem := InventoryItem{SKU: "2C.small", Tier: "2", OfferingType: "C", Size: "small", Status: "available", ID: "abc123guid"}
+		invItem2 := InventoryItem{SKU: "2C.small", Tier: "2", OfferingType: "C", Size: "small", Status: "leased", ID: "abc32123guid", CurrentLease: theLease}
 		items := make([]InventoryItem, 2)
 		items[0] = invItem
 		items[1] = invItem2

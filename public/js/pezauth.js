@@ -115,10 +115,10 @@ var pezPortal = angular.module('pezPortal', [], function($interpolateProvider) {
       var copiedItems = JSON.parse(JSON.stringify(inventoryItems))
       copiedItems = copiedItems.filter(function(el) {
         // could also get fancy here and return only inventory items of specific status
-        return el.daysUntilExpires > 0
+        return el.currentLease != null
       });
       copiedItems = copiedItems.sort(function(a, b){
-          return a.daysUntilExpires - b.daysUntilExpires
+          return a.currentLease.daysUntilExpires - b.currentLease.daysUntilExpires
       });
       if (copiedItems.length > 0) {
         return copiedItems[0];

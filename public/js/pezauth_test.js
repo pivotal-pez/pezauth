@@ -7,34 +7,38 @@ describe('PezPortalController', function() {
   var testName = "Testy Larue";
   var testAPIKey = "12345";
 
+  function createLease(days) {
+    return {"daysUntilExpires": days, "userName": "foo@bar.com"}
+  }
+
   function createSoonExpiringInventoryItems() {
     return [
-      {"sku":"2C.small","tier":"2","offeringType":"C","size":"small","status":"available","id":"abc123guid","daysUntilExpires":0},
-      {"sku":"2C.small","tier":"2","offeringType":"C","size":"small","status":"leased","id":"abc234guid","daysUntilExpires":3},
-      {"sku":"2C.small","tier":"2","offeringType":"C","size":"small","status":"leased","id":"abc456guid","daysUntilExpires":7}
+      {"sku":"2C.small","tier":"2","offeringType":"C","size":"small","status":"available","id":"abc123guid"},
+      {"sku":"2C.small","tier":"2","offeringType":"C","size":"small","status":"leased","id":"abc234guid","currentLease" : createLease(3)},
+      {"sku":"2C.small","tier":"2","offeringType":"C","size":"small","status":"leased","id":"abc456guid","currentLease" : createLease(7)}
     ];
   }
 
   function createInventoryItemsWithMixedAvailability() {
     return [
-      {"sku":"2C.small","tier":"2","offeringType":"C","size":"small","status":"leased","id":"abc123guid","daysUntilExpires":9},
-      {"sku":"2C.small","tier":"2","offeringType":"C","size":"small","status":"available","id":"abc234guid","daysUntilExpires":0},
-      {"sku":"2C.small","tier":"2","offeringType":"C","size":"small","status":"available","id":"abc456guid","daysUntilExpires":0}
+      {"sku":"2C.small","tier":"2","offeringType":"C","size":"small","status":"leased","id":"abc123guid","currentLease" : createLease(9)},
+      {"sku":"2C.small","tier":"2","offeringType":"C","size":"small","status":"available","id":"abc234guid"},
+      {"sku":"2C.small","tier":"2","offeringType":"C","size":"small","status":"available","id":"abc456guid"}
     ];
   }
 
   function createNoAvailableInventoryItems() {
     return [
-      {"sku":"2C.small","tier":"2","offeringType":"C","size":"small","status":"leased","id":"abc123guid","daysUntilExpires":9},
-      {"sku":"2C.small","tier":"2","offeringType":"C","size":"small","status":"leased","id":"abc234guid","daysUntilExpires":5}
+      {"sku":"2C.small","tier":"2","offeringType":"C","size":"small","status":"leased","id":"abc123guid","currentLease" : createLease(9)},
+      {"sku":"2C.small","tier":"2","offeringType":"C","size":"small","status":"leased","id":"abc234guid","currentLease" : createLease(5)}
     ];
   }
 
   function createInventoryItemsWithNoPendingExpirations() {
     return [
-      {"sku":"2C.small","tier":"2","offeringType":"C","size":"small","status":"available","id":"abc123guid","daysUntilExpires":0},
-      {"sku":"2C.small","tier":"2","offeringType":"C","size":"small","status":"available","id":"abc234guid","daysUntilExpires":0},
-      {"sku":"2C.small","tier":"2","offeringType":"C","size":"small","status":"available","id":"abc456guid","daysUntilExpires":0}
+      {"sku":"2C.small","tier":"2","offeringType":"C","size":"small","status":"available","id":"abc123guid"},
+      {"sku":"2C.small","tier":"2","offeringType":"C","size":"small","status":"available","id":"abc234guid"},
+      {"sku":"2C.small","tier":"2","offeringType":"C","size":"small","status":"available","id":"abc456guid"}
     ];
   }
 
@@ -86,7 +90,7 @@ describe('PezPortalController', function() {
         var controller = $controller('PezPortalController', { $scope: $scope });
         var item = controller.soonestexpiringinventoryitem();
         expect(item.id).toEqual("abc234guid")
-        expect(originalLength).toEqual($scope.inventoryItems.length); 
+        expect(originalLength).toEqual($scope.inventoryItems.length);
     });
 
     it('should return nil when no leases are outstanding', function() {
