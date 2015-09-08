@@ -1,0 +1,13 @@
+---
+inherit: manifest.yml
+hosts:
+- pez
+- www
+- hcf 
+- start
+- portal
+- home
+domains:
+- pezapp.io 
+env:
+  DISPLAY_NEW_SERVICES: NO

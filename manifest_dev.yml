@@ -1,0 +1,13 @@
+---
+inherit: manifest.yml
+hosts:
+- pezdev
+- wwwdev
+- hcfdev
+- startdev
+- portaldev
+- homedev
+domains:
+- pezapp.io 
+env:
+  DISPLAY_NEW_SERVICES: YES 
