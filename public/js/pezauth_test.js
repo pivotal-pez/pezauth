@@ -82,7 +82,7 @@ describe('PezPortalController', function() {
     });
   });
 
-  describe('$scope.soonestexpiringinventoryitem', function() {
+  describe('pezauth.soonestexpiringinventoryitem', function() {
     it('should return the right item among multiple expiring items', function() {
         var $scope = {};
         $scope.inventoryItems = createSoonExpiringInventoryItems();
@@ -104,7 +104,31 @@ describe('PezPortalController', function() {
     });
   });
 
-  describe('$scope.firstavailableinventoryitem', function() {
+  describe('pezauth.myactiveleaseditem', function() {
+    it('should return the right inventory item based on email address', function() {
+        var $scope = {};
+        $scope.inventoryItems = createSoonExpiringInventoryItems();
+        var originalLength = $scope.inventoryItems.length;
+        $scope.myEmail = "foo@bar.com";
+        var controller = $controller('PezPortalController', { $scope: $scope });
+        var item = controller.myactiveleaseditem();
+        expect(item.id).toEqual("abc234guid");
+        expect(originalLength).toEqual($scope.inventoryItems.length);
+    });
+
+    it('should return null when no inventory lease matches', function() {
+      var $scope = {};
+      $scope.inventoryItems = createSoonExpiringInventoryItems();
+      var originalLength = $scope.inventoryItems.length;
+      $scope.myEmail = "definitely@doesnt.exist.com";
+      var controller = $controller('PezPortalController', { $scope: $scope });
+      var item = controller.myactiveleaseditem();
+      expect(item).toBe(null);
+      expect(originalLength).toEqual($scope.inventoryItems.length);
+    });
+  })
+
+  describe('pezauth.firstavailableinventoryitem', function() {
     it('should return the first item with status available', function() {
       var $scope = {};
       $scope.inventoryItems = createInventoryItemsWithMixedAvailability();
@@ -125,6 +149,34 @@ describe('PezPortalController', function() {
       expect(originalLength).toEqual($scope.inventoryItems.length); // assert we didn't modify the raw items list
     });
   })
+
+  describe('Determine inventory state', function() {
+    it('should show first available item when one is available', function() {
+      var $scope = {};
+      $scope.inventoryItems = createSoonExpiringInventoryItems();
+      var controller = $controller('PezPortalController', { $scope: $scope });
+      controller.setupLeasedItemState();
+      expect($scope.hideClaimButton).toBe(false);
+      expect($scope.claimButtonText).toBe("Get One Now");
+    });
+    it('should show current user expiring lease', function() {
+      var $scope = {};
+      $scope.myEmail = "foo@bar.com";
+      $scope.inventoryItems = createSoonExpiringInventoryItems();
+      var controller = $controller('PezPortalController', { $scope: $scope });
+      controller.setupLeasedItemState();
+      expect($scope.hideClaimButton).toBe(true);
+      expect($scope.claimStatusText).toBe("The lease on your inventory item 2C.small will expire in 3 days.");
+    });
+    it('should show when next available lease is coming up when user has none and none are available', function() {
+      var $scope = {};
+      $scope.inventoryItems = createNoAvailableInventoryItems();
+      var controller = $controller('PezPortalController', { $scope: $scope });
+      controller.setupLeasedItemState();
+      expect($scope.hideClaimButton).toBe(true);      
+      expect($scope.claimStatusText).toBe("You will be able to claim a lease on a 2C.small in 5 days.");
+    });
+  });
 
    describe('pezportal.getOrgRestUri', function() {
     it('should combine the ORG API base with email into a path', function() {

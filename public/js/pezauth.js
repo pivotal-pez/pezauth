@@ -88,6 +88,14 @@ var pezPortal = angular.module('pezPortal', [], function($interpolateProvider) {
       return getFirstAvailableInventoryItem($scope.inventoryItems);
     }
 
+    pauth.myactiveleaseditem = function() {
+      return getMyActiveLeasedInventoryItem($scope.inventoryItems);
+    }
+
+    pauth.setupLeasedItemState = function() {
+      determineLeaseState();
+    }
+
     function callMeUsingVerb(verbCaller, uri) {
       var responsePromise = verbCaller(uri);
       responsePromise.success(function(data, status, headers, config) {
@@ -98,6 +106,17 @@ var pezPortal = angular.module('pezPortal', [], function($interpolateProvider) {
           pauth.getorg();
           pauth.getInventory();
       });
+    }
+
+    function getMyActiveLeasedInventoryItem(inventoryItems) {
+      var result = inventoryItems.filter(function(el) {
+          return el.currentLease != null && el.currentLease.userName === $scope.myEmail
+      });
+      if (result.length > 0) {
+        return result[0];
+      } else {
+        return null;
+      }
     }
 
     function getFirstAvailableInventoryItem(inventoryItems) {
@@ -177,11 +196,32 @@ var pezPortal = angular.module('pezPortal', [], function($interpolateProvider) {
       responsePromise.success(function(data, status, headers, config) {
         console.log(data);
         $scope.inventoryItems = data;
+        determineLeaseState();
       });
 
       responsePromise.error(function(data, status, headers, config) {
         console.log(data.ErrorMsg);
       });
+    }
+
+    /*
+     * Determines state of $scope variables: claimButtonText, claimStatusText, and hideClaimButton
+     */
+    function determineLeaseState() {
+      var myLeasedItem = getMyActiveLeasedInventoryItem($scope.inventoryItems);
+      var firstAvailableInventoryItem = getFirstAvailableInventoryItem($scope.inventoryItems);
+      var soonestExpiringItem = getSoonestExpiringInventoryItem($scope.inventoryItems);
+
+      if (myLeasedItem != null) {
+        $scope.hideClaimButton = true;
+        $scope.claimStatusText = "The lease on your inventory item " + myLeasedItem.sku + " will expire in " + myLeasedItem.currentLease.daysUntilExpires + " days.";
+      } else if (firstAvailableInventoryItem != null) {
+        $scope.hideClaimButton = false;
+        $scope.claimButtonText = messaging.claimLease;
+      } else { // someone else's lease is expiring soon.
+        $scope.hideClaimButton = true;
+        $scope.claimStatusText = "You will be able to claim a lease on a " + soonestExpiringItem.sku + " in " + soonestExpiringItem.currentLease.daysUntilExpires + " days.";
+      }
     }
 
     function callAPIUsingVerb(verbCaller, uri) {
