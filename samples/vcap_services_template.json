@@ -40,6 +40,15 @@
     "tags": []
    },
    {
+      "credentials" : {
+        "target-url" : "{{.INVENTORY_SERVICE_ROOTURL}}"
+      },
+      "label": "user-provided",
+      "name": "inventory-service",
+      "syslog_drain_url": "",
+      "tags": []
+   },
+   {
     "credentials": {
      "client-id": "{{.GOOGLE_CLIENT_ID}}",
      "client-secret": "{{.GOOGLE_CLIENT_SECRET}}"

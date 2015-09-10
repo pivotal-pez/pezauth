@@ -5,10 +5,11 @@ import (
 	"log"
 	"strings"
 	"os"
-	
+
 	"github.com/go-martini/martini"
 	"github.com/martini-contrib/oauth2"
 	"github.com/martini-contrib/render"
+	"github.com/pivotal-pez/pezauth/integrations"
 	"github.com/pivotal-pez/pezdispenser/service"
 )
 
@@ -34,7 +35,7 @@ var (
 var displayNewServices = strings.ToUpper(os.Getenv("DISPLAY_NEW_SERVICES")) == "YES"
 
 //InitRoutes - initialize the mappings for controllers against valid routes
-func InitRoutes(m *martini.ClassicMartini, redisConn Doer, mongoConn pezdispenser.MongoCollectionGetter, authClient AuthRequestCreator) {
+func InitRoutes(m *martini.ClassicMartini, redisConn Doer, mongoConn pezdispenser.MongoCollectionGetter, authClient AuthRequestCreator, invClient *integrations.MyInventoryClient) {
 	setOauthConfig()
 	keyGen := NewKeyGen(redisConn, &GUIDMake{})
 	m.Use(render.Renderer())
@@ -46,7 +47,7 @@ func InitRoutes(m *martini.ClassicMartini, redisConn Doer, mongoConn pezdispense
 	m.Get(ValidKeyCheck, NewValidateV1(keyGen).Get())
 
 	m.Get("/me", oauth2.LoginRequired, DomainCheck, NewMeController().Get())
-	m.Get("/pcfaas/inventory", oauth2.LoginRequired, DomainCheck, NewPcfaasController().Get())
+	m.Get("/pcfaas/inventory", oauth2.LoginRequired, DomainCheck, NewPcfaasController(invClient).Get())
 
 	m.Get("/", oauth2.LoginRequired, DomainCheck, func(params martini.Params, log *log.Logger, r render.Render, tokens oauth2.Tokens) {
 		userInfo := GetUserInfo(tokens)

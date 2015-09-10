@@ -8,6 +8,7 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	. "github.com/pivotal-pez/pezauth/service"
+	"github.com/pivotal-pez/pezauth/integrations"
 )
 
 var _ = Describe("Routes", func() {
@@ -23,7 +24,7 @@ var _ = Describe("Routes", func() {
 			m = martini.Classic()
 		})
 
-		Context("calling InitSession with no enviornment variables set", func() {
+		Context("calling InitSession with no environment variables set", func() {
 			var (
 				validDomain = "pivotal.io"
 				validUser   = "testuser@pivotal.io"
@@ -38,7 +39,7 @@ var _ = Describe("Routes", func() {
 
 			It("Should panic", func() {
 				Ω(func() {
-					InitRoutes(m, new(mockDoer), new(mockMongo), new(mockHeritageClient))
+					InitRoutes(m, new(mockDoer), new(mockMongo), new(mockHeritageClient), new(integrations.MyInventoryClient))
 				}).Should(Panic())
 			})
 		})
@@ -57,7 +58,7 @@ var _ = Describe("Routes", func() {
 
 				It("should format the domain in the config object", func() {
 					control := fmt.Sprintf("https://%s/oauth2callback", validDomain)
-					InitRoutes(m, new(mockDoer), new(mockMongo), new(mockHeritageClient))
+					InitRoutes(m, new(mockDoer), new(mockMongo), new(mockHeritageClient), new(integrations.MyInventoryClient))
 					Ω(OauthConfig.RedirectURL).Should(Equal(control))
 				})
 			})
@@ -69,7 +70,7 @@ var _ = Describe("Routes", func() {
 
 				It("should format the domain in the config object", func() {
 					control := fmt.Sprintf("https://%s/oauth2callback", validDomain)
-					InitRoutes(m, new(mockDoer), new(mockMongo), new(mockHeritageClient))
+					InitRoutes(m, new(mockDoer), new(mockMongo), new(mockHeritageClient), new(integrations.MyInventoryClient))
 					Ω(OauthConfig.RedirectURL).Should(Equal(control))
 				})
 			})

@@ -38,11 +38,15 @@ func main() {
 		Client:   ccclient.New(h.LoginTarget, h.LoginUser, h.LoginPass, new(http.Client)),
 		ccTarget: h.CCTarget,
 	}
+
+  inv := new(integrations.MyInventoryClient).New(appEnv)
+	fmt.Printf("Inventory Client %s\n", inv)
+
 	mngo := new(integrations.MyMongo).New(appEnv)
 	defer mngo.Session.Close()
 
 	if _, err := heritageClient.Login(); err == nil {
-		pez.InitRoutes(m, rds.Conn, mngo, heritageClient)
+		pez.InitRoutes(m, rds.Conn, mngo, heritageClient, inv)
 		m.Run()
 
 	} else {

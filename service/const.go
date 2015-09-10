@@ -40,6 +40,8 @@ const (
 	FailureStatus = 403
 	//SuccessStatus - success response status from our authenticated rest endpoints
 	SuccessStatus = 200
+	//ServerErrorStatus - HTTP 500 - something blew up when servicing the request.
+	ServerErrorStatus = 500
 	//HMFieldActive - name of metadata hash field containing active status
 	HMFieldActive = "active"
 	//HMFieldDetails - name of metadata hash field containing user and key details

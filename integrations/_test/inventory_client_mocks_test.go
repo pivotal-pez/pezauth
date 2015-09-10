@@ -1,4 +1,4 @@
-package pezauth_test
+package integrations_test
 
 const (
   TwoItemsSample = `{

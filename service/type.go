@@ -11,6 +11,7 @@ import (
 	"github.com/pivotal-pez/pezdispenser/cloudfoundryclient"
 	"github.com/pivotal-pez/pezdispenser/service"
 	"github.com/xchapter7x/cloudcontroller-client"
+	"github.com/pivotal-pez/pezauth/integrations"
 )
 
 type (
@@ -73,6 +74,7 @@ type (
 
 	pcfaasController struct {
 		Controller
+		inventoryClient		*integrations.MyInventoryClient
 	}
 
 	//OrgGetHandler - func signature of org get handler
@@ -159,24 +161,7 @@ type (
 		sendMailFunc SendMailFunc
 		supportEmail string //TODO maybe make this as an independent environment variable
 	}
-
-	// InventoryLease - represents information about an active lease of an inventory item.
-	InventoryLease struct {
-			DaysUntilExpires		int			`json:"daysUntilExpires"`
-			Username						string	`json:"userName"`
-	}
-
-	// InventoryItem - entity from inventory query, includes lease status
-	InventoryItem struct {
-		SKU          			string `json:"sku"`
-		Tier         			string `json:"tier"`
-		OfferingType 			string `json:"offeringType"`
-		Size         			string `json:"size"`
-		Status       			string `json:"status"`
-		ID           			string `json:"id"`
-		CurrentLease			InventoryLease	`json:"currentLease"`
-	}
-
+		
 	//Sender - the interface that can send email
 	Sender interface {
 		SendEmail(data *SMTPData) error

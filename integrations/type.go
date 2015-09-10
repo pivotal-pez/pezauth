@@ -37,4 +37,27 @@ type (
 		Key string
 		App string
 	}
+	//MyInventoryClient - integration wrapper for interacting with inventory svc
+	MyInventoryClient struct {
+    ServiceBaseURL    string
+		Enabled						bool
+  }
+
+
+	// InventoryItem - entity from inventory query, includes lease status
+	InventoryItem struct {
+		SKU          			string `json:"sku"`
+		Tier         			string `json:"tier"`
+		OfferingType 			string `json:"offeringType"`
+		Size         			string `json:"size"`
+		Status       			string `json:"status"`
+		ID           			string `json:"id"`
+		CurrentLease			InventoryLease	`json:"currentLease"`
+	}
+
+	// InventoryLease - represents information about an active lease of an inventory item.
+	InventoryLease struct {
+			DaysUntilExpires		int			`json:"daysUntilExpires"`
+			Username						string	`json:"userName"`
+	}
 )

@@ -1,4 +1,4 @@
-package pezauth_test
+package integrations_test
 
 import (
 //	"log"
@@ -6,9 +6,9 @@ import (
 	"fmt"
    "net/http"
 	 "net/http/httptest"
-  . "github.com/pivotal-pez/pezauth/service"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	. "github.com/pivotal-pez/pezauth/integrations"
 )
 
 func makeServer(payload string) *httptest.Server {
@@ -28,7 +28,7 @@ var _ = Describe("Inventory Service Client", func() {
 			defer server.Close()
 			rootURL := server.URL
 
-			invClient := NewInventoryServiceClient(rootURL)
+			invClient := new(MyInventoryClient).NewWithURL(rootURL)
       results, err := invClient.GetInventoryItems()
 			Ω(err).Should(BeNil())
       Ω(len(results)).Should(Equal(2))
@@ -39,7 +39,7 @@ var _ = Describe("Inventory Service Client", func() {
 			server := makeServer(NoInventoryDataSample)
 			defer server.Close()
 			rootURL := server.URL
-			invClient := NewInventoryServiceClient(rootURL)
+			invClient := new(MyInventoryClient).NewWithURL(rootURL)
 	    results, err := invClient.GetInventoryItems()
 			Ω(len(results)).Should(Equal(0))
 			Ω(err.Error()).Should(Equal("Things went horribly wrong"))

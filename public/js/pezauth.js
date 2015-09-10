@@ -218,9 +218,12 @@ var pezPortal = angular.module('pezPortal', [], function($interpolateProvider) {
       } else if (firstAvailableInventoryItem != null) {
         $scope.hideClaimButton = false;
         $scope.claimButtonText = messaging.claimLease;
-      } else { // someone else's lease is expiring soon.
+      } else if (soonestExpiringItem != null) { // someone else's lease is expiring soon.
         $scope.hideClaimButton = true;
         $scope.claimStatusText = "You will be able to claim a lease on a " + soonestExpiringItem.sku + " in " + soonestExpiringItem.currentLease.daysUntilExpires + " days.";
+      } else {
+        $scope.hideClaimButton = true;
+        $scope.claimStatusText = "There are no inventory items, available or otherwise. PCFaaS may be down."
       }
     }
 
