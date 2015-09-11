@@ -74,7 +74,7 @@ func (client *MyInventoryClient) GetLease(leaseID string) (lease InventoryLease,
   if !client.Enabled {
     return
   }
-  effectiveURL := fmt.Sprint(client.ServiceBaseURL, "/lease/", leaseID)
+  effectiveURL := fmt.Sprint(client.ServiceBaseURL, "/leases/", leaseID)
   log.Printf("Fetching lease at %s", effectiveURL)
   response, err := getRawResponseFromURL(effectiveURL)
 
