@@ -47,7 +47,7 @@ type (
 	// InventoryItem - entity from inventory query, includes lease status
 	InventoryItem struct {
 		SKU          			string `json:"sku"`
-		Tier         			string `json:"tier"`
+		Tier         			int		 `json:"tier"`
 		OfferingType 			string `json:"offeringType"`
 		Size         			string `json:"size"`
 		Status       			string `json:"status"`
