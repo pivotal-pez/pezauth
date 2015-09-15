@@ -59,7 +59,7 @@ const (
     "id": "55f22fe5b0cc8b001d000001",
     "inventory_item_id": "",
     "user": "dnem",
-    "duration": "28 days",
+    "duration": 28,
     "start_date": "2015-01-02 15:04:05.000000000 +0000 UTC",
     "end_date": "2015-01-02 15:04:05.000000000 +0000 UTC",
     "status": "active",

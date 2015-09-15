@@ -169,7 +169,7 @@ type inventoryLease struct {
   ID              bson.ObjectId          `bson:"_id,omitempty"`
 	InventoryItemID bson.ObjectId          `bson:"inventory_item_id,omitempty"`
 	User            string                 `json:"user"`
-	Duration        string                 `json:"duration"`
+	Duration        int                    `json:"duration"`
 	StartDate       string                 `json:"start_date"`
 	EndDate         string                 `json:"end_date"`
 	Status          string                 `json:"status"`
