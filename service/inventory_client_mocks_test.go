@@ -60,8 +60,8 @@ const (
     "inventory_item_id": "",
     "user": "dnem",
     "duration": "28 days",
-    "start_date": "2015-09-01",
-    "end_date": "2015-09-29",
+    "start_date": "2015-01-02 15:04:05.000000000 +0000 UTC",
+    "end_date": "2015-01-02 15:04:05.000000000 +0000 UTC",
     "status": "active",
     "attributes": {}
   }

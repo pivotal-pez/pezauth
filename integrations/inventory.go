@@ -118,7 +118,9 @@ func getRawResponseFromURL(URL string) (response inventoryResponseMessage, err e
 }
 
 func getDaysRemainingFromEndDate(endDate string) int {
-  t, err := time.Parse("2006-01-02", endDate)
+  // 2015-09-15 04:42:39.390008575 +0000 UTC
+  //t, err := time.Parse("2006-01-02", endDate)
+  t, err := time.Parse("2006-01-02 15:04:05.000000000 +0000 UTC", endDate)
   if err != nil {
       log.Println(err)
       return 0
