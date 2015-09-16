@@ -67,6 +67,12 @@ const (
   }
 }`
 
+LeaseRequest = `{
+  "inventory_item_id" : "55f230977bed08001d000001"
+  "user" : "kevin",
+  "duration" : 24
+}`
+
   NoInventoryDataSample = `{
     "status" : "fail",
     "message" : "Things went horribly wrong"

@@ -90,6 +90,27 @@ func (client *MyInventoryClient) GetLease(leaseID string) (lease InventoryLease,
   return
 }
 
+// LeaseInventoryItem acquires a new lease on an inventory item from the inventory service.
+func (client *MyInventoryClient) LeaseInventoryItem(inventoryItemID string, user string, duration int) (lease InventoryLease, err error) {
+  if !client.Enabled {
+    return
+  }
+
+  effectiveURL := fmt.Sprint(client.ServiceBaseURL, "/leases")
+  log.Printf("Attempting to acquire new lease from URL %s", effectiveURL)
+  response, err := getRawResponseFromURL(effectiveURL)
+  if err != nil {
+    log.Println(err)
+    return
+  }
+
+  var remoteLease inventoryLease
+  err = json.Unmarshal(response.Data, &remoteLease)
+  lease = InventoryLease{Username: remoteLease.User, DaysUntilExpires: duration}
+
+  return
+}
+
 func (client *MyInventoryClient) String() string {
   if client.Enabled {
     return fmt.Sprintf("{InventoryClient pointing at %s }", client.ServiceBaseURL)
@@ -174,6 +195,12 @@ type inventoryLease struct {
 	EndDate         string                 `json:"end_date"`
 	Status          string                 `json:"status"`
 	//Attributes      json.RawMessage        `json:"attributes"`
+}
+
+type leaseRequest struct {
+  InventoryItemID   bson.ObjectId       `json:"inventory_item_id"`
+  User              string              `json:"user"`
+  Duration          int                 `json:"duration"`
 }
 
 type inventoryServiceItem struct {

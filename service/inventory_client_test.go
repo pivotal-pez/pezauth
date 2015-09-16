@@ -70,5 +70,18 @@ var _ = Describe("Inventory Service Client", func() {
 				log.Printf("Detected user owning lease %s", results[1].CurrentLease.Username)
 				Ω(results[1].CurrentLease.Username).Should(Equal("dnem"))
 		})
+
+		It("should create a new lease properly", func() {
+			server := makeServer(IndividualLease)
+			defer server.Close()
+			rootURL := server.URL
+			invClient := new(MyInventoryClient).NewWithURL(rootURL)
+			// username won't matter here, since we're hardcoding it in the mock
+			// reply...
+			result, err := invClient.LeaseInventoryItem("abc12345", "foobar", 24)
+			Ω(err).Should(BeNil())
+			Ω(result.Username).Should(Equal("dnem"))
+			Ω(result.DaysUntilExpires).Should(Equal(24))
+		})
 	})
 })
