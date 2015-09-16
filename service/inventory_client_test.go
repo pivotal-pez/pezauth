@@ -83,5 +83,15 @@ var _ = Describe("Inventory Service Client", func() {
 			Ω(result.Username).Should(Equal("dnem"))
 			Ω(result.DaysUntilExpires).Should(Equal(24))
 		})
+
+		It("should properly handle a graceful lease acquire failure from inv service", func() {
+			server := makeServer(NoInventoryDataSample)
+			defer server.Close()
+			rootURL := server.URL
+			invClient := new(MyInventoryClient).NewWithURL(rootURL)
+	    result, err := invClient.LeaseInventoryItem("abc12345", "foobar", 24)
+			Ω(result).Should(BeNil())
+			Ω(err.Error()).Should(Equal("Things went horribly wrong"))
+		})
 	})
 })

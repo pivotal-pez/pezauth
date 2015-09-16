@@ -56,7 +56,6 @@ func (client *MyInventoryClient) GetInventoryItems() (result []InventoryItem, er
   }
   for idx, element := range inventoryItems {
     result[idx] = InventoryItem{SKU: element.SKU, Size: element.Size, Tier: element.Tier, OfferingType: element.OfferingType, Status: element.Status, ID: element.ID.Hex()}
-    // TODO - fetch the lease information for this inventory item if there is a lease...
     if len(element.LeaseID) > 0 {
       theLease, theError := client.GetLease(element.LeaseID)
       if theError != nil {
@@ -91,7 +90,7 @@ func (client *MyInventoryClient) GetLease(leaseID string) (lease InventoryLease,
 }
 
 // LeaseInventoryItem acquires a new lease on an inventory item from the inventory service.
-func (client *MyInventoryClient) LeaseInventoryItem(inventoryItemID string, user string, duration int) (lease InventoryLease, err error) {
+func (client *MyInventoryClient) LeaseInventoryItem(inventoryItemID string, user string, duration int) (lease *InventoryLease, err error) {
   if !client.Enabled {
     return
   }
@@ -104,9 +103,15 @@ func (client *MyInventoryClient) LeaseInventoryItem(inventoryItemID string, user
     return
   }
 
+  if strings.ToUpper(response.Status) != "SUCCESS" {
+    lease = nil
+    err = errors.New(response.Message)
+    return
+  }
+
   var remoteLease inventoryLease
   err = json.Unmarshal(response.Data, &remoteLease)
-  lease = InventoryLease{Username: remoteLease.User, DaysUntilExpires: duration}
+  lease = &InventoryLease{Username: remoteLease.User, DaysUntilExpires: duration}
 
   return
 }
