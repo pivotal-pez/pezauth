@@ -11,8 +11,7 @@ const (
       "offeringType": "",
       "size": "",
       "attributes": {},
-      "status": "",
-      "lease_id": ""
+      "status": ""
     },
     {
       "id": "55f0779a6696f40147000002",
@@ -21,8 +20,7 @@ const (
       "offeringType": "",
       "size": "",
       "attributes": {},
-      "status": "",
-      "lease_id": ""
+      "status": ""
     }
   ]
 }`
@@ -37,8 +35,7 @@ const (
       "offering_type": "C",
       "size": "small",
       "attributes": {},
-      "status": "available",
-      "lease_id": ""
+      "status": "available"
     },
     {
       "id": "55f230977bed08001d000001",

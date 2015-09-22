@@ -68,6 +68,9 @@ type (
 	//PcfaasGetInventoryHandler - a get control handler for pcfaas inventory requests
 	PcfaasGetInventoryHandler func(log *log.Logger, r render.Render, tokens oauth2.Tokens)
 
+ // PcfaasPostInventoryHandler - a post control handler for pcaas inventory lease requests
+	PcfaasPostInventoryHandler func(params martini.Params, log *log.Logger, r render.Render, tokens oauth2.Tokens)
+
 	meController struct {
 		Controller
 	}
@@ -161,7 +164,7 @@ type (
 		sendMailFunc SendMailFunc
 		supportEmail string //TODO maybe make this as an independent environment variable
 	}
-		
+
 	//Sender - the interface that can send email
 	Sender interface {
 		SendEmail(data *SMTPData) error
