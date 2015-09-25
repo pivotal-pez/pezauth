@@ -173,10 +173,40 @@ describe('PezPortalController', function() {
       $scope.inventoryItems = createNoAvailableInventoryItems();
       var controller = $controller('PezPortalController', { $scope: $scope });
       controller.setupLeasedItemState();
-      expect($scope.hideClaimButton).toBe(true);      
+      expect($scope.hideClaimButton).toBe(true);
       expect($scope.claimStatusText).toBe("You will be able to claim a lease on a 2C.small in 5 days.");
     });
   });
+
+  describe('pezportal.Lease inventory item', function() {
+    it('should return a lease object when successful', function() {
+      var inventoryItemID = "abc123guid"; // this is the ID of the "first available" item.
+      $httpBackend.when('POST', ['/pcfaas/inventory', inventoryItemID].join('/')).respond(
+        {"daysUntilExpires": 14, "userName" : "bob"}
+      );
+      var $scope = {};
+      $scope.inventoryItems = createSoonExpiringInventoryItems();
+      var controller = $controller('PezPortalController', { $scope: $scope });
+      controller.leaseItem();
+      $httpBackend.flush();
+
+      expect($scope.hideClaimButton).toBe(true);
+      expect($scope.claimStatusText).toBe("The lease on your inventory item 2C.small will expire in 14 days.");
+    });
+
+    it('should expose cause for failure when lease fails', function() {
+      var inventoryItemID = "abc123guid"; // this is the ID of the "first available" item.
+      $httpBackend.when('POST', ['/pcfaas/inventory', inventoryItemID].join('/')).respond(500,'');
+      var $scope = {};
+      $scope.inventoryItems = createSoonExpiringInventoryItems();
+      var controller = $controller('PezPortalController', { $scope: $scope });
+      controller.leaseItem();
+      $httpBackend.flush();
+
+      expect($scope.hideClaimButton).toBe(true);
+      expect($scope.claimStatusText).toBe("There was an error attempting to lease the 2C.small inventory item.");
+    });
+  })
 
    describe('pezportal.getOrgRestUri', function() {
     it('should combine the ORG API base with email into a path', function() {

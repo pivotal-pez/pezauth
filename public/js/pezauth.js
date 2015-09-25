@@ -96,6 +96,11 @@ var pezPortal = angular.module('pezPortal', [], function($interpolateProvider) {
       determineLeaseState();
     }
 
+    pauth.leaseItem = function() {
+      var firstAvailableInventoryItem = getFirstAvailableInventoryItem($scope.inventoryItems);
+      return postInventoryItemRequest(firstAvailableInventoryItem)
+    }
+
     function callMeUsingVerb(verbCaller, uri) {
       var responsePromise = verbCaller(uri);
       responsePromise.success(function(data, status, headers, config) {
@@ -201,6 +206,22 @@ var pezPortal = angular.module('pezPortal', [], function($interpolateProvider) {
 
       responsePromise.error(function(data, status, headers, config) {
         console.log(data.ErrorMsg);
+      });
+    }
+
+    function postInventoryItemRequest(inventoryItem) {
+      var uri = "/pcfaas/inventory/" + inventoryItem.id;
+      var responsePromise = $http.post(uri);
+      responsePromise.success(function(data, status, headers, config) {
+        console.log(data);
+        $scope.hideClaimButton = true;
+        $scope.claimStatusText = "The lease on your inventory item " + inventoryItem.sku + " will expire in " + data.daysUntilExpires + " days.";
+      });
+
+      responsePromise.error(function(data, status, headers, config) {
+        console.log(data.ErrorMsg);
+        $scope.hideClaimButton = true;
+        $scope.claimStatusText = "There was an error attempting to lease the " + inventoryItem.sku + " inventory item.";
       });
     }
 

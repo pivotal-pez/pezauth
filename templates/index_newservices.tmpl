@@ -251,12 +251,10 @@ $ ./cf login --sso
          </div>
          <div class="col-sm-12 text-center" ng-show="hideClaimButton"><br/>
             <span>{*{ claimStatusText }*}</span>
-              <!--<span>There are no available PCFaaS lab environment leases. The next one will be available in <b>4 days</b>.<span> -->
-
          </div>
          <div class="row ng-hide" ng-hide="hideClaimButton" style="margin-top: 40px;">
            <div class="col-sm-12 text-center">
-             <a class="btn btn-lg btn-outline" ng-click="pac.claimLease()">
+             <a class="btn btn-lg btn-outline" ng-click="pac.leaseItem()">
                 <i class="fa fa-flask"></i> {*{ claimButtonText }*}
             </a>
            </div>
