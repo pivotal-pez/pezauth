@@ -3,7 +3,6 @@ package integrations
 import (
 	"fmt"
 	"os"
-	"strings"
 
 	"github.com/cloudfoundry-community/go-cfenv"
 	"github.com/pivotal-pez/pezdispenser/service"
@@ -14,6 +13,7 @@ import (
 func (s *MyMongo) New(appEnv *cfenv.App) *MyMongo {
 	mongoServiceName := os.Getenv("MONGO_SERVICE_NAME")
 	mongoURIName := os.Getenv("MONGO_URI_NAME")
+	mongoDBName := os.Getenv("MONGO_DB_NAME")
 	s.mongoCollName = os.Getenv("MONGO_COLLECTION_NAME")
 	mongoService, err := appEnv.Services.WithName(mongoServiceName)
 
@@ -21,8 +21,7 @@ func (s *MyMongo) New(appEnv *cfenv.App) *MyMongo {
 		panic(fmt.Sprintf("mongodb service name error: %s", err.Error()))
 	}
 	s.mongoConnectionURI = mongoService.Credentials[mongoURIName].(string)
-	parsedURI := strings.Split(s.mongoConnectionURI, "/")
-	s.mongoDBName = parsedURI[len(parsedURI)-1]
+	s.mongoDBName = mongoService.Credentials[mongoDBName].(string)
 	s.connect()
 	return s
 }

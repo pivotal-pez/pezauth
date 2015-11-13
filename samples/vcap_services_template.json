@@ -1,18 +1,4 @@
 {
-  "p-mongodb": [
-   {
-    "credentials": {
-     "uri": "mongodb://{{.MONGO_PORT_27017_TCP_ADDR}}:{{.MONGO_PORT_27017_TCP_PORT}}/59501f9b-5528-421b-84e9-93f9dc6f1080"
-    },
-    "label": "p-mongodb",
-    "name": "pezauth-mongo",
-    "plan": "development",
-    "tags": [
-     "pivotal",
-     "mongodb"
-    ]
-   }
-  ],
   "p-redis": [
    {
     "credentials": {
@@ -30,6 +16,20 @@
    }
   ],
   "user-provided": [
+    {
+      "credentials": {
+        "host":"{{.MONGO_PORT_27017_TCP_ADDR}}",
+        "database":"59501f9b-5528-421b-84e9-93f9dc6f1080",
+        "uri": "mongodb://{{.MONGO_PORT_27017_TCP_ADDR}}:{{.MONGO_PORT_27017_TCP_PORT}}/59501f9b-5528-421b-84e9-93f9dc6f1080"
+        "password":"",
+        "port":"{{.MONGO_PORT_27017_TCP_PORT}}", 
+        "scheme":"mongodb"
+      },
+      "label": "user-provided",
+      "name": "portal-mongo",
+      "syslog_drain_url": "",
+      "tags": []
+    },
    {
     "credentials": {
      "target-url": "http://{{.DOCKER_IP}}.xip.io:5000/valid-key"

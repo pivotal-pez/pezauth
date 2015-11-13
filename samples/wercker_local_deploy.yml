@@ -41,7 +41,7 @@ dev:
           HERITAGE_CC_TARGET_NAME="cc-target"
           MONGO_DB_NAME="pezauth"
           MONGO_COLLECTION_NAME="org_users"
-          MONGO_SERVICE_NAME="pezauth-mongo"
+          MONGO_SERVICE_NAME="portal-mongo"
           MONGO_URI_NAME="uri"
           REDIS_SERVICE_NAME="pezauth-redis"
           REDIS_HOSTNAME_NAME="host"

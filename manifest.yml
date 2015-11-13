@@ -21,9 +21,10 @@ env:
   HERITAGE_LOGIN_USER_NAME: login-user
   HERITAGE_LOGIN_PASS_NAME: login-pass
   HERITAGE_CC_TARGET_NAME: cc-target
-  MONGO_SERVICE_NAME: pezauth-mongo
+  MONGO_SERVICE_NAME: portal-mongo
   MONGO_URI_NAME: uri
   MONGO_COLLECTION_NAME: org_users
+  MONGO_DB_NAME: database
   NEWRELIC_SERVICE_NAME: pez-heritage-newrelic
   NEWRELIC_KEY_NAME: newrelic-key
   NEWRELIC_APP_NAME: newrelic-app

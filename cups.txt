@@ -3,4 +3,5 @@ cf cups pez-heritage-admin-service -p "login-target, login-user, login-pass, cc-
 cf cups pez-heritage-newrelic -p "newrelic-app, newrelic-key"
 cf cups oauth-client-details -p "client-id, client-secret"
 cf cups email-server-service -p '{"smtp-host":"smtp.vchs.pivotal.io", "smtp-port" : "25", "support-email" : "ask-test@pivotal.io"}'
-cf create-service p-mongodb development pezauth-mongo  
+#cf create-service p-mongodb development pezauth-mongo  
+cf cups portal-mongo -p "database, host, password, port, scheme, uri, username"
