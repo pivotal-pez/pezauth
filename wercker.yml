@@ -1,4 +1,4 @@
-box: google/golang
+box: golang
 
 services:
     - mongo
@@ -28,7 +28,7 @@ build:
         name: js tests
         code: |
           curl -sL https://deb.nodesource.com/setup | sudo bash -
-          sudo apt-get install -y nodejs npm wget libfontconfig1 libfreetype6
+          sudo apt-get install -y nodejs wget libfontconfig1 libfreetype6 bzip2
           npm install karma karma-jasmine karma-phantomjs-launcher --save-dev
           npm install -g karma-cli
           (cd public/js/ && karma start karma.conf.js --single-run --log-level=debug)
@@ -68,7 +68,7 @@ deploy:
     - script:
         name: install-packages
         code: |
-          sudo apt-get install -y ssh wget
+          sudo apt-get install -y openssh-client wget
 
     - wercker/add-ssh-key@1.0.2:
         keyname: PEZ_GITHUB_KEY
