@@ -4,7 +4,7 @@ buildpack: http://github.com/ryandotsmith/null-buildpack.git
 command: ./main
 services:
   - pezauth-redis
-  - pezauth-mongo
+  - portal-mongo
   - pezvalidator-service
   - pez-heritage-admin-service
   - pez-heritage-newrelic
