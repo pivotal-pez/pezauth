@@ -113,7 +113,7 @@ func (s *mockDoer) Do(commandName string, args ...interface{}) (reply interface{
 }
 
 func getKeygen(fail bool, guid string, nilResponse bool) KeyGenerator {
-	d := &mockDoer{fail: fail, guid: guid, nilResponse: nilResponse}
+	d := func() Doer { return &mockDoer{fail: fail, guid: guid, nilResponse: nilResponse} }
 	g := &mockGUIDMaker{guid: guid}
 	return NewKeyGen(d, g)
 }

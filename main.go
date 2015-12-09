@@ -26,9 +26,9 @@ func main() {
 	pez.ClientID = oauth2Client.ID
 	pez.ClientSecret = oauth2Client.Secret
 	rds := new(integrations.MyRedis).New(appEnv)
+	defer rds.Pool.Close()
 	emailServer := pez.NewEmailServerFromService(appEnv)
 	m.Map(emailServer)
-	defer rds.Conn.Close()
 	pez.InitSession(m, &redisCreds{
 		pass: rds.Pass,
 		uri:  rds.URI,
@@ -39,14 +39,17 @@ func main() {
 		ccTarget: h.CCTarget,
 	}
 
-  inv := new(integrations.MyInventoryClient).New(appEnv)
+	inv := new(integrations.MyInventoryClient).New(appEnv)
 	fmt.Printf("Inventory Client %s\n", inv)
 
 	mngo := new(integrations.MyMongo).New(appEnv)
 	defer mngo.Session.Close()
 
 	if _, err := heritageClient.Login(); err == nil {
-		pez.InitRoutes(m, rds.Conn, mngo, heritageClient, inv)
+		var getDoer = func() pez.Doer {
+			return rds.Pool.Get()
+		}
+		pez.InitRoutes(m, getDoer, mngo, heritageClient, inv)
 		m.Run()
 
 	} else {

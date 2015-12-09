@@ -8,10 +8,10 @@ import (
 	"github.com/go-martini/martini"
 	"github.com/martini-contrib/oauth2"
 	"github.com/martini-contrib/render"
+	"github.com/pivotal-pez/pezauth/integrations"
 	"github.com/pivotal-pez/pezdispenser/cloudfoundryclient"
 	"github.com/pivotal-pez/pezdispenser/service"
 	"github.com/xchapter7x/cloudcontroller-client"
-	"github.com/pivotal-pez/pezauth/integrations"
 )
 
 type (
@@ -46,7 +46,7 @@ type (
 	}
 	//KeyGen - and implementation of the KeyGenerator interface
 	KeyGen struct {
-		store     Doer
+		store     func() Doer
 		guidMaker GUIDMaker
 	}
 	//KeyGenerator - interface to work with apikeys
@@ -68,7 +68,7 @@ type (
 	//PcfaasGetInventoryHandler - a get control handler for pcfaas inventory requests
 	PcfaasGetInventoryHandler func(log *log.Logger, r render.Render, tokens oauth2.Tokens)
 
- // PcfaasPostInventoryHandler - a post control handler for pcaas inventory lease requests
+	// PcfaasPostInventoryHandler - a post control handler for pcaas inventory lease requests
 	PcfaasPostInventoryHandler func(params martini.Params, log *log.Logger, r render.Render, tokens oauth2.Tokens)
 
 	meController struct {
@@ -77,7 +77,7 @@ type (
 
 	pcfaasController struct {
 		Controller
-		inventoryClient		*integrations.MyInventoryClient
+		inventoryClient *integrations.MyInventoryClient
 	}
 
 	//OrgGetHandler - func signature of org get handler

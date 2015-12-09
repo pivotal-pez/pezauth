@@ -3,10 +3,10 @@ package integrations
 import (
 	"fmt"
 	"os"
-	"time"
 
 	"github.com/cloudfoundry-community/go-cfenv"
 	"github.com/garyburd/redigo/redis"
+	"github.com/xchapter7x/lo"
 )
 
 //New - create a new redis integration wrapper
@@ -22,34 +22,23 @@ func (s *MyRedis) New(appEnv *cfenv.App) *MyRedis {
 	if err != nil {
 		panic(fmt.Sprintf("redis service name error: %s", err.Error()))
 	}
-	s.connect()
-	defer func() { go s.autoReconnect() }()
+	s.Pool = &redis.Pool{Dial: s.connect, MaxIdle: redisMaxIdle}
 	return s
 }
 
-func (s *MyRedis) connect() {
-	var err error
+func (s *MyRedis) connect() (conn redis.Conn, err error) {
 
-	if s.Conn, err = redis.Dial("tcp", s.URI); err != nil {
-		panic(fmt.Sprintf("redis dial error: %s", err.Error()))
-	}
+	if conn, err = redis.Dial("tcp", s.URI); err != nil {
+		lo.G.Error(fmt.Sprintf("redis dial error: %s", err.Error()))
 
-	if len(s.Pass) > 0 {
-		if _, err = s.Conn.Do("AUTH", s.Pass); err != nil {
-			panic(fmt.Sprintf("redis auth error: %s", err.Error()))
+	} else {
+
+		if len(s.Pass) > 0 {
+
+			if _, err = conn.Do("AUTH", s.Pass); err != nil {
+				lo.G.Error(fmt.Sprintf("redis auth error: %s", err.Error()))
+			}
 		}
 	}
-}
-
-func (s *MyRedis) autoReconnect() {
-
-	for {
-
-		if err := s.Conn.Err(); err != nil {
-			fmt.Println(fmt.Sprintf("redis connection failure (%s)... attempting to restart: ", err))
-			s.Conn.Close()
-			s.connect()
-		}
-		time.Sleep(5000 * time.Millisecond)
-	}
+	return
 }

@@ -3,8 +3,8 @@ package pezauth
 import (
 	"fmt"
 	"log"
-	"strings"
 	"os"
+	"strings"
 
 	"github.com/go-martini/martini"
 	"github.com/martini-contrib/oauth2"
@@ -15,13 +15,13 @@ import (
 
 //Constants to construct routes with
 const (
-	UserParam     = "user"
-	APIVersion1   = "v1"
-	AuthGroup     = "auth"
-	OrgGroup      = "org"
-	APIKeys       = "/api-keys"
-	ValidKeyCheck = "/valid-key"
-	StaticPath    = "public"
+	UserParam          = "user"
+	APIVersion1        = "v1"
+	AuthGroup          = "auth"
+	OrgGroup           = "org"
+	APIKeys            = "/api-keys"
+	ValidKeyCheck      = "/valid-key"
+	StaticPath         = "public"
 	InventoryItemParam = "invitem"
 )
 
@@ -31,13 +31,13 @@ var (
 	OrgUser       = fmt.Sprintf("/user/:%s", UserParam)
 	URLAuthBaseV1 = fmt.Sprintf("/%s/%s", APIVersion1, AuthGroup)
 	URLOrgBaseV1  = fmt.Sprintf("/%s/%s", APIVersion1, OrgGroup)
-	LeaseURL			= fmt.Sprintf("/pcfaas/inventory/:%s", InventoryItemParam)
+	LeaseURL      = fmt.Sprintf("/pcfaas/inventory/:%s", InventoryItemParam)
 )
 
 var displayNewServices = strings.ToUpper(os.Getenv("DISPLAY_NEW_SERVICES")) == "YES"
 
 //InitRoutes - initialize the mappings for controllers against valid routes
-func InitRoutes(m *martini.ClassicMartini, redisConn Doer, mongoConn pezdispenser.MongoCollectionGetter, authClient AuthRequestCreator, invClient *integrations.MyInventoryClient) {
+func InitRoutes(m *martini.ClassicMartini, redisConn func() Doer, mongoConn pezdispenser.MongoCollectionGetter, authClient AuthRequestCreator, invClient *integrations.MyInventoryClient) {
 	setOauthConfig()
 	keyGen := NewKeyGen(redisConn, &GUIDMake{})
 	m.Use(render.Renderer())
@@ -49,7 +49,7 @@ func InitRoutes(m *martini.ClassicMartini, redisConn Doer, mongoConn pezdispense
 	m.Get(ValidKeyCheck, NewValidateV1(keyGen).Get())
 
 	m.Get("/me", oauth2.LoginRequired, DomainCheck, NewMeController().Get())
-	m.Get("/pcfaas/inventory", oauth2.LoginRequired, DomainCheck, NewPcfaasController(invClient).Get())	
+	m.Get("/pcfaas/inventory", oauth2.LoginRequired, DomainCheck, NewPcfaasController(invClient).Get())
 	m.Post(LeaseURL, oauth2.LoginRequired, DomainCheck, NewPcfaasController(invClient).Post())
 
 	m.Get("/", oauth2.LoginRequired, DomainCheck, func(params martini.Params, log *log.Logger, r render.Render, tokens oauth2.Tokens) {

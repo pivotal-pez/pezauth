@@ -8,7 +8,7 @@ import (
 )
 
 //NewKeyGen - create a new implementation of a KeyGenerator interface
-func NewKeyGen(doer Doer, guid GUIDMaker) KeyGenerator {
+func NewKeyGen(doer func() Doer, guid GUIDMaker) KeyGenerator {
 	return &KeyGen{
 		store:     doer,
 		guidMaker: guid,
@@ -30,7 +30,7 @@ func parseKeysResponse(r interface{}) (key, username, hash string, err error) {
 
 func (s *KeyGen) getHashMap(hash string) (res interface{}, err error) {
 	var byteResponse interface{}
-	byteResponse, err = s.store.Do("HMGET", redis.Args{hash}.Add(HMFieldActive).Add(HMFieldDetails)...)
+	byteResponse, err = s.store().Do("HMGET", redis.Args{hash}.Add(HMFieldActive).Add(HMFieldDetails)...)
 	castedByteResponse := byteResponse.([]interface{})
 
 	if len(castedByteResponse) == 2 {
@@ -50,7 +50,7 @@ func (s *KeyGen) Get(user string) (res string, err error) {
 	var r interface{}
 	search := fmt.Sprintf("%s:*", user)
 
-	if r, err = s.store.Do("KEYS", search); r != nil && err == nil {
+	if r, err = s.store().Do("KEYS", search); r != nil && err == nil {
 		res, _, _, err = parseKeysResponse(r)
 	}
 	return
@@ -61,7 +61,7 @@ func (s *KeyGen) GetByKey(key string) (hash string, val interface{}, err error) 
 	var r interface{}
 	search := fmt.Sprintf("*:%s", key)
 
-	if r, err = s.store.Do("KEYS", search); r != nil && err == nil {
+	if r, err = s.store().Do("KEYS", search); r != nil && err == nil {
 
 		if _, _, hash, err = parseKeysResponse(r); err == nil {
 			val, err = s.getHashMap(hash)
@@ -74,7 +74,7 @@ func (s *KeyGen) getHash(user string) (hash string, err error) {
 	var r interface{}
 	search := fmt.Sprintf("%s:*", user)
 
-	if r, err = s.store.Do("KEYS", search); r != nil && err == nil {
+	if r, err = s.store().Do("KEYS", search); r != nil && err == nil {
 		_, _, hash, err = parseKeysResponse(r)
 	}
 	return
@@ -108,7 +108,7 @@ func (s *KeyGen) Create(user string, details string) (err error) {
 		HMFieldActive:  "true",
 		HMFieldDetails: details,
 	}
-	_, err = s.store.Do("HMSET", redis.Args{hash}.AddFlat(row)...)
+	_, err = s.store().Do("HMSET", redis.Args{hash}.AddFlat(row)...)
 	return
 }
 
@@ -117,7 +117,7 @@ func (s *KeyGen) Delete(user string) (err error) {
 	var apikey string
 
 	if apikey, err = s.Get(user); err == nil {
-		_, err = s.store.Do("DEL", createHash(user, apikey))
+		_, err = s.store().Do("DEL", createHash(user, apikey))
 	}
 	return
 }

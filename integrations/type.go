@@ -15,7 +15,7 @@ type (
 	MyRedis struct {
 		URI  string
 		Pass string
-		Conn redis.Conn
+		Pool *redis.Pool
 	}
 	//MyMongo - integration wrapper for mongodb
 	MyMongo struct {
@@ -39,25 +39,24 @@ type (
 	}
 	//MyInventoryClient - integration wrapper for interacting with inventory svc
 	MyInventoryClient struct {
-    ServiceBaseURL    string
-		Enabled						bool
-  }
-
+		ServiceBaseURL string
+		Enabled        bool
+	}
 
 	// InventoryItem - entity from inventory query, includes lease status
 	InventoryItem struct {
-		SKU          			string `json:"sku"`
-		Tier         			int		 `json:"tier"`
-		OfferingType 			string `json:"offeringType"`
-		Size         			string `json:"size"`
-		Status       			string `json:"status"`
-		ID           			string `json:"id"`
-		CurrentLease			InventoryLease	`json:"currentLease"`
+		SKU          string         `json:"sku"`
+		Tier         int            `json:"tier"`
+		OfferingType string         `json:"offeringType"`
+		Size         string         `json:"size"`
+		Status       string         `json:"status"`
+		ID           string         `json:"id"`
+		CurrentLease InventoryLease `json:"currentLease"`
 	}
 
 	// InventoryLease - represents information about an active lease of an inventory item.
 	InventoryLease struct {
-			DaysUntilExpires		int			`json:"daysUntilExpires"`
-			Username						string	`json:"userName"`
+		DaysUntilExpires int    `json:"daysUntilExpires"`
+		Username         string `json:"userName"`
 	}
 )
