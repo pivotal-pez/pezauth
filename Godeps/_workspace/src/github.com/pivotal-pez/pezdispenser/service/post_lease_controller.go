@@ -7,31 +7,27 @@ import (
 	"github.com/go-martini/martini"
 	"github.com/martini-contrib/render"
 	"github.com/pivotal-pez/pezdispenser/service/integrations"
-	"github.com/pivotal-pez/pezdispenser/skus"
+	"github.com/xchapter7x/lo"
 )
 
 //PostLeaseController - this is the controller to handle a get task call
-func PostLeaseController(taskServiceURI string, collectionDialer integrations.CollectionDialer) martini.Handler {
-	taskCollection := setupDB(collectionDialer, taskServiceURI, TaskCollectionName)
-	availableSkus := map[string]skus.Sku{
-		"2c.small": new(skus.Sku2CSmall),
-	}
-	return func(logger *log.Logger, r render.Render, req *http.Request) {
-		lease := NewLease(taskCollection, availableSkus)
+func PostLeaseController() martini.Handler {
+	return func(logger *log.Logger, r render.Render, req *http.Request, taskCollection integrations.Collection) {
+		lease := NewLease(taskCollection, GetAvailableInventory(taskCollection))
 		statusCode, response := lease.Post(logger, req)
+		lo.G.Debug("statuscode: ", statusCode)
+		lo.G.Debug("response: ", response)
 		r.JSON(statusCode, response)
 	}
 }
 
 //DeleteLeaseController - this is the controller to handle a get task call
-func DeleteLeaseController(taskServiceURI string, collectionDialer integrations.CollectionDialer) martini.Handler {
-	taskCollection := setupDB(collectionDialer, taskServiceURI, TaskCollectionName)
-	availableSkus := map[string]skus.Sku{
-		"2c.small": new(skus.Sku2CSmall),
-	}
-	return func(logger *log.Logger, r render.Render, req *http.Request) {
-		lease := NewLease(taskCollection, availableSkus)
+func DeleteLeaseController() martini.Handler {
+	return func(logger *log.Logger, r render.Render, req *http.Request, taskCollection integrations.Collection) {
+		lease := NewLease(taskCollection, GetAvailableInventory(taskCollection))
 		statusCode, response := lease.Delete(logger, req)
+		lo.G.Debug("statuscode: ", statusCode)
+		lo.G.Debug("response: ", response)
 		r.JSON(statusCode, response)
 	}
 }

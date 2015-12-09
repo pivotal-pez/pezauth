@@ -2,12 +2,16 @@ package pezdispenser
 
 import (
 	"errors"
+	"log"
 	"net/http"
+	"os"
 )
 
 const (
 	//TaskStatusAvailable - this means the task is in an avaiable state
 	TaskStatusAvailable = "available"
+	//TaskStatusRestocking - reclaiming inventory and restocking
+	TaskStatusRestocking = "restocking"
 	//TaskStatusUnavailable - unavailable procurement request
 	TaskStatusUnavailable = "unavailable"
 	//TaskStatusStarted - started this task
@@ -22,6 +26,10 @@ const (
 	FailureStatusResponseTaskByID = http.StatusNotFound
 	//CallerPostLease --
 	CallerPostLease = "post_lease"
+	//LeaseExpiresFieldName ----
+	LeaseExpiresFieldName = "lease_expires"
+	//InventoryIDFieldName ---
+	InventoryIDFieldName = "inventory_id"
 )
 
 var (
@@ -31,4 +39,6 @@ var (
 	ErrCanNotAddOrgRec = errors.New("Could not add a new org record")
 	//ErrEmptyBody - no data in request body
 	ErrEmptyBody = errors.New("request body is empty or invalid")
+	//GLogger - a global logger
+	GLogger *log.Logger = log.New(os.Stdout, "[default]", log.LstdFlags)
 )

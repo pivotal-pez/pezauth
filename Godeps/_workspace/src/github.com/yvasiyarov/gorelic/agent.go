@@ -126,8 +126,6 @@ func (agent *Agent) Run() error {
 		return errors.New("please, pass a valid newrelic license key")
 	}
 
-	agent.plugin = newrelic_platform_go.NewNewrelicPlugin(agent.AgentVersion, agent.NewrelicLicense, agent.NewrelicPollInterval)
-	agent.plugin.Client = agent.Client
 
 	var component newrelic_platform_go.IComponent
 	component = newrelic_platform_go.NewPluginComponent(agent.NewrelicName, agent.AgentGUID, agent.Verbose)
@@ -167,6 +165,7 @@ func (agent *Agent) Run() error {
 
 	// Init newrelic reporting plugin.
 	agent.plugin = newrelic_platform_go.NewNewrelicPlugin(agent.AgentVersion, agent.NewrelicLicense, agent.NewrelicPollInterval)
+	agent.plugin.Client = agent.Client
 	agent.plugin.Verbose = agent.Verbose
 
 	// Add our metrics component to the plugin.

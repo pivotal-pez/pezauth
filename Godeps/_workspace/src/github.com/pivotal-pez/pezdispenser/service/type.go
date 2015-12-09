@@ -1,10 +1,8 @@
 package pezdispenser
 
 import (
-	"time"
-
 	"github.com/pivotal-pez/pezdispenser/service/integrations"
-	"github.com/pivotal-pez/pezdispenser/skus"
+	"github.com/pivotal-pez/pezdispenser/skurepo"
 	"github.com/pivotal-pez/pezdispenser/taskmanager"
 	"labix.org/v2/mgo"
 )
@@ -39,16 +37,15 @@ type (
 	Lease struct {
 		taskCollection  integrations.Collection
 		taskManager     *taskmanager.TaskManager
-		availableSkus   map[string]skus.Sku
-		ID              string                 `json:"_id"`
-		InventoryID     string                 `json:"inventory_id"`
-		UserName        string                 `json:"username"`
-		Sku             string                 `json:"sku"`
-		LeaseDuration   float64                `json:"lease_duration"`
-		LeaseEndDate    time.Time              `json:"lease_end_date"`
-		LeaseStartDate  time.Time              `json:"lease_start_date"`
-		ConsumerMeta    map[string]interface{} `json:"consumer_meta"`
-		ProcurementMeta map[string]interface{} `json:"procurement_meta"`
-		Task            *taskmanager.Task      `json:"task"`
+		availableSkus   map[string]skurepo.Sku
+		ID              string                   `json:"lease_id"`
+		InventoryID     string                   `json:"inventory_id"`
+		UserName        string                   `json:"username"`
+		Sku             string                   `json:"sku"`
+		LeaseDuration   float64                  `json:"lease_duration"`
+		LeaseEndDate    int64                    `json:"lease_end_date"`
+		LeaseStartDate  int64                    `json:"lease_start_date"`
+		ProcurementMeta map[string]interface{}   `json:"procurement_meta"`
+		Task            taskmanager.RedactedTask `json:"task"`
 	}
 )
