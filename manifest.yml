@@ -3,7 +3,7 @@ name: pezauth
 buildpack: http://github.com/ryandotsmith/null-buildpack.git
 command: ./main
 services:
-  - pezauth-redis
+  - auth-redis
   - portal-mongo
   - pezvalidator-service
   - pez-heritage-admin-service
@@ -11,7 +11,7 @@ services:
   - oauth-client-details
   - email-server-service
 env:
-  REDIS_SERVICE_NAME: pezauth-redis
+  REDIS_SERVICE_NAME: auth-redis
   REDIS_HOSTNAME_NAME: host
   REDIS_PASSWORD_NAME: password
   REDIS_PORT_NAME: port
